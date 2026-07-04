@@ -31,12 +31,13 @@
     "clean": "rm -rf dist",
     "verify:release": "npm run clean && npm run build && npm run n8n-node:build && npm pack --dry-run",
     "n8n-node:build": "pnpm dlx @n8n/node-cli build",
-    "n8n-node:lint": "pnpm dlx --package @n8n/node-cli node scripts/run-n8n-node-lint.js",
+    "n8n-node:lint": "pnpm dlx --package=@n8n/node-cli node scripts/run-n8n-node-lint.js",
     "prepublishOnly": "npm run build"
   },
   "files": [
     "dist",
-    "docs",
+    "docs/API_DOMAIN_NODE_MAPPING.md",
+    "docs/NODE_OPERATOR_GUIDE.md",
     "CUSTOMER_INSTALL.md"
   ],
   "publishConfig": {
