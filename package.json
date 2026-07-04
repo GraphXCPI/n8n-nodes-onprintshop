@@ -1,0 +1,72 @@
+{
+  "name": "n8n-nodes-onprintshop",
+  "version": "1.1.0",
+  "description": "n8n node for OnPrintShop integration",
+  "keywords": [
+    "n8n-community-node-package",
+    "n8n",
+    "onprintshop",
+    "printing",
+    "print-shop",
+    "e-commerce"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/GraphXCPI/n8n-nodes-onprintshop#readme",
+  "bugs": {
+    "url": "https://github.com/GraphXCPI/n8n-nodes-onprintshop/issues"
+  },
+  "author": {
+    "name": "cderamos-2ct",
+    "email": "christian@2ctmedia.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GraphXCPI/n8n-nodes-onprintshop.git"
+  },
+  "main": "dist/nodes/OnPrintShop/OnPrintShop.node.js",
+  "types": "dist/nodes/OnPrintShop/OnPrintShop.node.d.ts",
+  "scripts": {
+    "build": "node ./node_modules/typescript/bin/tsc && node scripts/build-icons.js",
+    "dev": "node ./node_modules/typescript/bin/tsc --watch",
+    "clean": "rm -rf dist",
+    "verify:release": "npm run clean && npm run build && npm run n8n-node:build && npm pack --dry-run",
+    "n8n-node:build": "pnpm dlx @n8n/node-cli build",
+    "n8n-node:lint": "pnpm dlx --package @n8n/node-cli node scripts/run-n8n-node-lint.js",
+    "prepublishOnly": "npm run build"
+  },
+  "files": [
+    "dist",
+    "docs",
+    "CUSTOMER_INSTALL.md"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": [
+      "dist/credentials/OnPrintShopApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/OnPrintShopProducts/OnPrintShopProducts.node.js",
+      "dist/nodes/OnPrintShopProductBuilder/OnPrintShopProductBuilder.node.js",
+      "dist/nodes/OnPrintShopInventory/OnPrintShopInventory.node.js",
+      "dist/nodes/OnPrintShopOrders/OnPrintShopOrders.node.js",
+      "dist/nodes/OnPrintShopCustomers/OnPrintShopCustomers.node.js",
+      "dist/nodes/OnPrintShopStoreAdmin/OnPrintShopStoreAdmin.node.js",
+      "dist/nodes/OnPrintShopGraphql/OnPrintShopGraphql.node.js",
+      "dist/nodes/OnPrintShop/OnPrintShop.node.js"
+    ]
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "typescript": "^5.9.2"
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  }
+}

@@ -1,0 +1,2 @@
+This directory is generated from the private OnPrintShop n8n node maintenance repository.
+Do not edit it directly; regenerate with npm run public:export -- --clean.

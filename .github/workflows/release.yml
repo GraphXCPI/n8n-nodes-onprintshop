@@ -1,0 +1,60 @@
+name: Release npm package
+
+on:
+  workflow_dispatch:
+    inputs:
+      npm_tag:
+        description: npm dist-tag to publish
+        required: true
+        default: latest
+        type: choice
+        options:
+          - latest
+          - beta
+          - next
+  release:
+    types:
+      - published
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    name: Build and publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.14.0
+          registry-url: https://registry.npmjs.org
+          cache: npm
+
+      - name: Setup npm and pnpm
+        run: |
+          npm install -g npm@^11.5.1
+          corepack enable
+          corepack prepare pnpm@10.13.1 --activate
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify release package
+        run: npm run verify:release
+
+      - name: Run n8n node lint
+        run: npm run n8n-node:lint
+
+      - name: Audit dependencies
+        run: npm audit
+
+      - name: Publish to npm
+        env:
+          NPM_TAG: ${{ github.event.inputs.npm_tag || 'latest' }}
+        run: npm publish --access public --tag "$NPM_TAG"
