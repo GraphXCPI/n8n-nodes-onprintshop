@@ -9,15 +9,16 @@ Use the focused domain nodes for new workflows:
 | Node | Use For |
 | --- | --- |
 | OnPrintShop Products | Product reads, category reads, pricing reads, FAQ reads, SKU matrix reads |
-| OnPrintShop Product Builder | Product, category, size, page, price, SKU, option, and master-option writes |
-| OnPrintShop Inventory | Product stock and master-option stock reads/writes |
+| OnPrintShop Product Builder | Product, category, size, page, price, SKU, and additional-option setup |
+| OnPrintShop Master Options | Master options, attributes, prices, ranges, tags, groups, formulas, rules, matrices, and stock |
+| OnPrintShop Inventory | Product stock reads/writes |
 | OnPrintShop Orders | Orders, order products, shipments, batches, quotes, and statuses |
 | OnPrintShop Customers | Customers and customer addresses |
 | OnPrintShop Store Admin | Stores, departments, countries, FAQs, markups, payment terms, and reference data |
-| OnPrintShop GraphQL | Approved raw GraphQL calls that have not been promoted into a first-class action |
+| OnPrintShop GraphQL | Approved custom or future GraphQL calls outside the mapped collection |
 | OnPrintShop | Legacy all-in-one compatibility node for saved workflows |
 
-The legacy all-in-one node remains available so existing workflows keep loading. Do not build new workflows against the legacy node unless you need an operation that has not been exposed through a domain node yet.
+The legacy all-in-one node remains available so existing workflows keep loading. Every operation in the current published collection has a typed domain action; do not build new workflows against the legacy node.
 
 ## Credentials
 
@@ -55,7 +56,7 @@ For inventory reads:
 
 - Use product stock reads when you know the product ID or SKU.
 - Use `Product Stocks` for broader stock audits.
-- Use `Master Option Stock > Get Configs` before history, settings, or stock write actions.
+- Use `OnPrintShop Master Options > Stock > Get Configurations` before history, settings, or stock write actions.
 - Use matrix actions before creating SKU or master-option stock mappings.
 
 ## Field Selection
@@ -99,12 +100,27 @@ Common write patterns:
 Use raw GraphQL only when:
 
 - The API operation is approved and current.
-- No first-class action exists in the domain nodes.
+- The call is outside the currently mapped Postman collection.
 - The workflow is temporary, exploratory, or waiting for node promotion.
 
-Repeated raw GraphQL use should be promoted into a typed domain action with visible parameters, help text, and API mapping coverage.
+Raw GraphQL does not count as API contract coverage. Add any newly published operation as a typed domain action before accepting an API update.
 
 Raw OnPrintShop reference: https://documenter.getpostman.com/view/33263100/2sBXijHWys#intro
+
+The published OPS documentation is the human reference for operation intent, parameter meaning, examples, and response behavior. The redacted, versioned snapshot at `contracts/OnPrintShop GraphQL API.postman_collection.json` is the machine contract used by `npm run verify:api-contract` to prove node coverage. Refresh it whenever OPS publishes a new collection:
+
+```bash
+npm run contract:update -- --source="/absolute/path/to/OnPrintShop.collection.json"
+npm run verify:api-contract
+```
+
+The refresh command removes saved API responses and sanitizes credential and personal example values before writing the repository snapshot.
+
+Operational limits documented by OnPrintShop:
+
+- The API allows 120 requests per rolling minute. Pace large n8n loops and retries accordingly.
+- List operations use limit/offset pagination and return at most 250 records per request.
+- Calls made with valid credentials affect live account data. Test writes only in an approved demo or staging tenant.
 
 ## Icons
 

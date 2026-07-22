@@ -10,6 +10,7 @@ const nodeIconDirs = [
 	'OnPrintShopCustomers',
 	'OnPrintShopGraphql',
 	'OnPrintShopInventory',
+	'OnPrintShopMasterOptions',
 	'OnPrintShopOrders',
 	'OnPrintShopProductBuilder',
 	'OnPrintShopProducts',

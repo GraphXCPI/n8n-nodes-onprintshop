@@ -41,7 +41,6 @@ const OPS_ROOT_FIELD_ALIASES: Record<string, string> = {
 	get_quote: 'getQuote',
 	quoteproduct: 'quoteProduct',
 	storeaddress: 'storeAddress',
-	setMasterOption: 'setMasterOptions',
 };
 
 const OPS_RESPONSE_FIELD_ALIASES: Record<string, string> = {
@@ -7014,7 +7013,7 @@ export class OnPrintShop implements INodeType {
 					if (optionId) variables.option_id = optionId;
 					if (limit) variables.limit = limit;
 					if (offset) variables.offset = offset;
-					const query = `query getMasterOptionRange ($range_id: Int, $option_id: Int, $limit: Int, $offset: Int) { getMasterOptionRange (range_id: $range_id, option_id: $option_id, limit: $limit, offset: $offset) { masterOptionRange { range_id option_id range_from range_to } totalMasterOptionRange } }`;
+					const query = `query getMasterOptionRange ($range_id: Int, $option_id: Int, $limit: Int, $offset: Int) { getMasterOptionRange (range_id: $range_id, option_id: $option_id, limit: $limit, offset: $offset) { masterOptionRange { range_id option_id from_range to_range } totalMasterOptionRange currentCount } }`;
 					const responseData = await requestGraphql({ query, variables });
 					if (responseData && responseData.data && responseData.data.getMasterOptionRange) {
 						const ranges = responseData.data.getMasterOptionRange.masterOptionRange || [];
@@ -7032,7 +7031,7 @@ export class OnPrintShop implements INodeType {
 					if (tagId) variables.master_option_tag_id = tagId;
 					if (limit) variables.limit = limit;
 					if (offset) variables.offset = offset;
-					const query = `query getMasterOptionTag ($master_option_tag_id: Int, $limit: Int, $offset: Int) { getMasterOptionTag (master_option_tag_id: $master_option_tag_id, limit: $limit, offset: $offset) { masterOptionTag { master_option_tag_id tag_name } totalMasterOptionTag } }`;
+					const query = `query getMasterOptionTag ($master_option_tag_id: Int, $limit: Int, $offset: Int) { getMasterOptionTag (master_option_tag_id: $master_option_tag_id, limit: $limit, offset: $offset) { masterOptionTag { master_option_tag_id master_option_tag_name } totalMasterOptionTag currentCount } }`;
 					const responseData = await requestGraphql({ query, variables });
 					if (responseData && responseData.data && responseData.data.getMasterOptionTag) {
 						const tags = responseData.data.getMasterOptionTag.masterOptionTag || [];

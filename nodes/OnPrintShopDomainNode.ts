@@ -7,6 +7,7 @@ import {
 } from 'n8n-workflow';
 
 import { OnPrintShop } from './OnPrintShop/OnPrintShop.node';
+import { executeOnPrintShopContractAction, extendOnPrintShopDomainDescription } from './OnPrintShopContractActions';
 
 type OperationMap = Record<string, string[]>;
 
@@ -135,7 +136,7 @@ export function buildOnPrintShopDomainDescription(config: OnPrintShopDomainConfi
 		if (domainProperty) properties.push(domainProperty);
 	}
 
-	return {
+	return extendOnPrintShopDomainDescription({
 		...clone(legacy),
 		displayName: config.displayName,
 		name: config.name,
@@ -145,15 +146,16 @@ export function buildOnPrintShopDomainDescription(config: OnPrintShopDomainConfi
 			name: config.defaultName,
 		},
 		properties,
-	};
+	}, config.name);
 }
 
 export abstract class OnPrintShopDomainNode implements INodeType {
 	description: INodeTypeDescription;
 
 	// Delegates to OnPrintShop.execute(), which contains per-item continueOnFail handling.
-	// eslint-disable-next-line @n8n/community-nodes/require-continue-on-fail
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
+		const contractResult = await executeOnPrintShopContractAction(this);
+		if (contractResult) return contractResult;
 		return OnPrintShop.prototype.execute.call(this);
 	}
 }
