@@ -222,6 +222,26 @@ function normalizeNestedRows(row) {
     }
     return normalized;
 }
+function parseObjectArray(value, node, itemIndex) {
+    let parsed = value;
+    if (typeof value === 'string') {
+        try {
+            parsed = JSON.parse(value);
+        }
+        catch (error) {
+            throw new n8n_workflow_1.NodeOperationError(node, `Master Options JSON must be valid JSON: ${error.message}`, { itemIndex });
+        }
+    }
+    if (!Array.isArray(parsed)) {
+        throw new n8n_workflow_1.NodeOperationError(node, 'Master Options JSON must be an array of objects', { itemIndex });
+    }
+    return parsed.map((entry, index) => {
+        if (!entry || typeof entry !== 'object' || Array.isArray(entry)) {
+            throw new n8n_workflow_1.NodeOperationError(node, `Master Options JSON item ${index + 1} must be an object`, { itemIndex });
+        }
+        return normalizeNestedRows(entry);
+    });
+}
 function requiredResult(data, field, node, itemIndex) {
     if (data[field] === undefined) {
         throw new n8n_workflow_1.NodeOperationError(node, `OnPrintShop response did not include ${field}`, { itemIndex });
@@ -298,7 +318,35 @@ class OnPrintShopMasterOptions {
                 ], 'getConfigs'),
                 numberField('Master Option ID', 'masterOptionId', 'masterOption', ['getMany'], 0, false, 'Optional master option ID filter'),
                 ...paginationFields('masterOption', ['getMany']),
-                fixedCollection('Master Options', 'masterOptions', 'masterOption', 'set', 'item', 'Master Option', masterOptionValues),
+                {
+                    displayName: 'Input Mode',
+                    name: 'masterOptionInputMode',
+                    type: 'options',
+                    default: 'form',
+                    displayOptions: show('masterOption', ['set']),
+                    options: [
+                        { name: 'Form Fields', value: 'form' },
+                        { name: 'JSON Object Array', value: 'json' },
+                    ],
+                    description: 'Choose form rows or provide the complete MasterOptionInput array as JSON',
+                },
+                {
+                    ...fixedCollection('Master Options', 'masterOptions', 'masterOption', 'set', 'item', 'Master Option', masterOptionValues),
+                    displayOptions: {
+                        show: { resource: ['masterOption'], operation: ['set'], masterOptionInputMode: ['form'] },
+                    },
+                },
+                {
+                    displayName: 'Master Options JSON',
+                    name: 'masterOptionsJson',
+                    type: 'json',
+                    default: '[\n  {\n    "master_option_id": 0,\n    "title": "New master option",\n    "options_type": "combo",\n    "pricing_method": 0\n  }\n]',
+                    required: true,
+                    displayOptions: {
+                        show: { resource: ['masterOption'], operation: ['set'], masterOptionInputMode: ['json'] },
+                    },
+                    description: 'Array of MasterOptionInput objects. Supports expressions that resolve to an array.',
+                },
                 fixedCollection('Attributes', 'attributes', 'attribute', 'set', 'item', 'Attribute', attributeValues),
                 numberField('Attribute ID', 'attributePriceId', 'attributePrice', ['getMany']),
                 ...paginationFields('attributePrice', ['getMany']),
@@ -398,7 +446,10 @@ class OnPrintShopMasterOptions {
                     result = requiredResult(data, 'productMasterOptions', this.getNode(), itemIndex);
                 }
                 else if (resource === 'masterOption' && operation === 'set') {
-                    const inputs = (0, OnPrintShopGraphqlRequest_1.rowsFromFixedCollection)(this.getNodeParameter('masterOptions', itemIndex), 'item').map(normalizeNestedRows);
+                    const inputMode = this.getNodeParameter('masterOptionInputMode', itemIndex, 'form');
+                    const inputs = inputMode === 'json'
+                        ? parseObjectArray(this.getNodeParameter('masterOptionsJson', itemIndex), this.getNode(), itemIndex)
+                        : (0, OnPrintShopGraphqlRequest_1.rowsFromFixedCollection)(this.getNodeParameter('masterOptions', itemIndex), 'item').map(normalizeNestedRows);
                     data = await request(`mutation setMasterOption ($inputs: [MasterOptionInput!]!) { setMasterOption (inputs: $inputs) { index result message id external_ref } }`, { inputs }, itemIndex);
                     result = requiredResult(data, 'setMasterOption', this.getNode(), itemIndex);
                 }

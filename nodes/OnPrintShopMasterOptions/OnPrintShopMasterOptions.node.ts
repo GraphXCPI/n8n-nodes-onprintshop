@@ -283,6 +283,32 @@ function normalizeNestedRows(row: IDataObject): IDataObject {
 	return normalized;
 }
 
+function parseObjectArray(
+	value: unknown,
+	node: ReturnType<IExecuteFunctions['getNode']>,
+	itemIndex: number,
+): IDataObject[] {
+	let parsed = value;
+	if (typeof value === 'string') {
+		try {
+			parsed = JSON.parse(value);
+		} catch (error) {
+			throw new NodeOperationError(node, `Master Options JSON must be valid JSON: ${(error as Error).message}`, { itemIndex });
+		}
+	}
+
+	if (!Array.isArray(parsed)) {
+		throw new NodeOperationError(node, 'Master Options JSON must be an array of objects', { itemIndex });
+	}
+
+	return parsed.map((entry, index) => {
+		if (!entry || typeof entry !== 'object' || Array.isArray(entry)) {
+			throw new NodeOperationError(node, `Master Options JSON item ${index + 1} must be an object`, { itemIndex });
+		}
+		return normalizeNestedRows(entry as IDataObject);
+	});
+}
+
 function requiredResult(data: IDataObject, field: string, node: ReturnType<IExecuteFunctions['getNode']>, itemIndex: number): unknown {
 	if (data[field] === undefined) {
 		throw new NodeOperationError(node, `OnPrintShop response did not include ${field}`, { itemIndex });
@@ -360,7 +386,35 @@ export class OnPrintShopMasterOptions implements INodeType {
 
 			numberField('Master Option ID', 'masterOptionId', 'masterOption', ['getMany'], 0, false, 'Optional master option ID filter'),
 			...paginationFields('masterOption', ['getMany']),
-			fixedCollection('Master Options', 'masterOptions', 'masterOption', 'set', 'item', 'Master Option', masterOptionValues),
+			{
+				displayName: 'Input Mode',
+				name: 'masterOptionInputMode',
+				type: 'options',
+				default: 'form',
+				displayOptions: show('masterOption', ['set']),
+				options: [
+					{ name: 'Form Fields', value: 'form' },
+					{ name: 'JSON Object Array', value: 'json' },
+				],
+				description: 'Choose form rows or provide the complete MasterOptionInput array as JSON',
+			},
+			{
+				...fixedCollection('Master Options', 'masterOptions', 'masterOption', 'set', 'item', 'Master Option', masterOptionValues),
+				displayOptions: {
+					show: { resource: ['masterOption'], operation: ['set'], masterOptionInputMode: ['form'] },
+				},
+			},
+			{
+				displayName: 'Master Options JSON',
+				name: 'masterOptionsJson',
+				type: 'json',
+				default: '[\n  {\n    "master_option_id": 0,\n    "title": "New master option",\n    "options_type": "combo",\n    "pricing_method": 0\n  }\n]',
+				required: true,
+				displayOptions: {
+					show: { resource: ['masterOption'], operation: ['set'], masterOptionInputMode: ['json'] },
+				},
+				description: 'Array of MasterOptionInput objects. Supports expressions that resolve to an array.',
+			},
 
 			fixedCollection('Attributes', 'attributes', 'attribute', 'set', 'item', 'Attribute', attributeValues),
 			numberField('Attribute ID', 'attributePriceId', 'attributePrice', ['getMany']),
@@ -467,7 +521,10 @@ export class OnPrintShopMasterOptions implements INodeType {
 					data = await request(`query productMasterOptions ($master_option_id: Int, $limit: Int, $offset: Int) { productMasterOptions (master_option_id: $master_option_id, limit: $limit, offset: $offset) { productMasterOptions { master_option_id production_description external_ref title description option_key pricing_method status sort_order options_type linear_formula formula weight_setting price_range_lookup additional_lookup_details hide_from_calc enable_assoc_qty allow_price_cal hire_designer_option required display_in_calculator option_position desc_position display_above_size presentation_group prod_add_opt_export_group_id exclude_setup_cost_reorder master_option_tag attributes } totalProductMasterOptions currentCount } }`, variables, itemIndex);
 					result = requiredResult(data, 'productMasterOptions', this.getNode(), itemIndex);
 				} else if (resource === 'masterOption' && operation === 'set') {
-					const inputs = rowsFromFixedCollection(this.getNodeParameter('masterOptions', itemIndex), 'item').map(normalizeNestedRows);
+					const inputMode = this.getNodeParameter('masterOptionInputMode', itemIndex, 'form') as string;
+					const inputs = inputMode === 'json'
+						? parseObjectArray(this.getNodeParameter('masterOptionsJson', itemIndex), this.getNode(), itemIndex)
+						: rowsFromFixedCollection(this.getNodeParameter('masterOptions', itemIndex), 'item').map(normalizeNestedRows);
 					data = await request(`mutation setMasterOption ($inputs: [MasterOptionInput!]!) { setMasterOption (inputs: $inputs) { index result message id external_ref } }`, { inputs }, itemIndex);
 					result = requiredResult(data, 'setMasterOption', this.getNode(), itemIndex);
 				} else if (resource === 'attribute' && operation === 'set') {

@@ -83,6 +83,8 @@ General rules:
 - Do not reuse broad catalog write nodes inside unrelated order/status workflows.
 - For production status, proof, shipment, inventory, and pricing writes, add upstream approval or dry-run logic where appropriate.
 
+For `OnPrintShop Master Options > Master Option > Create, Update, or Delete`, select `JSON Object Array` to send multiple `MasterOptionInput` objects in one request. The field accepts a literal JSON array or an expression that resolves to an array. `Form Fields` remains the default for existing workflows.
+
 Common write patterns:
 
 | Need | Recommended Sequence |
