@@ -1588,7 +1588,7 @@ class OnPrintShop {
                 },
                 // Mutation: Set Product
                 {
-                    displayName: 'Input (JSON)',
+                    displayName: 'Inputs (JSON Object Array)',
                     name: 'setProduct_input',
                     type: 'json',
                     required: true,
@@ -1598,7 +1598,7 @@ class OnPrintShop {
                 },
                 // Mutation: Set Product Price
                 {
-                    displayName: 'Input (JSON)',
+                    displayName: 'Inputs (JSON Object Array)',
                     name: 'setProductPrice_input',
                     type: 'json',
                     required: true,
@@ -1849,7 +1849,7 @@ class OnPrintShop {
                 },
                 // Mutation: Set Master Option Attributes
                 {
-                    displayName: 'Input (JSON)',
+                    displayName: 'Inputs (JSON Object Array)',
                     name: 'setMasterOptionAttributes_input',
                     type: 'json',
                     required: true,
@@ -1859,7 +1859,7 @@ class OnPrintShop {
                 },
                 // Mutation: Set Master Option Attribute Price
                 {
-                    displayName: 'Input (JSON)',
+                    displayName: 'Inputs (JSON Object Array)',
                     name: 'setMasterOptionAttributePrice_input',
                     type: 'json',
                     required: true,
@@ -1869,7 +1869,7 @@ class OnPrintShop {
                 },
                 // Mutation: Set Master Option
                 {
-                    displayName: 'Input (JSON)',
+                    displayName: 'Inputs (JSON Object Array)',
                     name: 'setMasterOption_input',
                     type: 'json',
                     required: true,
@@ -1879,7 +1879,7 @@ class OnPrintShop {
                 },
                 // Mutation: Assign Options
                 {
-                    displayName: 'Input (JSON)',
+                    displayName: 'Inputs (JSON Object Array)',
                     name: 'assignOptions_input',
                     type: 'json',
                     required: true,
@@ -1889,7 +1889,7 @@ class OnPrintShop {
                 },
                 // Mutation: Set Product Size
                 {
-                    displayName: 'Input (JSON)',
+                    displayName: 'Inputs (JSON Object Array)',
                     name: 'setProductSize_input',
                     type: 'json',
                     required: true,
@@ -1899,7 +1899,7 @@ class OnPrintShop {
                 },
                 // Mutation: Set Product Pages
                 {
-                    displayName: 'Input (JSON)',
+                    displayName: 'Inputs (JSON Object Array)',
                     name: 'setProductPages_input',
                     type: 'json',
                     required: true,
@@ -1959,7 +1959,7 @@ class OnPrintShop {
                 },
                 // Mutation: Set Product Category
                 {
-                    displayName: 'Input (JSON)',
+                    displayName: 'Inputs (JSON Object Array)',
                     name: 'setProductCategory_input',
                     type: 'json',
                     required: true,
@@ -2039,7 +2039,7 @@ class OnPrintShop {
                 },
                 // Mutation: Set Additional Option (Beta)
                 {
-                    displayName: 'Input (JSON)',
+                    displayName: 'Inputs (JSON Object Array)',
                     name: 'setAdditionalOption_input',
                     type: 'json',
                     required: true,
@@ -2049,7 +2049,7 @@ class OnPrintShop {
                 },
                 // Mutation: Set Additional Option Attributes (Beta)
                 {
-                    displayName: 'Input (JSON)',
+                    displayName: 'Inputs (JSON Object Array)',
                     name: 'setAdditionalOptionAttributes_input',
                     type: 'json',
                     required: true,
@@ -2059,7 +2059,7 @@ class OnPrintShop {
                 },
                 // Mutation: Set Products Attribute Price (Beta)
                 {
-                    displayName: 'Input (JSON)',
+                    displayName: 'Inputs (JSON Object Array)',
                     name: 'setProductsAttributePrice_input',
                     type: 'json',
                     required: true,
@@ -2069,7 +2069,7 @@ class OnPrintShop {
                 },
                 // Mutation: Set Quantity Based Attribute Price (Beta)
                 {
-                    displayName: 'Input (JSON)',
+                    displayName: 'Inputs (JSON Object Array)',
                     name: 'setQuantityBasedAttributePrice_input',
                     type: 'json',
                     required: true,
@@ -4928,7 +4928,7 @@ class OnPrintShop {
                 },
                 // Product: Set Product SKU
                 {
-                    displayName: 'Inputs (JSON Array)',
+                    displayName: 'Inputs (JSON Object Array)',
                     name: 'setProductSku_input',
                     type: 'json',
                     required: true,
