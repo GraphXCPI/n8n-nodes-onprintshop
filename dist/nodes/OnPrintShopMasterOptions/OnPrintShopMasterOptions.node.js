@@ -222,22 +222,22 @@ function normalizeNestedRows(row) {
     }
     return normalized;
 }
-function parseObjectArray(value, node, itemIndex) {
+function parseObjectArray(value, node, itemIndex, label = 'Batch input') {
     let parsed = value;
     if (typeof value === 'string') {
         try {
             parsed = JSON.parse(value);
         }
         catch (error) {
-            throw new n8n_workflow_1.NodeOperationError(node, `Master Options JSON must be valid JSON: ${error.message}`, { itemIndex });
+            throw new n8n_workflow_1.NodeOperationError(node, `${label} must be valid JSON: ${error.message}`, { itemIndex });
         }
     }
     if (!Array.isArray(parsed)) {
-        throw new n8n_workflow_1.NodeOperationError(node, 'Master Options JSON must be an array of objects', { itemIndex });
+        throw new n8n_workflow_1.NodeOperationError(node, `${label} must be an array of objects`, { itemIndex });
     }
     return parsed.map((entry, index) => {
         if (!entry || typeof entry !== 'object' || Array.isArray(entry)) {
-            throw new n8n_workflow_1.NodeOperationError(node, `Master Options JSON item ${index + 1} must be an object`, { itemIndex });
+            throw new n8n_workflow_1.NodeOperationError(node, `${label} item ${index + 1} must be an object`, { itemIndex });
         }
         return normalizeNestedRows(entry);
     });
@@ -347,14 +347,70 @@ class OnPrintShopMasterOptions {
                     },
                     description: 'Array of MasterOptionInput objects. Supports expressions that resolve to an array.',
                 },
-                fixedCollection('Attributes', 'attributes', 'attribute', 'set', 'item', 'Attribute', attributeValues),
+                {
+                    displayName: 'Input Mode',
+                    name: 'attributeInputMode',
+                    type: 'options',
+                    default: 'form',
+                    displayOptions: show('attribute', ['set']),
+                    options: [
+                        { name: 'Form Fields', value: 'form' },
+                        { name: 'JSON Object Array', value: 'json' },
+                    ],
+                    description: 'Choose form rows or provide the complete MasterOptionAttributesInput array as JSON',
+                },
+                {
+                    ...fixedCollection('Attributes', 'attributes', 'attribute', 'set', 'item', 'Attribute', attributeValues),
+                    displayOptions: {
+                        show: { resource: ['attribute'], operation: ['set'], attributeInputMode: ['form'] },
+                    },
+                },
+                {
+                    displayName: 'Attributes JSON',
+                    name: 'attributesJson',
+                    type: 'json',
+                    default: '[\n  {\n    "master_attribute_id": 0,\n    "master_option_id": 0,\n    "label": "New attribute",\n    "status": 1\n  }\n]',
+                    required: true,
+                    displayOptions: {
+                        show: { resource: ['attribute'], operation: ['set'], attributeInputMode: ['json'] },
+                    },
+                    description: 'Array of MasterOptionAttributesInput objects. Supports expressions that resolve to an array.',
+                },
                 numberField('Attribute ID', 'attributePriceId', 'attributePrice', ['getMany']),
                 ...paginationFields('attributePrice', ['getMany']),
-                fixedCollection('Attribute Prices', 'attributePrices', 'attributePrice', 'set', 'item', 'Attribute Price', [
-                    { displayName: 'Attribute ID', name: 'attr_id', type: 'number', default: 0, required: true },
-                    { displayName: 'Delete All Prices', name: 'delete', type: 'options', default: 0, options: yesNoOptions },
-                    nestedFixedCollection('Prices', 'prices', 'price', 'Price', priceValues),
-                ]),
+                {
+                    displayName: 'Input Mode',
+                    name: 'attributePriceInputMode',
+                    type: 'options',
+                    default: 'form',
+                    displayOptions: show('attributePrice', ['set']),
+                    options: [
+                        { name: 'Form Fields', value: 'form' },
+                        { name: 'JSON Object Array', value: 'json' },
+                    ],
+                    description: 'Choose form rows or provide the complete MasterOptionAttributePriceInput array as JSON',
+                },
+                {
+                    ...fixedCollection('Attribute Prices', 'attributePrices', 'attributePrice', 'set', 'item', 'Attribute Price', [
+                        { displayName: 'Attribute ID', name: 'attr_id', type: 'number', default: 0, required: true },
+                        { displayName: 'Delete All Prices', name: 'delete', type: 'options', default: 0, options: yesNoOptions },
+                        nestedFixedCollection('Prices', 'prices', 'price', 'Price', priceValues),
+                    ]),
+                    displayOptions: {
+                        show: { resource: ['attributePrice'], operation: ['set'], attributePriceInputMode: ['form'] },
+                    },
+                },
+                {
+                    displayName: 'Attribute Prices JSON',
+                    name: 'attributePricesJson',
+                    type: 'json',
+                    default: '[\n  {\n    "attr_id": 0,\n    "delete": 0,\n    "prices": []\n  }\n]',
+                    required: true,
+                    displayOptions: {
+                        show: { resource: ['attributePrice'], operation: ['set'], attributePriceInputMode: ['json'] },
+                    },
+                    description: 'Array of MasterOptionAttributePriceInput objects, including nested prices arrays',
+                },
                 numberField('Range ID', 'rangeId', 'range', ['getMany']),
                 numberField('Master Option ID', 'rangeOptionId', 'range', ['getMany']),
                 ...paginationFields('range', ['getMany']),
@@ -413,17 +469,45 @@ class OnPrintShopMasterOptions {
                     { displayName: 'Attribute IDs', name: 'attribute_ids', type: 'string', default: '', required: true },
                     { displayName: 'Stock', name: 'stock', type: 'number', default: 1, required: true },
                 ], false),
-                fixedCollection('Stock Changes', 'stockChanges', 'stock', 'updateStock', 'item', 'Stock Change', [
-                    { displayName: 'Config ID', name: 'config_id', type: 'number', default: 0, required: true },
-                    { displayName: 'Quantity', name: 'stock_quantity', type: 'number', default: 1, required: true },
-                    { displayName: 'Change Type', name: 'change_type', type: 'options', default: 'C', options: [{ name: 'Credit', value: 'C' }, { name: 'Debit', value: 'D' }] },
-                    { displayName: 'Comments', name: 'comments', type: 'string', default: '' },
-                ]),
-                fixedCollection('Stock Settings', 'stockSettings', 'stock', 'setSettings', 'item', 'Stock Setting', [
-                    { displayName: 'Master Option ID', name: 'option_id', type: 'number', default: 0, required: true },
-                    { displayName: 'Allow Out-of-Stock Orders', name: 'allow_order_out_of_stock', type: 'options', default: 0, options: yesNoOptions },
-                    { displayName: 'Notify Quantity', name: 'notify_quantity', type: 'number', default: 0, required: true },
-                ]),
+                {
+                    displayName: 'Input Mode', name: 'stockChangeInputMode', type: 'options', default: 'form', displayOptions: show('stock', ['updateStock']),
+                    options: [{ name: 'Form Fields', value: 'form' }, { name: 'JSON Object Array', value: 'json' }],
+                    description: 'Choose form rows or provide the complete UpdateMasterOptionStockInput array as JSON',
+                },
+                {
+                    ...fixedCollection('Stock Changes', 'stockChanges', 'stock', 'updateStock', 'item', 'Stock Change', [
+                        { displayName: 'Config ID', name: 'config_id', type: 'number', default: 0, required: true },
+                        { displayName: 'Quantity', name: 'stock_quantity', type: 'number', default: 1, required: true },
+                        { displayName: 'Change Type', name: 'change_type', type: 'options', default: 'C', options: [{ name: 'Credit', value: 'C' }, { name: 'Debit', value: 'D' }] },
+                        { displayName: 'Comments', name: 'comments', type: 'string', default: '' },
+                    ]),
+                    displayOptions: { show: { resource: ['stock'], operation: ['updateStock'], stockChangeInputMode: ['form'] } },
+                },
+                {
+                    displayName: 'Stock Changes JSON', name: 'stockChangesJson', type: 'json', required: true,
+                    default: '[\n  {\n    "config_id": 0,\n    "stock_quantity": 1,\n    "change_type": "C",\n    "comments": ""\n  }\n]',
+                    displayOptions: { show: { resource: ['stock'], operation: ['updateStock'], stockChangeInputMode: ['json'] } },
+                    description: 'Array of UpdateMasterOptionStockInput objects for batch stock credits or debits',
+                },
+                {
+                    displayName: 'Input Mode', name: 'stockSettingsInputMode', type: 'options', default: 'form', displayOptions: show('stock', ['setSettings']),
+                    options: [{ name: 'Form Fields', value: 'form' }, { name: 'JSON Object Array', value: 'json' }],
+                    description: 'Choose form rows or provide the complete SetMasterOptionStockSettingsInput array as JSON',
+                },
+                {
+                    ...fixedCollection('Stock Settings', 'stockSettings', 'stock', 'setSettings', 'item', 'Stock Setting', [
+                        { displayName: 'Master Option ID', name: 'option_id', type: 'number', default: 0, required: true },
+                        { displayName: 'Allow Out-of-Stock Orders', name: 'allow_order_out_of_stock', type: 'options', default: 0, options: yesNoOptions },
+                        { displayName: 'Notify Quantity', name: 'notify_quantity', type: 'number', default: 0, required: true },
+                    ]),
+                    displayOptions: { show: { resource: ['stock'], operation: ['setSettings'], stockSettingsInputMode: ['form'] } },
+                },
+                {
+                    displayName: 'Stock Settings JSON', name: 'stockSettingsJson', type: 'json', required: true,
+                    default: '[\n  {\n    "option_id": 0,\n    "allow_order_out_of_stock": 0,\n    "notify_quantity": 0\n  }\n]',
+                    displayOptions: { show: { resource: ['stock'], operation: ['setSettings'], stockSettingsInputMode: ['json'] } },
+                    description: 'Array of SetMasterOptionStockSettingsInput objects for batch stock-setting updates',
+                },
             ],
         };
     }
@@ -448,13 +532,16 @@ class OnPrintShopMasterOptions {
                 else if (resource === 'masterOption' && operation === 'set') {
                     const inputMode = this.getNodeParameter('masterOptionInputMode', itemIndex, 'form');
                     const inputs = inputMode === 'json'
-                        ? parseObjectArray(this.getNodeParameter('masterOptionsJson', itemIndex), this.getNode(), itemIndex)
+                        ? parseObjectArray(this.getNodeParameter('masterOptionsJson', itemIndex), this.getNode(), itemIndex, 'Master Options JSON')
                         : (0, OnPrintShopGraphqlRequest_1.rowsFromFixedCollection)(this.getNodeParameter('masterOptions', itemIndex), 'item').map(normalizeNestedRows);
                     data = await request(`mutation setMasterOption ($inputs: [MasterOptionInput!]!) { setMasterOption (inputs: $inputs) { index result message id external_ref } }`, { inputs }, itemIndex);
                     result = requiredResult(data, 'setMasterOption', this.getNode(), itemIndex);
                 }
                 else if (resource === 'attribute' && operation === 'set') {
-                    const inputs = (0, OnPrintShopGraphqlRequest_1.rowsFromFixedCollection)(this.getNodeParameter('attributes', itemIndex), 'item').map(normalizeNestedRows);
+                    const inputMode = this.getNodeParameter('attributeInputMode', itemIndex, 'form');
+                    const inputs = inputMode === 'json'
+                        ? parseObjectArray(this.getNodeParameter('attributesJson', itemIndex), this.getNode(), itemIndex, 'Attributes JSON')
+                        : (0, OnPrintShopGraphqlRequest_1.rowsFromFixedCollection)(this.getNodeParameter('attributes', itemIndex), 'item').map(normalizeNestedRows);
                     data = await request(`mutation setMasterOptionAttributes ($inputs: [MasterOptionAttributesInput!]!) { setMasterOptionAttributes (inputs: $inputs) { index result message id } }`, { inputs }, itemIndex);
                     result = requiredResult(data, 'setMasterOptionAttributes', this.getNode(), itemIndex);
                 }
@@ -467,7 +554,10 @@ class OnPrintShopMasterOptions {
                     result = requiredResult(data, 'productOptionsPrice', this.getNode(), itemIndex);
                 }
                 else if (resource === 'attributePrice' && operation === 'set') {
-                    const inputs = (0, OnPrintShopGraphqlRequest_1.rowsFromFixedCollection)(this.getNodeParameter('attributePrices', itemIndex), 'item').map(normalizeNestedRows);
+                    const inputMode = this.getNodeParameter('attributePriceInputMode', itemIndex, 'form');
+                    const inputs = inputMode === 'json'
+                        ? parseObjectArray(this.getNodeParameter('attributePricesJson', itemIndex), this.getNode(), itemIndex, 'Attribute Prices JSON')
+                        : (0, OnPrintShopGraphqlRequest_1.rowsFromFixedCollection)(this.getNodeParameter('attributePrices', itemIndex), 'item').map(normalizeNestedRows);
                     data = await request(`mutation setMasterOptionAttributePrice ($inputs: [MasterOptionAttributePriceInput!]!) { setMasterOptionAttributePrice (inputs: $inputs) { index result message id } }`, { inputs }, itemIndex);
                     result = requiredResult(data, 'setMasterOptionAttributePrice', this.getNode(), itemIndex);
                 }
@@ -593,12 +683,18 @@ class OnPrintShopMasterOptions {
                         result = requiredResult(data, 'deleteMasterOptionStockConfig', this.getNode(), itemIndex);
                     }
                     else if (operation === 'updateStock') {
-                        const inputs = (0, OnPrintShopGraphqlRequest_1.rowsFromFixedCollection)(this.getNodeParameter('stockChanges', itemIndex), 'item').map(normalizeNestedRows);
+                        const inputMode = this.getNodeParameter('stockChangeInputMode', itemIndex, 'form');
+                        const inputs = inputMode === 'json'
+                            ? parseObjectArray(this.getNodeParameter('stockChangesJson', itemIndex), this.getNode(), itemIndex, 'Stock Changes JSON')
+                            : (0, OnPrintShopGraphqlRequest_1.rowsFromFixedCollection)(this.getNodeParameter('stockChanges', itemIndex), 'item').map(normalizeNestedRows);
                         data = await request(`mutation updateMasterOptionStock($inputs: [UpdateMasterOptionStockInput!]!) { updateMasterOptionStock(inputs: $inputs) { index result message id } }`, { inputs }, itemIndex);
                         result = requiredResult(data, 'updateMasterOptionStock', this.getNode(), itemIndex);
                     }
                     else {
-                        const inputs = (0, OnPrintShopGraphqlRequest_1.rowsFromFixedCollection)(this.getNodeParameter('stockSettings', itemIndex), 'item').map(normalizeNestedRows);
+                        const inputMode = this.getNodeParameter('stockSettingsInputMode', itemIndex, 'form');
+                        const inputs = inputMode === 'json'
+                            ? parseObjectArray(this.getNodeParameter('stockSettingsJson', itemIndex), this.getNode(), itemIndex, 'Stock Settings JSON')
+                            : (0, OnPrintShopGraphqlRequest_1.rowsFromFixedCollection)(this.getNodeParameter('stockSettings', itemIndex), 'item').map(normalizeNestedRows);
                         data = await request(`mutation setMasterOptionStockSettings($inputs: [SetMasterOptionStockSettingsInput!]!) { setMasterOptionStockSettings(inputs: $inputs) { index result message id } }`, { inputs }, itemIndex);
                         result = requiredResult(data, 'setMasterOptionStockSettings', this.getNode(), itemIndex);
                     }

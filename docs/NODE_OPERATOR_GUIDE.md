@@ -83,7 +83,14 @@ General rules:
 - Do not reuse broad catalog write nodes inside unrelated order/status workflows.
 - For production status, proof, shipment, inventory, and pricing writes, add upstream approval or dry-run logic where appropriate.
 
-For `OnPrintShop Master Options > Master Option > Create, Update, or Delete`, select `JSON Object Array` to send multiple `MasterOptionInput` objects in one request. The field accepts a literal JSON array or an expression that resolves to an array. `Form Fields` remains the default for existing workflows.
+The API contract contains 16 batch mutations. Their inputs are exposed as `JSON Object Array` fields in the focused nodes:
+
+- Product Builder: products, product prices, sizes, pages, categories, SKUs, additional options, additional-option attributes, additional-option prices, quantity-based attribute prices, and option assignments.
+- Master Options: master options, master-option attributes, master-option attribute prices, stock changes, and stock settings.
+
+For Master Options writes, choose `JSON Object Array` under `Input Mode` to send many objects in one request. The field accepts a literal JSON array or an expression that resolves to an array. `Form Fields` remains the default, so saved workflows continue using their existing repeatable form rows.
+
+`npm run verify:api-contract` discovers every Postman mutation declared with `$inputs: [Type!]!` and fails unless the node declares and consumes a matching JSON-array parameter. This keeps future contract updates from silently adding unsupported batch mutations.
 
 Common write patterns:
 
