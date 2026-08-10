@@ -2,6 +2,10 @@
 
 This guide explains how to choose and configure the OnPrintShop n8n nodes. It is written for workflow builders, not as a raw OnPrintShop GraphQL schema reference.
 
+## Store Get Many
+
+`Store -> Get Many` preserves `Limit` as the maximum output count. If OnPrintShop returns a short page while `totalStore` reports additional matching records, the node follows response pagination until it reaches the configured limit or reported total. It raises an explicit completeness error if pagination cannot advance instead of silently returning a partial store set.
+
 ## Which Node To Use
 
 Use the focused domain nodes for new workflows:

@@ -229,6 +229,38 @@ function addResponseAliases(value) {
     }
     return normalized;
 }
+function readStoreResponsePage(responseData, node, itemIndex) {
+    var _a, _b, _c, _d, _e;
+    const data = responseData.data;
+    const root = ((data === null || data === void 0 ? void 0 : data.getStore) || (data === null || data === void 0 ? void 0 : data.get_store));
+    if (!root) {
+        if (Array.isArray(responseData.errors)) {
+            throw new n8n_workflow_1.NodeOperationError(node, `GraphQL Error: ${JSON.stringify(responseData.errors)}`, { itemIndex });
+        }
+        throw new n8n_workflow_1.NodeOperationError(node, 'OnPrintShop response did not include getStore', { itemIndex });
+    }
+    const storeValue = (_a = root.store) !== null && _a !== void 0 ? _a : root.stores;
+    let stores;
+    if (Array.isArray(storeValue)) {
+        stores = storeValue;
+    }
+    else if (isPlainObject(storeValue)) {
+        const numericEntries = Object.entries(storeValue).filter(([key]) => /^\d+$/.test(key));
+        stores = numericEntries.length > 0
+            ? numericEntries.map(([, value]) => value).filter(isPlainObject)
+            : [storeValue];
+    }
+    else {
+        stores = [];
+    }
+    const totalStore = Number((_c = (_b = root.totalStore) !== null && _b !== void 0 ? _b : root.total_store) !== null && _c !== void 0 ? _c : stores.length);
+    const currentCount = Number((_e = (_d = root.currentCount) !== null && _d !== void 0 ? _d : root.current_count) !== null && _e !== void 0 ? _e : stores.length);
+    return {
+        stores,
+        totalStore: Number.isFinite(totalStore) ? totalStore : stores.length,
+        currentCount: Number.isFinite(currentCount) ? currentCount : stores.length,
+    };
+}
 class OnPrintShop {
     constructor() {
         this.description = {
@@ -971,6 +1003,7 @@ class OnPrintShop {
                     type: 'number',
                     displayOptions: { show: { resource: ['store'], operation: ['getAll'] } },
                     default: 10,
+                    description: 'Maximum number of stores to return. Short API pages are fetched until this limit or totalStore is reached.',
                 },
                 {
                     displayName: 'Offset',
@@ -6139,7 +6172,7 @@ class OnPrintShop {
         this.description = (0, OnPrintShopHelp_1.addOnPrintShopHelp)(this.description);
     }
     async execute() {
-        var _a, _b;
+        var _a, _b, _c, _d;
         const items = this.getInputData();
         const returnData = [];
         const credentials = await this.getCredentials('onPrintShopApi');
@@ -6968,33 +7001,60 @@ class OnPrintShop {
                     }
                 }
                 if (resource === 'store' && operation === 'getAll') {
-                    const variables = {};
+                    const filters = {};
                     const corporateId = this.getNodeParameter('store_corporateId', i);
                     const email = this.getNodeParameter('store_email', i);
                     const status = this.getNodeParameter('store_status', i);
                     const limit = this.getNodeParameter('store_limit', i);
                     const offset = this.getNodeParameter('store_offset', i);
                     if (corporateId)
-                        variables.corporate_id = corporateId;
+                        filters.corporate_id = corporateId;
                     if (email)
-                        variables.email = email;
+                        filters.email = email;
                     if (status)
-                        variables.status = status;
-                    if (limit)
-                        variables.limit = limit;
-                    if (offset)
-                        variables.offset = offset;
-                    const query = `query get_store ($corporate_id: Int, $email: String, $status: Int, $limit: Int, $offset: Int) { get_store (corporate_id: $corporate_id, email: $email, status: $status, limit: $limit, offset: $offset) { store { corporate_id email username corporate_name phone_number status tax_exempt tax_exempt_type order_approval price_visible price_text department_module_enable fix_billing_address fix_shipping_address manage_email_notification main_url created_on modified_on url_type parent_corporate_id manage_private_store markup_type flat_markup corporate_markup_id unassigned_products production_days display_in_company_list department { department_id name email_to status cost_center_code production_days created_on modified_on } } totalStore } }`;
-                    const responseData = await requestGraphql({ query, variables });
-                    if (responseData && responseData.data && responseData.data.get_store) {
-                        const stores = responseData.data.get_store.store || [];
-                        for (const s of stores) {
-                            returnData.push({ ...s, _totalStore: responseData.data.get_store.totalStore });
+                        filters.status = status;
+                    const requestedLimit = Math.max(1, limit || 10);
+                    const initialOffset = Math.max(0, offset || 0);
+                    const query = `query get_store ($corporate_id: Int, $email: String, $status: Int, $limit: Int, $offset: Int) { get_store (corporate_id: $corporate_id, email: $email, status: $status, limit: $limit, offset: $offset) { store { corporate_id email username corporate_name phone_number status tax_exempt tax_exempt_type order_approval price_visible price_text department_module_enable fix_billing_address fix_shipping_address manage_email_notification main_url created_on modified_on url_type parent_corporate_id manage_private_store markup_type flat_markup corporate_markup_id unassigned_products production_days display_in_company_list department { department_id name email_to status cost_center_code production_days created_on modified_on } } totalStore currentCount } }`;
+                    const stores = [];
+                    const seenStoreIds = new Set();
+                    let pageOffset = initialOffset;
+                    let totalStore = 0;
+                    let targetCount = requestedLimit;
+                    for (let page = 0; page < 1000 && stores.length < targetCount; page++) {
+                        const variables = {
+                            ...filters,
+                            limit: requestedLimit - stores.length,
+                            offset: pageOffset,
+                        };
+                        const responseData = await requestGraphql({ query, variables });
+                        const storePage = readStoreResponsePage(responseData, this.getNode(), i);
+                        totalStore = storePage.totalStore;
+                        targetCount = Math.min(requestedLimit, Math.max(0, totalStore - initialOffset));
+                        let added = 0;
+                        for (const store of storePage.stores) {
+                            const identity = String((_b = (_a = store.corporate_id) !== null && _a !== void 0 ? _a : store.corporateId) !== null && _b !== void 0 ? _b : JSON.stringify(store));
+                            if (seenStoreIds.has(identity))
+                                continue;
+                            seenStoreIds.add(identity);
+                            stores.push(store);
+                            added++;
+                            if (stores.length >= targetCount)
+                                break;
                         }
+                        if (stores.length >= targetCount)
+                            break;
+                        const advance = Math.max(storePage.currentCount, storePage.stores.length);
+                        if (advance <= 0 || added === 0) {
+                            throw new n8n_workflow_1.NodeOperationError(this.getNode(), `Store Get Many returned ${stores.length} of ${targetCount} expected records and could not advance pagination`, { itemIndex: i });
+                        }
+                        pageOffset += advance;
                     }
-                    else if (responseData && responseData.errors) {
-                        throw new n8n_workflow_1.NodeOperationError(this.getNode(), `GraphQL Error: ${JSON.stringify(responseData.errors)}`, { itemIndex: i });
+                    if (stores.length !== targetCount) {
+                        throw new n8n_workflow_1.NodeOperationError(this.getNode(), `Store Get Many returned ${stores.length} of ${targetCount} expected records`, { itemIndex: i });
                     }
+                    for (const store of stores)
+                        returnData.push({ ...store, _totalStore: totalStore });
                 }
                 if (resource === 'department' && operation === 'getAll') {
                     const variables = {};
@@ -10671,7 +10731,7 @@ class OnPrintShop {
                         // Check if we should continue pagination
                         if (fetchAllPages) {
                             // Continue if we got results and haven't reached the total
-                            const totalFaq = typeof ((_b = (_a = responseData === null || responseData === void 0 ? void 0 : responseData.data) === null || _a === void 0 ? void 0 : _a.faq) === null || _b === void 0 ? void 0 : _b.totalFaq) === 'number' ? responseData.data.faq.totalFaq : 0;
+                            const totalFaq = typeof ((_d = (_c = responseData === null || responseData === void 0 ? void 0 : responseData.data) === null || _c === void 0 ? void 0 : _c.faq) === null || _d === void 0 ? void 0 : _d.totalFaq) === 'number' ? responseData.data.faq.totalFaq : 0;
                             hasMoreData = totalFetched > 0 && totalFetched < totalFaq;
                             if (hasMoreData) {
                                 currentOffset += limit;

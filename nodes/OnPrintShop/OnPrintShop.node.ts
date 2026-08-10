@@ -296,6 +296,44 @@ function addResponseAliases(value: unknown): unknown {
 	return normalized;
 }
 
+interface StoreResponsePage {
+	stores: IDataObject[];
+	totalStore: number;
+	currentCount: number;
+}
+
+function readStoreResponsePage(responseData: IDataObject, node: INode, itemIndex: number): StoreResponsePage {
+	const data = responseData.data as IDataObject | undefined;
+	const root = (data?.getStore || data?.get_store) as IDataObject | undefined;
+	if (!root) {
+		if (Array.isArray(responseData.errors)) {
+			throw new NodeOperationError(node, `GraphQL Error: ${JSON.stringify(responseData.errors)}`, { itemIndex });
+		}
+		throw new NodeOperationError(node, 'OnPrintShop response did not include getStore', { itemIndex });
+	}
+
+	const storeValue = root.store ?? root.stores;
+	let stores: IDataObject[];
+	if (Array.isArray(storeValue)) {
+		stores = storeValue as IDataObject[];
+	} else if (isPlainObject(storeValue)) {
+		const numericEntries = Object.entries(storeValue).filter(([key]) => /^\d+$/.test(key));
+		stores = numericEntries.length > 0
+			? numericEntries.map(([, value]) => value).filter(isPlainObject)
+			: [storeValue];
+	} else {
+		stores = [];
+	}
+
+	const totalStore = Number(root.totalStore ?? root.total_store ?? stores.length);
+	const currentCount = Number(root.currentCount ?? root.current_count ?? stores.length);
+	return {
+		stores,
+		totalStore: Number.isFinite(totalStore) ? totalStore : stores.length,
+		currentCount: Number.isFinite(currentCount) ? currentCount : stores.length,
+	};
+}
+
 export class OnPrintShop implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'OnPrintShop',
@@ -1036,6 +1074,7 @@ export class OnPrintShop implements INodeType {
 				type: 'number',
 				displayOptions: { show: { resource: ['store'], operation: ['getAll'] } },
 				default: 10,
+				description: 'Maximum number of stores to return. Short API pages are fetched until this limit or totalStore is reached.',
 			},
 			{
 				displayName: 'Offset',
@@ -6904,25 +6943,65 @@ export class OnPrintShop implements INodeType {
 				}
 
 				if (resource === 'store' && operation === 'getAll') {
-					const variables: IDataObject = {};
+					const filters: IDataObject = {};
 					const corporateId = this.getNodeParameter('store_corporateId', i) as number;
 					const email = this.getNodeParameter('store_email', i) as string;
 					const status = this.getNodeParameter('store_status', i) as number;
 					const limit = this.getNodeParameter('store_limit', i) as number;
 					const offset = this.getNodeParameter('store_offset', i) as number;
-					if (corporateId) variables.corporate_id = corporateId;
-					if (email) variables.email = email;
-					if (status) variables.status = status;
-					if (limit) variables.limit = limit;
-					if (offset) variables.offset = offset;
-					const query = `query get_store ($corporate_id: Int, $email: String, $status: Int, $limit: Int, $offset: Int) { get_store (corporate_id: $corporate_id, email: $email, status: $status, limit: $limit, offset: $offset) { store { corporate_id email username corporate_name phone_number status tax_exempt tax_exempt_type order_approval price_visible price_text department_module_enable fix_billing_address fix_shipping_address manage_email_notification main_url created_on modified_on url_type parent_corporate_id manage_private_store markup_type flat_markup corporate_markup_id unassigned_products production_days display_in_company_list department { department_id name email_to status cost_center_code production_days created_on modified_on } } totalStore } }`;
-					const responseData = await requestGraphql({ query, variables });
-					if (responseData && responseData.data && responseData.data.get_store) {
-						const stores = responseData.data.get_store.store || [];
-						for (const s of stores) { returnData.push({ ...s, _totalStore: responseData.data.get_store.totalStore }); }
-					} else if (responseData && responseData.errors) {
-						throw new NodeOperationError(this.getNode(), `GraphQL Error: ${JSON.stringify(responseData.errors)}`, { itemIndex: i });
+					if (corporateId) filters.corporate_id = corporateId;
+					if (email) filters.email = email;
+					if (status) filters.status = status;
+					const requestedLimit = Math.max(1, limit || 10);
+					const initialOffset = Math.max(0, offset || 0);
+					const query = `query get_store ($corporate_id: Int, $email: String, $status: Int, $limit: Int, $offset: Int) { get_store (corporate_id: $corporate_id, email: $email, status: $status, limit: $limit, offset: $offset) { store { corporate_id email username corporate_name phone_number status tax_exempt tax_exempt_type order_approval price_visible price_text department_module_enable fix_billing_address fix_shipping_address manage_email_notification main_url created_on modified_on url_type parent_corporate_id manage_private_store markup_type flat_markup corporate_markup_id unassigned_products production_days display_in_company_list department { department_id name email_to status cost_center_code production_days created_on modified_on } } totalStore currentCount } }`;
+					const stores: IDataObject[] = [];
+					const seenStoreIds = new Set<string>();
+					let pageOffset = initialOffset;
+					let totalStore = 0;
+					let targetCount = requestedLimit;
+
+					for (let page = 0; page < 1000 && stores.length < targetCount; page++) {
+						const variables: IDataObject = {
+							...filters,
+							limit: requestedLimit - stores.length,
+							offset: pageOffset,
+						};
+						const responseData = await requestGraphql({ query, variables });
+						const storePage = readStoreResponsePage(responseData, this.getNode(), i);
+						totalStore = storePage.totalStore;
+						targetCount = Math.min(requestedLimit, Math.max(0, totalStore - initialOffset));
+
+						let added = 0;
+						for (const store of storePage.stores) {
+							const identity = String(store.corporate_id ?? store.corporateId ?? JSON.stringify(store));
+							if (seenStoreIds.has(identity)) continue;
+							seenStoreIds.add(identity);
+							stores.push(store);
+							added++;
+							if (stores.length >= targetCount) break;
+						}
+
+						if (stores.length >= targetCount) break;
+						const advance = Math.max(storePage.currentCount, storePage.stores.length);
+						if (advance <= 0 || added === 0) {
+							throw new NodeOperationError(
+								this.getNode(),
+								`Store Get Many returned ${stores.length} of ${targetCount} expected records and could not advance pagination`,
+								{ itemIndex: i },
+							);
+						}
+						pageOffset += advance;
 					}
+
+					if (stores.length !== targetCount) {
+						throw new NodeOperationError(
+							this.getNode(),
+							`Store Get Many returned ${stores.length} of ${targetCount} expected records`,
+							{ itemIndex: i },
+						);
+					}
+					for (const store of stores) returnData.push({ ...store, _totalStore: totalStore });
 				}
 
 				if (resource === 'department' && operation === 'getAll') {
