@@ -2236,8 +2236,10 @@ class OnPrintShop {
                     options: [
                         { name: 'Balance Amount', value: 'customers_balance_amount' },
                         { name: 'Company', value: 'customers_company' },
+                        { name: 'Corporate ID', value: 'customers_corporate_id' },
                         { name: 'Corporate Name', value: 'customers_corporate_name' },
                         { name: 'Customer Name', value: 'customers_name' },
+                        { name: 'Department ID', value: 'customers_department_id' },
                         { name: 'Department Name', value: 'customers_department_name' },
                         { name: 'Email Address', value: 'customers_email_address' },
                         { name: 'External Ref', value: 'external_ref' },
@@ -2263,6 +2265,8 @@ class OnPrintShop {
                         'customers_email_address',
                         'customers_telephone',
                         'customers_status',
+                        'customers_corporate_id',
+                        'customers_department_id',
                         'external_ref',
                     ],
                     description: 'Select customer fields to return when the field mode is Custom Selection',
@@ -2684,6 +2688,13 @@ class OnPrintShop {
                     },
                     options: [
                         {
+                            displayName: 'Corporate ID',
+                            name: 'corporate_id',
+                            type: 'number',
+                            default: 0,
+                            description: 'Filter customers by store or corporate ID',
+                        },
+                        {
                             displayName: 'Date Type',
                             name: 'date_type',
                             type: 'options',
@@ -2709,6 +2720,13 @@ class OnPrintShop {
                             },
                             default: 50,
                             description: 'Delay between API calls when "Fetch All Pages" is enabled (default 50ms for better performance, min 25ms). Ignored for single page requests.',
+                        },
+                        {
+                            displayName: 'Department ID',
+                            name: 'department_id',
+                            type: 'number',
+                            default: 0,
+                            description: 'Filter customers by department ID',
                         },
                         {
                             displayName: 'Email',
@@ -2776,8 +2794,10 @@ class OnPrintShop {
                     options: [
                         { name: 'Balance Amount', value: 'customers_balance_amount' },
                         { name: 'Company', value: 'customers_company' },
+                        { name: 'Corporate ID', value: 'customers_corporate_id' },
                         { name: 'Corporate Name', value: 'customers_corporate_name' },
                         { name: 'Customer Name', value: 'customers_name' },
+                        { name: 'Department ID', value: 'customers_department_id' },
                         { name: 'Department Name', value: 'customers_department_name' },
                         { name: 'Email Address', value: 'customers_email_address' },
                         { name: 'External Ref', value: 'external_ref' },
@@ -2804,11 +2824,13 @@ class OnPrintShop {
                         'customers_company',
                         'customers_telephone',
                         'customers_email_address',
+                        'customers_corporate_id',
                         'customers_corporate_name',
                         'customers_status',
                         'customers_payon_enable',
                         'customers_pay_limit',
                         'customers_balance_amount',
+                        'customers_department_id',
                         'customers_department_name',
                         'customers_user_group_name',
                         'customers_register_date',
@@ -8889,13 +8911,14 @@ class OnPrintShop {
                     }
                     // Build the GraphQL query
                     const query = `
-						query customers ($email: String, $from_date: String, $to_date: String, $date_type: CustomerDateTypeEnum, $limit: Int, $offset: Int) {
-							customers (email: $email, from_date: $from_date, to_date: $to_date, date_type: $date_type, limit: $limit, offset: $offset) {
+						query customers ($email: String, $from_date: String, $to_date: String, $date_type: CustomerDateTypeEnum, $limit: Int, $offset: Int, $corporate_id: Int, $department_id: Int) {
+							customers (email: $email, from_date: $from_date, to_date: $to_date, date_type: $date_type, limit: $limit, offset: $offset, corporate_id: $corporate_id, department_id: $department_id) {
 								customers {
 									${customerFields}
 									${addressFields}
 								}
 								totalCustomers
+								currentCount
 							}
 						}
 					`;
@@ -8922,6 +8945,10 @@ class OnPrintShop {
                                 variables.to_date = new Date(queryParameters.to_date).toISOString().split('T')[0];
                             if (queryParameters.date_type)
                                 variables.date_type = queryParameters.date_type;
+                            if (queryParameters.corporate_id !== undefined)
+                                variables.corporate_id = queryParameters.corporate_id;
+                            if (queryParameters.department_id !== undefined)
+                                variables.department_id = queryParameters.department_id;
                             try {
                                 const responseData = await requestGraphql({
                                     query: query.trim(),
@@ -9000,6 +9027,10 @@ class OnPrintShop {
                             variables.to_date = new Date(queryParameters.to_date).toISOString().split('T')[0];
                         if (queryParameters.date_type)
                             variables.date_type = queryParameters.date_type;
+                        if (queryParameters.corporate_id !== undefined)
+                            variables.corporate_id = queryParameters.corporate_id;
+                        if (queryParameters.department_id !== undefined)
+                            variables.department_id = queryParameters.department_id;
                         if (queryParameters.limit)
                             variables.limit = queryParameters.limit;
                         if (queryParameters.offset)

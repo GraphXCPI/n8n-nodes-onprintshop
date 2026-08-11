@@ -6,6 +6,12 @@ This guide explains how to choose and configure the OnPrintShop n8n nodes. It is
 
 `Store -> Get Many` preserves `Limit` as the maximum output count. If OnPrintShop returns a short page while `totalStore` reports additional matching records, the node follows response pagination until it reaches the configured limit or reported total. It raises an explicit completeness error if pagination cannot advance instead of silently returning a partial store set.
 
+## Customer Corporate And Department Fields
+
+`Customers -> Get Many` exposes `Corporate ID` and `Department ID` as native Query Parameters. The same IDs are available in the Customer Fields selector as `customers_corporate_id` and `customers_department_id`, and are selected by default for new Get Many nodes.
+
+`Customers -> Create` and `Customers -> Update` expose native Corporate ID and Department ID fields. They map to the API's `SetCustomerInput.corporateid` and `SetCustomerInput.departmentid` properties; no JSON input is required.
+
 ## Which Node To Use
 
 Use the focused domain nodes for new workflows:
