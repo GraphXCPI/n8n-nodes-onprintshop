@@ -170,8 +170,12 @@ const PARAMETER_HELP = {
         hint: 'This returns the selected core, size, and additional-option fields for one product.',
     },
     productIdStock: {
-        description: 'OPS product ID to read stock for.',
-        hint: 'Use this when the workflow needs current stock before an inventory write.',
+        description: 'Optional OPS product ID to filter stock records.',
+        hint: 'Omit this for a broad Product Option stock read.',
+    },
+    stockType: {
+        description: 'Required stock scope: Product or Product Option.',
+        hint: 'Product reads size-based stock. Product Option reads size-and-option combinations.',
     },
     productSkuMatrix_products_id: {
         description: 'OPS product ID used to generate valid SKU matrix rows.',
@@ -223,7 +227,23 @@ const PARAMETER_HELP = {
         hint: 'Leave empty to exclude option rows. Include attributes when downstream logic maps SKUs or option pricing.',
     },
     stockFields: {
-        hint: 'Include stock_id for stock-ID writes, and option_details when stock varies by option combination.',
+        hint: 'Include stock_id for writes, option_details for combinations, and location for warehouse or shelf placement.',
+    },
+    updateStockType: {
+        description: 'Optional stock scope sent to Update Product Stock.',
+        hint: 'Choose Product Option when the stock ID belongs to an option combination.',
+    },
+    stockDetailsInputMode: {
+        description: 'Choose repeatable fields or a stock_details JSON object array.',
+        hint: 'Use one row per stock entry. Legacy Scalar Fields is retained only for saved workflows.',
+    },
+    stockDetails: {
+        description: 'Stock updates containing stock_id, stock_change, action, and optional comment/location.',
+        hint: 'Allowed actions are add, remove, and reset.',
+    },
+    stockDetailsJson: {
+        description: 'UpdateProductStockInput stock_details JSON object array.',
+        hint: 'Each item requires stock_id, stock_change, and action.',
     },
     stockIdentifierType: {
         hint: 'Prefer Stock ID when known. Use SKU only when SKU mappings are maintained and unique.',

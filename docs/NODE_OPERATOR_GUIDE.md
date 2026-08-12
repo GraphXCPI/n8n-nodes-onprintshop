@@ -64,8 +64,9 @@ For order reads:
 
 For inventory reads:
 
-- Use product stock reads when you know the product ID or SKU.
-- Use `Product Stocks` for broader stock audits.
+- Set `Stock Type` to `Product` for size-based stock or `Product Option` for size-and-option stock.
+- `Product ID` is optional. Omit it for a broad `product_option` inventory read.
+- Use `Product Stocks` for stock audits; the response includes credited, debited, current stock, option details, and location.
 - Use `OnPrintShop Master Options > Stock > Get Configurations` before history, settings, or stock write actions.
 - Use matrix actions before creating SKU or master-option stock mappings.
 
@@ -88,6 +89,7 @@ Write actions change OnPrintShop data. Keep them isolated, named clearly, and fe
 General rules:
 
 - Use explicit IDs from prior read actions whenever possible.
+- Product stock updates accept repeatable `Stock Details` rows or a JSON object array. Every row requires `stock_id`, `stock_change`, and `action` (`add`, `remove`, or `reset`); `comment` and `location` are optional.
 - Keep JSON input arrays small and auditable.
 - Include only fields the workflow owns.
 - Do not reuse broad catalog write nodes inside unrelated order/status workflows.

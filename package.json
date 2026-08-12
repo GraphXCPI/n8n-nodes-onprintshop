@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-onprintshop",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "n8n node for OnPrintShop integration",
   "keywords": [
     "n8n-community-node-package",
@@ -31,7 +31,8 @@
     "clean": "rm -rf dist",
     "verify:store-get-many": "npm run build && node scripts/verify-store-get-many.js",
     "verify:customer-contract": "npm run build && node scripts/verify-customer-contract.js",
-    "verify:release": "npm run clean && npm run build && node scripts/verify-store-get-many.js && node scripts/verify-customer-contract.js && npm run n8n-node:build && npm pack --dry-run",
+    "verify:stock-order-contract": "npm run build && node scripts/verify-stock-order-contract.js",
+    "verify:release": "npm run clean && npm run build && node scripts/verify-store-get-many.js && node scripts/verify-customer-contract.js && node scripts/verify-stock-order-contract.js && npm run n8n-node:build && npm pack --dry-run",
     "n8n-node:build": "pnpm dlx @n8n/node-cli build",
     "n8n-node:lint": "pnpm --package=@n8n/node-cli dlx node scripts/run-n8n-node-lint.js",
     "prepublishOnly": "npm run build"

@@ -23,6 +23,7 @@ const OPS_ROOT_FIELD_ALIASES = {
     get_quote: 'getQuote',
     quoteproduct: 'quoteProduct',
     storeaddress: 'storeAddress',
+    courirer_company_name: 'courier_company_name',
 };
 const OPS_RESPONSE_FIELD_ALIASES = {
     ...OPS_ROOT_FIELD_ALIASES,
@@ -78,6 +79,9 @@ const OPS_RESPONSE_FIELD_ALIASES = {
     totalAccountSummary: 'total_account_summary',
     totalStoreCreditSummary: 'total_store_credit_summary',
     currentCount: 'current_count',
+    courier_company_name: 'courirer_company_name',
+    credited_stock: 'credit_stock',
+    current_stock: 'stock_quantity',
 };
 const OPS_VARIABLE_ALIASES = {
     externalCatalogue: 'external_catalogue',
@@ -764,6 +768,24 @@ class OnPrintShop {
                     description: 'Whether to fetch all pages until no more records are available (ignores limit/offset)'
                 },
                 {
+                    displayName: 'Stock Type',
+                    name: 'stockType',
+                    type: 'options',
+                    required: true,
+                    displayOptions: {
+                        show: {
+                            resource: ['product', 'productStocks'],
+                            operation: ['getStock', 'getAll'],
+                        },
+                    },
+                    options: [
+                        { name: 'Product', value: 'product' },
+                        { name: 'Product Option', value: 'product_option' },
+                    ],
+                    default: 'product',
+                    description: 'Required stock scope for the productStocks query',
+                },
+                {
                     displayName: 'Query Parameters',
                     name: 'queryParameters',
                     type: 'collection',
@@ -776,8 +798,7 @@ class OnPrintShop {
                         { displayName: 'Offset', name: 'offset', type: 'number', typeOptions: { minValue: 0 }, default: 0 },
                         { displayName: 'Page Delay (Ms)', name: 'pageDelay', type: 'number', typeOptions: { minValue: 25, maxValue: 1000 }, default: 50 },
                         { displayName: 'Page Size', name: 'pageSize', type: 'number', typeOptions: { minValue: 1, maxValue: 250 }, default: 250 },
-                        { displayName: 'Product ID', name: 'product_id', type: 'number', default: 0 },
-                        { displayName: 'SKU', name: 'products_sku', type: 'string', default: '' },
+                        { displayName: 'Product ID', name: 'product_id', type: 'number', default: 0, description: 'Optional product filter; not required for Product Option stock' },
                     ],
                 },
                 {
@@ -786,12 +807,18 @@ class OnPrintShop {
                     type: 'multiOptions',
                     displayOptions: { show: { resource: ['productStocks'], operation: ['getAll'] } },
                     options: [
-                        { name: 'Available Quantity', value: 'available_qty' },
+                        { name: 'Credited Stock', value: 'credited_stock' },
+                        { name: 'Current Stock', value: 'current_stock' },
+                        { name: 'Debited Stock', value: 'debited_stock' },
+                        { name: 'Location', value: 'location' },
+                        { name: 'Option Details', value: 'option_details' },
                         { name: 'Product ID', value: 'product_id' },
-                        { name: 'Reserved Quantity', value: 'reserved_qty' },
-                        { name: 'SKU', value: 'products_sku' },
+                        { name: 'Product Name', value: 'product_name' },
+                        { name: 'Size ID', value: 'size_id' },
+                        { name: 'Size Title', value: 'size_title' },
+                        { name: 'Stock ID', value: 'stock_id' },
                     ],
-                    default: ['product_id', 'products_sku', 'available_qty'],
+                    default: ['stock_id', 'product_id', 'product_name', 'size_id', 'size_title', 'credited_stock', 'debited_stock', 'current_stock', 'option_details', 'location'],
                 },
                 // Status listings (additive)
                 {
@@ -1564,8 +1591,8 @@ class OnPrintShop {
                     type: 'json',
                     required: true,
                     displayOptions: { show: { resource: ['mutation'], operation: ['updateOrderStatus'] } },
-                    default: '{\n  "order_product_status": "Awaiting Artwork",\n  "comment": "",\n  "notify": 0\n}',
-                    description: 'UpdateOrderStatusInput object with order_product_status, comment, notify (0 or 1)',
+                    default: '{\n  "order_product_status": "Awaiting Artwork",\n  "courier_company_name": "",\n  "tracking_number": "",\n  "comment": "",\n  "notify": 0\n}',
+                    description: 'UpdateOrderStatusInput object with status, courier_company_name, tracking_number, comment, and notify (0 or 1)',
                 },
                 // Mutation: Set Order Product
                 {
@@ -2961,7 +2988,7 @@ class OnPrintShop {
                         { name: 'Coupon Amount', value: 'coupon_amount' },
                         { name: 'Coupon Code', value: 'coupon_code' },
                         { name: 'Coupon Type', value: 'coupon_type' },
-                        { name: 'Courier Company Name', value: 'courirer_company_name' },
+                        { name: 'Courier Company Name', value: 'courier_company_name' },
                         { name: 'Department ID', value: 'department_id' },
                         { name: 'Extrafield', value: 'extrafield' },
                         { name: 'Invoice Date', value: 'invoice_date' },
@@ -3007,7 +3034,7 @@ class OnPrintShop {
                         'orders_date_finished',
                         'local_orders_date_finished',
                         'shipping_mode',
-                        'courirer_company_name',
+                        'courier_company_name',
                         'airway_bill_number',
                         'payment_method_name',
                         'total_amount',
@@ -3421,7 +3448,7 @@ class OnPrintShop {
                         { name: 'Coupon Amount', value: 'coupon_amount' },
                         { name: 'Coupon Code', value: 'coupon_code' },
                         { name: 'Coupon Type', value: 'coupon_type' },
-                        { name: 'Courier Company Name', value: 'courirer_company_name' },
+                        { name: 'Courier Company Name', value: 'courier_company_name' },
                         { name: 'Department ID', value: 'department_id' },
                         { name: 'Extrafield', value: 'extrafield' },
                         { name: 'Invoice Date', value: 'invoice_date' },
@@ -3467,7 +3494,7 @@ class OnPrintShop {
                         'orders_date_finished',
                         'local_orders_date_finished',
                         'shipping_mode',
-                        'courirer_company_name',
+                        'courier_company_name',
                         'airway_bill_number',
                         'payment_method_name',
                         'total_amount',
@@ -4873,7 +4900,6 @@ class OnPrintShop {
                     displayName: 'Product ID',
                     name: 'productIdStock',
                     type: 'string',
-                    required: true,
                     default: '',
                     displayOptions: {
                         show: {
@@ -4881,7 +4907,7 @@ class OnPrintShop {
                             operation: ['getStock'],
                         },
                     },
-                    description: 'ID of the product to retrieve stock for',
+                    description: 'Optional product filter; not required when Stock Type is Product Option',
                 },
                 // Product: Get Stock - Query Parameters
                 {
@@ -4928,15 +4954,16 @@ class OnPrintShop {
                         },
                     },
                     options: [
-                        { name: 'Credit Stock', value: 'credit_stock' },
+                        { name: 'Credited Stock', value: 'credited_stock' },
+                        { name: 'Current Stock', value: 'current_stock' },
                         { name: 'Debited Stock', value: 'debited_stock' },
+                        { name: 'Location', value: 'location' },
                         { name: 'Option Details', value: 'option_details' },
                         { name: 'Product ID', value: 'product_id' },
                         { name: 'Product Name', value: 'product_name' },
                         { name: 'Size ID', value: 'size_id' },
                         { name: 'Size Title', value: 'size_title' },
                         { name: 'Stock ID', value: 'stock_id' },
-                        { name: 'Stock Quantity', value: 'stock_quantity' },
                     ],
                     default: [
                         'stock_id',
@@ -4944,10 +4971,11 @@ class OnPrintShop {
                         'product_name',
                         'size_id',
                         'size_title',
-                        'credit_stock',
+                        'credited_stock',
                         'debited_stock',
-                        'stock_quantity',
+                        'current_stock',
                         'option_details',
+                        'location',
                     ],
                     description: 'Select stock fields to return',
                 },
@@ -4996,12 +5024,11 @@ class OnPrintShop {
                     default: '[\n  {\n    "products_id": 288,\n    "sku_type": "size_option_wise",\n    "size_id": 611,\n    "prod_add_opt_ids": "6557",\n    "attribute_ids": "11481",\n    "sku": "SKU-001",\n    "delete": 0\n  }\n]',
                     description: 'ProductSkuInput JSON array; set delete to 1 to remove a SKU mapping',
                 },
-                // Product: Update Stock - Identifier Type
+                // Product: Update Stock - API stock type
                 {
-                    displayName: 'Identifier Type',
-                    name: 'stockIdentifierType',
+                    displayName: 'Stock Type',
+                    name: 'updateStockType',
                     type: 'options',
-                    required: true,
                     displayOptions: {
                         show: {
                             resource: ['product'],
@@ -5009,54 +5036,29 @@ class OnPrintShop {
                         },
                     },
                     options: [
-                        {
-                            name: 'Product SKU',
-                            value: 'product_sku',
-                        },
-                        {
-                            name: 'Stock ID',
-                            value: 'stock_id',
-                        },
+                        { name: 'Not Specified', value: '' },
+                        { name: 'Product', value: 'product' },
+                        { name: 'Product Option', value: 'product_option' },
                     ],
-                    default: 'stock_id',
-                    description: 'Choose to identify stock by Stock ID or Product SKU',
-                },
-                // Product: Update Stock - Stock ID
-                {
-                    displayName: 'Stock ID',
-                    name: 'stockId',
-                    type: 'string',
-                    required: true,
                     default: '',
-                    displayOptions: {
-                        show: {
-                            resource: ['product'],
-                            operation: ['updateStock'],
-                            stockIdentifierType: ['stock_id'],
-                        },
-                    },
-                    description: 'ID of the stock to update',
+                    description: 'Optional stock scope accepted by UpdateStockTypeEnum',
                 },
-                // Product: Update Stock - Product SKU
                 {
                     displayName: 'Product SKU',
                     name: 'productSku',
                     type: 'string',
-                    required: true,
                     default: '',
                     displayOptions: {
                         show: {
                             resource: ['product'],
                             operation: ['updateStock'],
-                            stockIdentifierType: ['product_sku'],
                         },
                     },
-                    description: 'SKU of the product to update stock for',
+                    description: 'Optional product SKU argument for the stock update',
                 },
-                // Product: Update Stock - Action
                 {
-                    displayName: 'Action',
-                    name: 'stockAction',
+                    displayName: 'Stock Details Input',
+                    name: 'stockDetailsInputMode',
                     type: 'options',
                     required: true,
                     displayOptions: {
@@ -5066,50 +5068,90 @@ class OnPrintShop {
                         },
                     },
                     options: [
-                        {
-                            name: 'Add',
-                            value: 'Add',
+                        { name: 'Fields', value: 'form' },
+                        { name: 'JSON Object Array', value: 'json' },
+                        { name: 'Legacy Scalar Fields', value: 'legacy' },
+                    ],
+                    default: 'form',
+                    description: 'Use repeatable fields or provide the stock_details JSON array directly',
+                },
+                {
+                    displayName: 'Stock Details',
+                    name: 'stockDetails',
+                    type: 'fixedCollection',
+                    typeOptions: { multipleValues: true },
+                    placeholder: 'Add Stock Detail',
+                    default: {},
+                    displayOptions: {
+                        show: {
+                            resource: ['product'],
+                            operation: ['updateStock'],
+                            stockDetailsInputMode: ['form'],
                         },
+                    },
+                    options: [
                         {
-                            name: 'Remove',
-                            value: 'Remove',
-                        },
-                        {
-                            name: 'Set',
-                            value: 'Set',
+                            displayName: 'Stock Detail',
+                            name: 'values',
+                            values: [
+                                {
+                                    displayName: 'Action',
+                                    name: 'action',
+                                    type: 'options',
+                                    options: [
+                                        { name: 'Add', value: 'add' },
+                                        { name: 'Remove', value: 'remove' },
+                                        { name: 'Reset', value: 'reset' },
+                                    ],
+                                    default: 'add',
+                                },
+                                { displayName: 'Comment', name: 'comment', type: 'string', default: '' },
+                                { displayName: 'Location', name: 'location', type: 'string', default: '' },
+                                { displayName: 'Stock Change', name: 'stock_change', type: 'number', required: true, default: 0 },
+                                { displayName: 'Stock ID', name: 'stock_id', type: 'number', required: true, default: 0 },
+                            ],
                         },
                     ],
-                    default: 'Set',
                 },
-                // Product: Update Stock - Stock Quantity
                 {
-                    displayName: 'Stock Quantity',
-                    name: 'stock_quantity',
-                    type: 'number',
+                    displayName: 'Stock Details (JSON Object Array)',
+                    name: 'stockDetailsJson',
+                    type: 'json',
                     required: true,
-                    default: 0,
+                    default: '[\n  {\n    "stock_id": 1,\n    "stock_change": 100,\n    "action": "add",\n    "comment": "New stock updated",\n    "location": "Warehouse A"\n  }\n]',
                     displayOptions: {
                         show: {
                             resource: ['product'],
                             operation: ['updateStock'],
+                            stockDetailsInputMode: ['json'],
                         },
                     },
-                    description: 'Quantity to credit, debit, or set',
+                    description: 'UpdateProductStockInput stock_details array',
                 },
-                // Product: Update Stock - Comment
+                // Retained for saved workflows created before the stock_details API change.
                 {
-                    displayName: 'Comment',
-                    name: 'comment',
-                    type: 'string',
+                    displayName: 'Legacy Identifier Type', name: 'stockIdentifierType', type: 'options', required: true,
+                    options: [{ name: 'Product SKU', value: 'product_sku' }, { name: 'Stock ID', value: 'stock_id' }], default: 'stock_id',
+                    displayOptions: { show: { resource: ['product'], operation: ['updateStock'], stockDetailsInputMode: ['legacy'] } },
+                },
+                {
+                    displayName: 'Legacy Stock ID', name: 'stockId', type: 'string', required: true, default: '',
+                    displayOptions: { show: { resource: ['product'], operation: ['updateStock'], stockDetailsInputMode: ['legacy'], stockIdentifierType: ['stock_id'] } },
+                },
+                {
+                    displayName: 'Legacy Action', name: 'stockAction', type: 'options', required: true,
+                    options: [{ name: 'Add', value: 'Add' }, { name: 'Remove', value: 'Remove' }, { name: 'Set', value: 'Set' }], default: 'Set',
+                    displayOptions: { show: { resource: ['product'], operation: ['updateStock'], stockDetailsInputMode: ['legacy'] } },
+                },
+                {
+                    displayName: 'Legacy Stock Quantity', name: 'stock_quantity', type: 'number', required: true, default: 0,
+                    displayOptions: { show: { resource: ['product'], operation: ['updateStock'], stockDetailsInputMode: ['legacy'] } },
+                },
+                {
+                    displayName: 'Legacy Comment', name: 'comment', type: 'string',
                     required: true,
                     default: '',
-                    displayOptions: {
-                        show: {
-                            resource: ['product'],
-                            operation: ['updateStock'],
-                        },
-                    },
-                    description: 'Comment for the stock update',
+                    displayOptions: { show: { resource: ['product'], operation: ['updateStock'], stockDetailsInputMode: ['legacy'] } },
                 },
                 // ==================== PRODUCT: GET MASTER OPTIONS ====================
                 // Product: Get Master Options - Master Option ID
@@ -6846,12 +6888,21 @@ class OnPrintShop {
                     const queryParameters = this.getNodeParameter('queryParameters', i);
                     const stockFieldsSelected = getFieldSelection('stockFields');
                     const fetchAllPages = this.getNodeParameter('fetchAllPages', i, false) || false;
-                    const stockFields = stockFieldsSelected.filter(f => !f.startsWith('SELECT_') && f !== 'DESELECT_ALL' && f !== 'SEPARATOR').join('\n\t\t\t\t\t\t\t');
+                    const stockType = this.getNodeParameter('stockType', i, 'product');
+                    const renamedStockFields = {
+                        credit_stock: 'credited_stock',
+                        stock_quantity: 'current_stock',
+                    };
+                    const stockFields = [...new Set(stockFieldsSelected
+                            .filter(f => !f.startsWith('SELECT_') && f !== 'DESELECT_ALL' && f !== 'SEPARATOR')
+                            .map((field) => renamedStockFields[field] || field))]
+                        .join('\n\t\t\t\t\t\t\t');
                     const query = `
-						query products ($product_id: Int, $products_sku: String, $limit: Int, $offset: Int) {
-							products (product_id: $product_id, products_sku: $products_sku, limit: $limit, offset: $offset) {
-								products { stock_detail { ${stockFields} } }
-								totalProducts
+						query productStocks ($product_id: Int, $limit: Int, $offset: Int, $type: StockTypeEnum!) {
+							productStocks (product_id: $product_id, limit: $limit, offset: $offset, type: $type) {
+								productStocks { ${stockFields} }
+								totalProductStocks
+								currentCount
 							}
 						}
 					`;
@@ -6865,22 +6916,18 @@ class OnPrintShop {
                     if (fetchAllPages) {
                         while (hasMorePages && pageCount < maxPages) {
                             const requestStartTime = Date.now();
-                            const variables = { limit: pageSize, offset };
+                            const variables = { type: stockType, limit: pageSize, offset };
                             const qp = queryParameters || {};
                             if (qp.product_id)
                                 variables.product_id = Number(qp.product_id);
-                            if (qp.products_sku)
-                                variables.products_sku = String(qp.products_sku);
                             const responseData = await requestGraphql({ query: query.trim(), variables });
-                            if (responseData && responseData.data && responseData.data.products) {
-                                const products = responseData.data.products.products || [];
-                                for (const p of products) {
-                                    if (p && p.stock_detail)
-                                        results.push(p.stock_detail);
-                                }
+                            if (responseData && responseData.data && responseData.data.productStocks) {
+                                const stocks = responseData.data.productStocks.productStocks || [];
+                                results.push(...stocks);
                                 offset += pageSize;
                                 pageCount++;
-                                hasMorePages = products.length === pageSize;
+                                const total = Number(responseData.data.productStocks.totalProductStocks || 0);
+                                hasMorePages = stocks.length === pageSize && (!total || results.length < total);
                                 const responseTime = Date.now() - requestStartTime;
                                 if (responseTime < 100)
                                     adaptiveDelay = Math.max(25, adaptiveDelay * 0.8);
@@ -6899,22 +6946,20 @@ class OnPrintShop {
                         returnData.push(...results);
                     }
                     else {
-                        const variables = {};
+                        const variables = { type: stockType };
                         if (queryParameters.product_id)
                             variables.product_id = Number(queryParameters.product_id);
-                        if (queryParameters.products_sku)
-                            variables.products_sku = String(queryParameters.products_sku);
                         if (queryParameters.limit)
                             variables.limit = queryParameters.limit;
                         if (queryParameters.offset)
                             variables.offset = queryParameters.offset;
                         const responseData = await requestGraphql({ query: query.trim(), variables });
-                        if (responseData && responseData.data && responseData.data.products) {
-                            const products = responseData.data.products.products || [];
-                            for (const p of products) {
-                                if (p && p.stock_detail)
-                                    returnData.push(p.stock_detail);
-                            }
+                        if (responseData && responseData.data && responseData.data.productStocks) {
+                            const stocks = responseData.data.productStocks.productStocks || [];
+                            const total = responseData.data.productStocks.totalProductStocks;
+                            const currentCount = responseData.data.productStocks.currentCount;
+                            for (const stock of stocks)
+                                returnData.push({ ...stock, _totalStocks: total, _currentCount: currentCount });
                         }
                         else if (responseData && responseData.errors) {
                             throw new n8n_workflow_1.NodeOperationError(this.getNode(), `GraphQL Error: ${JSON.stringify(responseData.errors)}`, { itemIndex: i });
@@ -7329,9 +7374,14 @@ class OnPrintShop {
                 if (resource === 'mutation') {
                     if (operation === 'updateOrderStatus') {
                         const type = this.getNodeParameter('statusUpdateType', i);
+                        const input = JSON.parse(this.getNodeParameter('updateOrderStatusInput', i));
+                        if (input.courier_company_name === undefined && input.courirer_company_name !== undefined) {
+                            input.courier_company_name = input.courirer_company_name;
+                        }
+                        delete input.courirer_company_name;
                         const variables = {
                             type,
-                            input: JSON.parse(this.getNodeParameter('updateOrderStatusInput', i)),
+                            input,
                         };
                         if (type === 'order') {
                             const orders_id = this.getNodeParameter('orders_id', i);
@@ -9955,30 +10005,35 @@ class OnPrintShop {
                 }
                 if (resource === 'product' && operation === 'getStock') {
                     // Get product stock information
-                    const productIdStr = this.getNodeParameter('productIdStock', i);
+                    const productIdStr = this.getNodeParameter('productIdStock', i, '');
                     const queryParameters = this.getNodeParameter('queryParametersStock', i);
                     const stockFieldsSelected = getFieldSelection('stockFields');
-                    // Convert to number for API call
-                    const productId = parseInt(productIdStr, 10);
-                    if (isNaN(productId)) {
+                    const stockType = this.getNodeParameter('stockType', i, 'product');
+                    const productId = productIdStr === '' ? undefined : parseInt(productIdStr, 10);
+                    if (productIdStr !== '' && Number.isNaN(productId)) {
                         throw new n8n_workflow_1.NodeOperationError(this.getNode(), 'Product ID must be a valid number', { itemIndex: i });
                     }
                     // Build variables object
-                    const variables = {
-                        product_id: productId,
-                    };
+                    const variables = { type: stockType };
+                    if (productId !== undefined)
+                        variables.product_id = productId;
                     if (queryParameters.limit)
                         variables.limit = queryParameters.limit;
                     if (queryParameters.offset)
                         variables.offset = queryParameters.offset;
                     // Filter out special options and separators
-                    const stockFields = stockFieldsSelected
-                        .filter(field => !field.startsWith('SELECT_ALL') && !field.startsWith('DESELECT_ALL') && field !== 'SEPARATOR')
+                    const renamedStockFields = {
+                        credit_stock: 'credited_stock',
+                        stock_quantity: 'current_stock',
+                    };
+                    const stockFields = [...new Set(stockFieldsSelected
+                            .filter(field => !field.startsWith('SELECT_ALL') && !field.startsWith('DESELECT_ALL') && field !== 'SEPARATOR')
+                            .map((field) => renamedStockFields[field] || field))]
                         .join('\n\t\t\t\t\t\t\t');
                     // Build the GraphQL query
                     const query = `
-						query productStocks ($product_id: Int!, $limit: Int, $offset: Int) {
-							productStocks (product_id: $product_id, limit: $limit, offset: $offset) {
+						query productStocks ($product_id: Int, $limit: Int, $offset: Int, $type: StockTypeEnum!) {
+							productStocks (product_id: $product_id, limit: $limit, offset: $offset, type: $type) {
 								productStocks {
 									${stockFields}
 								}
@@ -10010,7 +10065,7 @@ class OnPrintShop {
                         else {
                             returnData.push({
                                 error: 'No stock records found for this product',
-                                productId,
+                                productId: productId !== null && productId !== void 0 ? productId : null,
                             });
                         }
                     }
@@ -10022,44 +10077,79 @@ class OnPrintShop {
                     }
                 }
                 if (resource === 'product' && operation === 'updateStock') {
-                    // Update product stock
-                    const identifierType = this.getNodeParameter('stockIdentifierType', i);
-                    const stockAction = this.getNodeParameter('stockAction', i);
-                    const stockQuantity = this.getNodeParameter('stock_quantity', i);
-                    const comment = this.getNodeParameter('comment', i, '');
-                    // Build variables object
-                    const variables = {
-                        action: stockAction,
-                        input: {},
-                    };
-                    // Set identifier (stock_id or product_sku)
-                    if (identifierType === 'stock_id') {
-                        const stockIdStr = this.getNodeParameter('stockId', i);
-                        // Convert to number for API call
-                        const stockId = parseInt(stockIdStr, 10);
-                        if (isNaN(stockId)) {
-                            throw new n8n_workflow_1.NodeOperationError(this.getNode(), 'Stock ID must be a valid number', { itemIndex: i });
+                    const rawParameters = (this.getNode().parameters || {});
+                    const productSku = this.getNodeParameter('productSku', i, '');
+                    const hasInputMode = Object.prototype.hasOwnProperty.call(rawParameters, 'stockDetailsInputMode');
+                    const inputMode = hasInputMode
+                        ? this.getNodeParameter('stockDetailsInputMode', i, 'form')
+                        : 'legacy';
+                    let stockDetails = [];
+                    if (inputMode === 'json') {
+                        const parsed = parseJsonParameter(this.getNodeParameter('stockDetailsJson', i), 'stockDetailsJson', this.getNode(), i);
+                        if (!Array.isArray(parsed)) {
+                            throw new n8n_workflow_1.NodeOperationError(this.getNode(), 'Stock Details must be a JSON object array', { itemIndex: i });
                         }
-                        variables.stock_id = stockId;
+                        stockDetails = parsed;
+                    }
+                    else if (inputMode === 'form') {
+                        const collection = this.getNodeParameter('stockDetails', i, {});
+                        stockDetails = Array.isArray(collection.values) ? collection.values : [];
                     }
                     else {
-                        const productSku = this.getNodeParameter('productSku', i);
-                        variables.product_sku = productSku;
+                        const identifierType = this.getNodeParameter('stockIdentifierType', i, 'stock_id');
+                        const legacyAction = String(this.getNodeParameter('stockAction', i, 'Set')).toLowerCase();
+                        const legacyDetail = {
+                            stock_change: this.getNodeParameter('stock_quantity', i),
+                            action: legacyAction === 'set' ? 'reset' : legacyAction,
+                            comment: this.getNodeParameter('comment', i, ''),
+                        };
+                        if (identifierType === 'stock_id') {
+                            const stockId = parseInt(this.getNodeParameter('stockId', i), 10);
+                            if (Number.isNaN(stockId)) {
+                                throw new n8n_workflow_1.NodeOperationError(this.getNode(), 'Stock ID must be a valid number', { itemIndex: i });
+                            }
+                            legacyDetail.stock_id = stockId;
+                        }
+                        else if (!productSku) {
+                            throw new n8n_workflow_1.NodeOperationError(this.getNode(), 'Product SKU is required for a legacy SKU stock update', { itemIndex: i });
+                        }
+                        stockDetails = [legacyDetail];
                     }
-                    // Build input object
-                    const input = {
-                        stock_quantity: stockQuantity,
-                        comment,
-                    };
-                    variables.input = input;
+                    if (stockDetails.length === 0) {
+                        throw new n8n_workflow_1.NodeOperationError(this.getNode(), 'At least one Stock Detail is required', { itemIndex: i });
+                    }
+                    const allowedActions = new Set(['add', 'remove', 'reset']);
+                    stockDetails = stockDetails.map((detail, detailIndex) => {
+                        const stockId = Number(detail.stock_id);
+                        const stockChange = Number(detail.stock_change);
+                        const action = String(detail.action || '').toLowerCase();
+                        if ((detail.stock_id !== undefined && !Number.isFinite(stockId)) || (detail.stock_id === undefined && !productSku) || !Number.isFinite(stockChange) || !allowedActions.has(action)) {
+                            throw new n8n_workflow_1.NodeOperationError(this.getNode(), `Stock Detail ${detailIndex + 1} requires numeric stock_id, numeric stock_change, and action add, remove, or reset`, { itemIndex: i });
+                        }
+                        const normalized = { stock_change: stockChange, action };
+                        if (detail.stock_id !== undefined)
+                            normalized.stock_id = stockId;
+                        if (detail.comment !== undefined && detail.comment !== '')
+                            normalized.comment = String(detail.comment);
+                        if (detail.location !== undefined && detail.location !== '')
+                            normalized.location = String(detail.location);
+                        return normalized;
+                    });
+                    const variables = { input: { stock_details: stockDetails } };
+                    const updateStockType = this.getNodeParameter('updateStockType', i, '');
+                    if (updateStockType)
+                        variables.type = updateStockType;
+                    if (productSku)
+                        variables.product_sku = productSku;
                     // Build the GraphQL mutation
                     const mutation = `
-						mutation updateProductStock ($stock_id: Int, $product_sku: String, $action: UpdateProductStockActionEnum!, $input: UpdateProductStockInput!) {
-							updateProductStock (stock_id: $stock_id, product_sku: $product_sku, action: $action, input: $input) {
+						mutation updateProductStock ($type: UpdateStockTypeEnum, $product_sku: String, $input: UpdateProductStockInput!) {
+							updateProductStock (type: $type, product_sku: $product_sku, input: $input) {
 								result
 								message
-								stock_id
+								id
 								stock_quantity
+								stock_details
 							}
 						}
 					`;
@@ -10074,8 +10164,7 @@ class OnPrintShop {
                         returnData.push({
                             ...result,
                             _operation: 'updateStock',
-                            _action: stockAction,
-                            _identifierType: identifierType,
+                            _stockDetailCount: stockDetails.length,
                         });
                     }
                     else if (responseData && responseData.errors) {
