@@ -1,0 +1,275 @@
+#!/usr/bin/env node
+
+const assert = require('node:assert/strict');
+
+const {
+	clearOnPrintShopTokenCacheForTests,
+	getOnPrintShopAccessToken,
+} = require('../dist/nodes/OnPrintShopTokenManager');
+const {
+	createOnPrintShopGraphqlClient,
+} = require('../dist/nodes/OnPrintShopGraphqlRequest');
+
+const node = {
+	id: 'ops-token-cache-test',
+	name: 'OnPrintShop Token Cache Test',
+	type: 'n8n-nodes-onprintshop.onPrintShop',
+	typeVersion: 1,
+	position: [0, 0],
+	parameters: {},
+};
+
+function credentials(overrides = {}) {
+	return {
+		clientId: 'test-client-id',
+		clientSecret: 'test-client-secret',
+		baseUrl: 'https://api.example.invalid',
+		tokenUrl: 'https://auth.example.invalid/oauth/token',
+		cacheTtlSeconds: 3300,
+		...overrides,
+	};
+}
+
+function context(credentialData, httpRequest) {
+	return {
+		getCredentials: async () => credentialData,
+		getNode: () => node,
+		helpers: { httpRequest },
+	};
+}
+
+async function testSequentialReuse() {
+	clearOnPrintShopTokenCacheForTests();
+	let tokenRequests = 0;
+	const credentialData = credentials();
+	const testContext = context(credentialData, async (request) => {
+		if (request.url === credentialData.tokenUrl) {
+			tokenRequests += 1;
+			return { access_token: 'sequential-token', expires_in: 3600 };
+		}
+		return { data: { ok: true } };
+	});
+
+	const firstClient = await createOnPrintShopGraphqlClient(testContext);
+	const secondClient = await createOnPrintShopGraphqlClient(testContext);
+	await firstClient('query First { first }');
+	await secondClient('query Second { second }');
+	assert.equal(tokenRequests, 1, 'sequential clients should reuse one valid token');
+}
+
+async function testConcurrentMintDeduplication() {
+	clearOnPrintShopTokenCacheForTests();
+	let tokenRequests = 0;
+	const credentialData = credentials();
+	const testContext = context(credentialData, async () => {
+		tokenRequests += 1;
+		await new Promise((resolve) => setTimeout(resolve, 20));
+		return { access_token: 'concurrent-token', expires_in: 3600 };
+	});
+
+	const tokens = await Promise.all(Array.from({ length: 8 }, () => (
+		getOnPrintShopAccessToken(testContext, credentialData)
+	)));
+	assert.equal(tokenRequests, 1, 'concurrent requests should share one token exchange');
+	assert.deepEqual(new Set(tokens), new Set(['concurrent-token']));
+}
+
+async function testExpiryRefresh() {
+	clearOnPrintShopTokenCacheForTests();
+	const originalNow = Date.now;
+	let now = 1_800_000_000_000;
+	let tokenRequests = 0;
+	Date.now = () => now;
+	try {
+		const credentialData = credentials();
+		const testContext = context(credentialData, async () => {
+			tokenRequests += 1;
+			return { access_token: `expiry-token-${tokenRequests}`, expires_in: 120 };
+		});
+		assert.equal(await getOnPrintShopAccessToken(testContext, credentialData), 'expiry-token-1');
+		now += 30_000;
+		assert.equal(await getOnPrintShopAccessToken(testContext, credentialData), 'expiry-token-1');
+		now += 90_000;
+		assert.equal(await getOnPrintShopAccessToken(testContext, credentialData), 'expiry-token-2');
+		assert.equal(tokenRequests, 2, 'expired tokens should be reminted');
+	} finally {
+		Date.now = originalNow;
+	}
+}
+
+async function testCredentialIsolation() {
+	clearOnPrintShopTokenCacheForTests();
+	let tokenRequests = 0;
+	const firstCredentials = credentials({ clientId: 'client-a', clientSecret: 'secret-a' });
+	const secondCredentials = credentials({ clientId: 'client-b', clientSecret: 'secret-b' });
+	const makeContext = (credentialData) => context(credentialData, async () => {
+		tokenRequests += 1;
+		return { access_token: `token-for-${credentialData.clientId}`, expires_in: 3600 };
+	});
+
+	assert.equal(
+		await getOnPrintShopAccessToken(makeContext(firstCredentials), firstCredentials),
+		'token-for-client-a',
+	);
+	assert.equal(
+		await getOnPrintShopAccessToken(makeContext(secondCredentials), secondCredentials),
+		'token-for-client-b',
+	);
+	assert.equal(tokenRequests, 2, 'different credentials must never share tokens');
+}
+
+async function testHttpAuthenticationRetry() {
+	clearOnPrintShopTokenCacheForTests();
+	let tokenRequests = 0;
+	let apiRequests = 0;
+	const authorizationHeaders = [];
+	const credentialData = credentials();
+	const testContext = context(credentialData, async (request) => {
+		if (request.url === credentialData.tokenUrl) {
+			tokenRequests += 1;
+			return { access_token: `retry-token-${tokenRequests}`, expires_in: 3600 };
+		}
+		apiRequests += 1;
+		authorizationHeaders.push(request.headers.Authorization);
+		if (apiRequests === 1) {
+			const error = new Error('Unauthorized');
+			error.statusCode = 401;
+			throw error;
+		}
+		return { data: { recovered: true } };
+	});
+
+	const client = await createOnPrintShopGraphqlClient(testContext);
+	assert.deepEqual(await client('query Retry { retry }'), { recovered: true });
+	assert.equal(tokenRequests, 2, 'a rejected token should be reminted once');
+	assert.equal(apiRequests, 2, 'the GraphQL request should be retried once');
+	assert.deepEqual(authorizationHeaders, ['Bearer retry-token-1', 'Bearer retry-token-2']);
+}
+
+async function testGraphqlAuthenticationRetry() {
+	clearOnPrintShopTokenCacheForTests();
+	let tokenRequests = 0;
+	let apiRequests = 0;
+	const credentialData = credentials();
+	const testContext = context(credentialData, async (request) => {
+		if (request.url === credentialData.tokenUrl) {
+			tokenRequests += 1;
+			return { access_token: `graphql-token-${tokenRequests}`, expires_in: 3600 };
+		}
+		apiRequests += 1;
+		if (apiRequests === 1) {
+			return { errors: [{ message: 'Authorization failed', extensions: { code: 'invalid_token' } }] };
+		}
+		return { data: { recovered: true } };
+	});
+
+	const client = await createOnPrintShopGraphqlClient(testContext);
+	assert.deepEqual(await client('query Retry { retry }'), { recovered: true });
+	assert.equal(tokenRequests, 2, 'a GraphQL auth rejection should remint once');
+	assert.equal(apiRequests, 2, 'a GraphQL auth rejection should retry once');
+}
+
+async function testConcurrentAuthenticationRetry() {
+	clearOnPrintShopTokenCacheForTests();
+	let tokenRequests = 0;
+	let rejectedRequests = 0;
+	let releaseRejectedRequests;
+	const bothRequestsRejected = new Promise((resolve) => {
+		releaseRejectedRequests = resolve;
+	});
+	const credentialData = credentials();
+	const testContext = context(credentialData, async (request) => {
+		if (request.url === credentialData.tokenUrl) {
+			tokenRequests += 1;
+			return { access_token: `concurrent-retry-token-${tokenRequests}`, expires_in: 3600 };
+		}
+		if (request.headers.Authorization === 'Bearer concurrent-retry-token-1') {
+			rejectedRequests += 1;
+			if (rejectedRequests === 2) releaseRejectedRequests();
+			await bothRequestsRejected;
+			const error = new Error('Unauthorized');
+			error.statusCode = 401;
+			throw error;
+		}
+		return { data: { recovered: true } };
+	});
+
+	const [firstClient, secondClient] = await Promise.all([
+		createOnPrintShopGraphqlClient(testContext),
+		createOnPrintShopGraphqlClient(testContext),
+	]);
+	const results = await Promise.all([
+		firstClient('query First { first }'),
+		secondClient('query Second { second }'),
+	]);
+	assert.deepEqual(results, [{ recovered: true }, { recovered: true }]);
+	assert.equal(tokenRequests, 2, 'concurrent 401 responses should share one replacement token');
+}
+
+async function testGraphqlErrorsRedactBearerToken() {
+	clearOnPrintShopTokenCacheForTests();
+	const accessToken = 'private-bearer-token-value';
+	let tokenRequests = 0;
+	const credentialData = credentials();
+	const testContext = context(credentialData, async (request) => {
+		if (request.url === credentialData.tokenUrl) {
+			tokenRequests += 1;
+			return { access_token: accessToken, expires_in: 3600 };
+		}
+		const error = new Error(`Upstream failed with Authorization: Bearer ${accessToken}`);
+		error.statusCode = 500;
+		throw error;
+	});
+
+	let serialized = '';
+	try {
+		const client = await createOnPrintShopGraphqlClient(testContext);
+		await client('query Failure { failure }');
+		assert.fail('GraphQL request should fail');
+	} catch (error) {
+		serialized = `${error.message}\n${JSON.stringify(error)}`;
+	}
+	assert.equal(tokenRequests, 1, 'non-auth failures must not remint tokens');
+	assert.equal(serialized.includes(accessToken), false, 'serialized errors must redact bearer tokens');
+}
+
+async function testTokenErrorsRedactCredentials() {
+	clearOnPrintShopTokenCacheForTests();
+	const credentialData = credentials({
+		clientId: 'private-client-id-value',
+		clientSecret: 'private-client-secret-value',
+	});
+	const testContext = context(credentialData, async () => {
+		throw new Error(
+			`Rejected ${credentialData.clientId} with secret ${credentialData.clientSecret}`,
+		);
+	});
+
+	let serialized = '';
+	try {
+		await getOnPrintShopAccessToken(testContext, credentialData);
+		assert.fail('token mint should fail');
+	} catch (error) {
+		serialized = `${error.message}\n${JSON.stringify(error)}`;
+	}
+	assert.equal(serialized.includes(String(credentialData.clientId)), false);
+	assert.equal(serialized.includes(String(credentialData.clientSecret)), false);
+}
+
+async function main() {
+	await testSequentialReuse();
+	await testConcurrentMintDeduplication();
+	await testExpiryRefresh();
+	await testCredentialIsolation();
+	await testHttpAuthenticationRetry();
+	await testGraphqlAuthenticationRetry();
+	await testConcurrentAuthenticationRetry();
+	await testGraphqlErrorsRedactBearerToken();
+	await testTokenErrorsRedactCredentials();
+	console.log('OnPrintShop token cache verification passed (9 scenarios).');
+}
+
+main().catch((error) => {
+	console.error(error);
+	process.exitCode = 1;
+});

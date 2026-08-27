@@ -49,6 +49,17 @@ export class OnPrintShopApi implements ICredentialType {
 			required: true,
 			description: 'The OAuth2 token endpoint URL',
 		},
+		{
+			displayName: 'Fallback Token Cache TTL',
+			name: 'cacheTtlSeconds',
+			type: 'number',
+			default: 3300,
+			typeOptions: {
+				minValue: 60,
+				maxValue: 86400,
+			},
+			description: 'Seconds to reuse a token only when OPS does not return expires_in, expires_at, or a JWT expiration claim',
+		},
 	];
 
 	test: ICredentialTestRequest = {

@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.OnPrintShop = void 0;
 const n8n_workflow_1 = require("n8n-workflow");
 const OnPrintShopHelp_1 = require("../OnPrintShopHelp");
+const OnPrintShopTokenManager_1 = require("../OnPrintShopTokenManager");
 const OPS_ROOT_FIELD_ALIASES = {
     product_master_options: 'productMasterOptions',
     product_option_rules: 'productOptionRules',
@@ -6241,32 +6242,7 @@ class OnPrintShop {
         const returnData = [];
         const credentials = await this.getCredentials('onPrintShopApi');
         const baseUrl = credentials.baseUrl || 'https://api.onprintshop.com';
-        const tokenUrl = credentials.tokenUrl || 'https://api.onprintshop.com/oauth/token';
-        const clientId = credentials.clientId;
-        const clientSecret = credentials.clientSecret;
-        // Get OAuth2 access token
-        let accessToken;
-        try {
-            // OnPrintShop exposes a client-credentials token URL instead of n8n-managed auth.
-            // eslint-disable-next-line @n8n/community-nodes/no-http-request-with-manual-auth
-            const tokenResponse = await this.helpers.httpRequest({
-                method: 'POST',
-                url: tokenUrl,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: {
-                    grant_type: 'client_credentials',
-                    client_id: clientId,
-                    client_secret: clientSecret,
-                },
-                json: true,
-            });
-            accessToken = tokenResponse.access_token;
-        }
-        catch (error) {
-            throw new n8n_workflow_1.NodeApiError(this.getNode(), toNodeApiErrorResponse(error), { message: `Failed to get access token: ${getErrorMessage(error)}` });
-        }
+        let accessToken = await (0, OnPrintShopTokenManager_1.getOnPrintShopAccessToken)(this, credentials);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const requestGraphql = async (body) => {
             const query = String(body.query || '');
@@ -6274,7 +6250,7 @@ class OnPrintShop {
             const aliases = { ...OPS_ROOT_FIELD_ALIASES, ...OPS_VARIABLE_ALIASES };
             const preparedQuery = replaceGraphqlTokens(query, aliases);
             const preparedVariables = prepareVariablesForOpsSchema(variables);
-            const responseData = await this.helpers.httpRequest({
+            const sendRequest = async () => await this.helpers.httpRequest({
                 method: 'POST',
                 url: `${baseUrl}/api/`,
                 headers: {
@@ -6288,6 +6264,28 @@ class OnPrintShop {
                 },
                 json: true,
             });
+            let responseData;
+            try {
+                responseData = await sendRequest();
+                if ((0, OnPrintShopTokenManager_1.hasOnPrintShopAuthenticationError)(responseData)) {
+                    const rejectedAccessToken = accessToken;
+                    accessToken = await (0, OnPrintShopTokenManager_1.getOnPrintShopAccessToken)(this, credentials, true, rejectedAccessToken);
+                    responseData = await sendRequest();
+                }
+            }
+            catch (error) {
+                if (!(0, OnPrintShopTokenManager_1.isOnPrintShopAuthenticationFailure)(error)) {
+                    throw new n8n_workflow_1.NodeApiError(this.getNode(), (0, OnPrintShopTokenManager_1.safeOnPrintShopRequestError)(error, [accessToken]));
+                }
+                const rejectedAccessToken = accessToken;
+                accessToken = await (0, OnPrintShopTokenManager_1.getOnPrintShopAccessToken)(this, credentials, true, rejectedAccessToken);
+                try {
+                    responseData = await sendRequest();
+                }
+                catch (retryError) {
+                    throw new n8n_workflow_1.NodeApiError(this.getNode(), (0, OnPrintShopTokenManager_1.safeOnPrintShopRequestError)(retryError, [accessToken]));
+                }
+            }
             return addResponseAliases(responseData);
         };
         const nodeDescription = new OnPrintShop().description;

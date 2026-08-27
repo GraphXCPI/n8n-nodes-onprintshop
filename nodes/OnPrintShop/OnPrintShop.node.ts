@@ -20,6 +20,12 @@ import {
 	ONPRINTSHOP_OPERATOR_DOC_URL,
 	OnPrintShopFieldSelectionMode,
 } from '../OnPrintShopHelp';
+import {
+	getOnPrintShopAccessToken,
+	hasOnPrintShopAuthenticationError,
+	isOnPrintShopAuthenticationFailure,
+	safeOnPrintShopRequestError,
+} from '../OnPrintShopTokenManager';
 
 const OPS_ROOT_FIELD_ALIASES: Record<string, string> = {
 	product_master_options: 'productMasterOptions',
@@ -6342,36 +6348,7 @@ export class OnPrintShop implements INodeType {
 
 		const credentials = await this.getCredentials('onPrintShopApi');
 		const baseUrl = credentials.baseUrl as string || 'https://api.onprintshop.com';
-		const tokenUrl = credentials.tokenUrl as string || 'https://api.onprintshop.com/oauth/token';
-		const clientId = credentials.clientId as string;
-		const clientSecret = credentials.clientSecret as string;
-
-		// Get OAuth2 access token
-		let accessToken: string;
-		try {
-			// OnPrintShop exposes a client-credentials token URL instead of n8n-managed auth.
-			// eslint-disable-next-line @n8n/community-nodes/no-http-request-with-manual-auth
-			const tokenResponse = await this.helpers.httpRequest({
-				method: 'POST',
-				url: tokenUrl,
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: {
-					grant_type: 'client_credentials',
-					client_id: clientId,
-					client_secret: clientSecret,
-				},
-				json: true,
-			}) as IDataObject;
-			accessToken = tokenResponse.access_token as string;
-		} catch (error) {
-			throw new NodeApiError(
-				this.getNode(),
-				toNodeApiErrorResponse(error),
-				{ message: `Failed to get access token: ${getErrorMessage(error)}` },
-			);
-		}
+		let accessToken = await getOnPrintShopAccessToken(this, credentials);
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const requestGraphql = async (body: IDataObject): Promise<any> => {
@@ -6380,7 +6357,7 @@ export class OnPrintShop implements INodeType {
 			const aliases = { ...OPS_ROOT_FIELD_ALIASES, ...OPS_VARIABLE_ALIASES };
 			const preparedQuery = replaceGraphqlTokens(query, aliases);
 			const preparedVariables = prepareVariablesForOpsSchema(variables);
-			const responseData = await this.helpers.httpRequest({
+			const sendRequest = async (): Promise<IDataObject> => await this.helpers.httpRequest({
 				method: 'POST',
 				url: `${baseUrl}/api/`,
 				headers: {
@@ -6394,6 +6371,43 @@ export class OnPrintShop implements INodeType {
 				},
 				json: true,
 			}) as IDataObject;
+
+			let responseData: IDataObject;
+				try {
+					responseData = await sendRequest();
+					if (hasOnPrintShopAuthenticationError(responseData)) {
+						const rejectedAccessToken = accessToken;
+						accessToken = await getOnPrintShopAccessToken(
+							this,
+							credentials,
+							true,
+							rejectedAccessToken,
+						);
+						responseData = await sendRequest();
+					}
+				} catch (error) {
+					if (!isOnPrintShopAuthenticationFailure(error)) {
+						throw new NodeApiError(
+							this.getNode(),
+							safeOnPrintShopRequestError(error, [accessToken]),
+						);
+					}
+					const rejectedAccessToken = accessToken;
+					accessToken = await getOnPrintShopAccessToken(
+						this,
+						credentials,
+						true,
+						rejectedAccessToken,
+					);
+					try {
+						responseData = await sendRequest();
+					} catch (retryError) {
+						throw new NodeApiError(
+							this.getNode(),
+							safeOnPrintShopRequestError(retryError, [accessToken]),
+						);
+					}
+				}
 
 			return addResponseAliases(responseData) as IDataObject;
 		};

@@ -2,10 +2,16 @@ import {
 	IExecuteFunctions,
 	IDataObject,
 	INodeExecutionData,
-	JsonObject,
 	NodeApiError,
 	NodeOperationError,
 } from 'n8n-workflow';
+
+import {
+	getOnPrintShopAccessToken,
+	hasOnPrintShopAuthenticationError,
+	isOnPrintShopAuthenticationFailure,
+	safeOnPrintShopRequestError,
+} from './OnPrintShopTokenManager';
 
 export async function createOnPrintShopGraphqlClient(context: IExecuteFunctions): Promise<(
 	query: string,
@@ -14,34 +20,11 @@ export async function createOnPrintShopGraphqlClient(context: IExecuteFunctions)
 ) => Promise<IDataObject>> {
 	const credentials = await context.getCredentials('onPrintShopApi');
 	const baseUrl = String(credentials.baseUrl || 'https://api.onprintshop.com').replace(/\/$/, '');
-	const tokenUrl = String(credentials.tokenUrl || 'https://api.onprintshop.com/oauth/token');
-
-	let accessToken: string;
-	try {
-		// OnPrintShop uses a client-credentials exchange rather than n8n-managed OAuth.
-		const token = await context.helpers.httpRequest({
-			method: 'POST',
-			url: tokenUrl,
-			headers: { 'Content-Type': 'application/json' },
-			body: {
-				grant_type: 'client_credentials',
-				client_id: String(credentials.clientId),
-				client_secret: String(credentials.clientSecret),
-			},
-			json: true,
-		}) as IDataObject;
-		accessToken = String(token.access_token || '');
-		if (!accessToken) throw new Error('Token response did not include access_token');
-	} catch (error) {
-		throw new NodeApiError(context.getNode(), error as JsonObject, {
-			message: `Failed to get OnPrintShop access token: ${(error as Error).message}`,
-		});
-	}
+	let accessToken = await getOnPrintShopAccessToken(context, credentials);
 
 	return async (query: string, variables: IDataObject = {}, itemIndex = 0): Promise<IDataObject> => {
-		let response: IDataObject;
-		try {
-			response = await context.helpers.httpRequest({
+		const sendRequest = async (): Promise<IDataObject> => {
+			return await context.helpers.httpRequest({
 				method: 'POST',
 				url: `${baseUrl}/api/`,
 				headers: {
@@ -51,8 +34,45 @@ export async function createOnPrintShopGraphqlClient(context: IExecuteFunctions)
 				body: { query, variables },
 				json: true,
 			}) as IDataObject;
+		};
+
+		let response: IDataObject;
+		try {
+			response = await sendRequest();
+			if (hasOnPrintShopAuthenticationError(response)) {
+				const rejectedAccessToken = accessToken;
+				accessToken = await getOnPrintShopAccessToken(
+					context,
+					credentials,
+					true,
+					rejectedAccessToken,
+				);
+				response = await sendRequest();
+			}
 		} catch (error) {
-			throw new NodeApiError(context.getNode(), error as JsonObject, { itemIndex });
+			if (!isOnPrintShopAuthenticationFailure(error)) {
+				throw new NodeApiError(
+					context.getNode(),
+					safeOnPrintShopRequestError(error, [accessToken]),
+					{ itemIndex },
+				);
+			}
+			const rejectedAccessToken = accessToken;
+			accessToken = await getOnPrintShopAccessToken(
+				context,
+				credentials,
+				true,
+				rejectedAccessToken,
+			);
+			try {
+				response = await sendRequest();
+			} catch (retryError) {
+				throw new NodeApiError(
+					context.getNode(),
+					safeOnPrintShopRequestError(retryError, [accessToken]),
+					{ itemIndex },
+				);
+			}
 		}
 
 		if (Array.isArray(response.errors) && response.errors.length > 0) {

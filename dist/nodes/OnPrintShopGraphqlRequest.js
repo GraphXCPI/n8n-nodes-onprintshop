@@ -5,37 +5,14 @@ exports.rowsFromFixedCollection = rowsFromFixedCollection;
 exports.compactObject = compactObject;
 exports.resultItems = resultItems;
 const n8n_workflow_1 = require("n8n-workflow");
+const OnPrintShopTokenManager_1 = require("./OnPrintShopTokenManager");
 async function createOnPrintShopGraphqlClient(context) {
     const credentials = await context.getCredentials('onPrintShopApi');
     const baseUrl = String(credentials.baseUrl || 'https://api.onprintshop.com').replace(/\/$/, '');
-    const tokenUrl = String(credentials.tokenUrl || 'https://api.onprintshop.com/oauth/token');
-    let accessToken;
-    try {
-        // OnPrintShop uses a client-credentials exchange rather than n8n-managed OAuth.
-        const token = await context.helpers.httpRequest({
-            method: 'POST',
-            url: tokenUrl,
-            headers: { 'Content-Type': 'application/json' },
-            body: {
-                grant_type: 'client_credentials',
-                client_id: String(credentials.clientId),
-                client_secret: String(credentials.clientSecret),
-            },
-            json: true,
-        });
-        accessToken = String(token.access_token || '');
-        if (!accessToken)
-            throw new Error('Token response did not include access_token');
-    }
-    catch (error) {
-        throw new n8n_workflow_1.NodeApiError(context.getNode(), error, {
-            message: `Failed to get OnPrintShop access token: ${error.message}`,
-        });
-    }
+    let accessToken = await (0, OnPrintShopTokenManager_1.getOnPrintShopAccessToken)(context, credentials);
     return async (query, variables = {}, itemIndex = 0) => {
-        let response;
-        try {
-            response = await context.helpers.httpRequest({
+        const sendRequest = async () => {
+            return await context.helpers.httpRequest({
                 method: 'POST',
                 url: `${baseUrl}/api/`,
                 headers: {
@@ -45,9 +22,28 @@ async function createOnPrintShopGraphqlClient(context) {
                 body: { query, variables },
                 json: true,
             });
+        };
+        let response;
+        try {
+            response = await sendRequest();
+            if ((0, OnPrintShopTokenManager_1.hasOnPrintShopAuthenticationError)(response)) {
+                const rejectedAccessToken = accessToken;
+                accessToken = await (0, OnPrintShopTokenManager_1.getOnPrintShopAccessToken)(context, credentials, true, rejectedAccessToken);
+                response = await sendRequest();
+            }
         }
         catch (error) {
-            throw new n8n_workflow_1.NodeApiError(context.getNode(), error, { itemIndex });
+            if (!(0, OnPrintShopTokenManager_1.isOnPrintShopAuthenticationFailure)(error)) {
+                throw new n8n_workflow_1.NodeApiError(context.getNode(), (0, OnPrintShopTokenManager_1.safeOnPrintShopRequestError)(error, [accessToken]), { itemIndex });
+            }
+            const rejectedAccessToken = accessToken;
+            accessToken = await (0, OnPrintShopTokenManager_1.getOnPrintShopAccessToken)(context, credentials, true, rejectedAccessToken);
+            try {
+                response = await sendRequest();
+            }
+            catch (retryError) {
+                throw new n8n_workflow_1.NodeApiError(context.getNode(), (0, OnPrintShopTokenManager_1.safeOnPrintShopRequestError)(retryError, [accessToken]), { itemIndex });
+            }
         }
         if (Array.isArray(response.errors) && response.errors.length > 0) {
             throw new n8n_workflow_1.NodeOperationError(context.getNode(), `OnPrintShop GraphQL error: ${JSON.stringify(response.errors)}`, { itemIndex });

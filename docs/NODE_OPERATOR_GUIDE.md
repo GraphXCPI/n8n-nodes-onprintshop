@@ -42,8 +42,11 @@ Required credential fields:
 | Client Secret | OAuth client secret from OnPrintShop |
 | Base URL | OnPrintShop tenant/API base URL used for GraphQL requests |
 | Token URL | OAuth token URL used to obtain bearer tokens |
+| Fallback Token Cache TTL | Optional validity period used only when OnPrintShop returns no token expiry; default 3300 seconds |
 
 After saving the credential, click **Test** in n8n. The credential test requests an OAuth token using `client_credentials`. A passing test confirms that n8n can reach the token endpoint and that the client credentials are accepted.
+
+Workflow executions reuse a valid bearer token held in the current n8n process. The node remints only when the token is absent, near expiry, or rejected by OPS, and retries a rejected GraphQL request once. Tokens are not stored in workflow JSON or static data. Queue-mode installations maintain one cache per main, webhook, or worker process.
 
 ## Read Actions
 
