@@ -161,6 +161,12 @@ function parseJsonParameter(rawValue, parameterName, node, itemIndex) {
         throw new n8n_workflow_1.NodeOperationError(node, `Invalid JSON in ${parameterName}: ${error.message}`, { itemIndex });
     }
 }
+function fixedCollectionRows(value, groupName) {
+    if (!value || typeof value !== 'object' || Array.isArray(value))
+        return [];
+    const rows = value[groupName];
+    return Array.isArray(rows) ? rows : [];
+}
 function getShowValues(property, key) {
     var _a;
     const show = (_a = property.displayOptions) === null || _a === void 0 ? void 0 : _a.show;
@@ -1709,6 +1715,15 @@ class OnPrintShop {
                     default: '{\n  "productsArr": []\n}',
                     description: 'SetQuoteInput JSON object with productsArr',
                 },
+                {
+                    displayName: 'Admin Extra Fields', name: 'setQuote_adminExtraFields', type: 'fixedCollection', default: {},
+                    typeOptions: { multipleValues: true }, placeholder: 'Add Admin Extra Field',
+                    displayOptions: { show: { resource: ['mutation'], operation: ['setQuote'] } },
+                    options: [{ displayName: 'Field', name: 'field', values: [
+                                { displayName: 'Field Key', name: 'field_key', type: 'string', default: '', required: true },
+                                { displayName: 'Field Value', name: 'field_value', type: 'string', default: '' },
+                            ] }],
+                },
                 // Mutation: Set Product Design
                 {
                     displayName: 'Order Product ID',
@@ -2080,6 +2095,15 @@ class OnPrintShop {
                     default: '{\n  "productsArr": []\n}',
                     description: 'SetOrderInput JSON object with productsArr',
                 },
+                {
+                    displayName: 'Admin Extra Fields', name: 'setOrder_adminExtraFields', type: 'fixedCollection', default: {},
+                    typeOptions: { multipleValues: true }, placeholder: 'Add Admin Extra Field',
+                    displayOptions: { show: { resource: ['mutation'], operation: ['setOrder'] } },
+                    options: [{ displayName: 'Field', name: 'field', values: [
+                                { displayName: 'Field Key', name: 'field_key', type: 'string', default: '', required: true },
+                                { displayName: 'Field Value', name: 'field_value', type: 'string', default: '' },
+                            ] }],
+                },
                 // Mutation: Modify Order Product (Beta)
                 {
                     displayName: 'Order ID',
@@ -2262,6 +2286,7 @@ class OnPrintShop {
                         },
                     },
                     options: [
+                        { name: 'Admin Extra Fields', value: 'admin_extra_fields' },
                         { name: 'Balance Amount', value: 'customers_balance_amount' },
                         { name: 'Company', value: 'customers_company' },
                         { name: 'Corporate ID', value: 'customers_corporate_id' },
@@ -2273,12 +2298,14 @@ class OnPrintShop {
                         { name: 'External Ref', value: 'external_ref' },
                         { name: 'First Name', value: 'customers_first_name' },
                         { name: 'Last Name', value: 'customers_last_name' },
+                        { name: 'Location ID Code', value: 'location_id_code' },
                         { name: 'Pay Limit', value: 'customers_pay_limit' },
                         { name: 'Pay On Enable', value: 'customers_payon_enable' },
                         { name: 'Register Date', value: 'customers_register_date' },
                         { name: 'Reward Points', value: 'reward_points' },
                         { name: 'Secondary Emails', value: 'customers_secondary_emails' },
                         { name: 'Status', value: 'customers_status' },
+                        { name: 'Store Location ID', value: 'store_location_id' },
                         { name: 'Telephone', value: 'customers_telephone' },
                         { name: 'User Group Name', value: 'customers_user_group_name' },
                         { name: 'User ID', value: 'userid' },
@@ -2287,6 +2314,9 @@ class OnPrintShop {
                     ],
                     default: [
                         'userid',
+                        'admin_extra_fields',
+                        'store_location_id',
+                        'location_id_code',
                         'customers_name',
                         'customers_first_name',
                         'customers_last_name',
@@ -2519,6 +2549,16 @@ class OnPrintShop {
                         },
                     ],
                 },
+                {
+                    displayName: 'Admin Extra Fields', name: 'customerAdminExtraFieldsCreate', type: 'fixedCollection', default: {},
+                    typeOptions: { multipleValues: true }, placeholder: 'Add Admin Extra Field',
+                    displayOptions: { show: { resource: ['customer'], operation: ['create'] } },
+                    options: [{ displayName: 'Field', name: 'field', values: [
+                                { displayName: 'Field Key', name: 'field_key', type: 'string', default: '', required: true },
+                                { displayName: 'Field Value', name: 'field_value', type: 'string', default: '' },
+                            ] }],
+                    description: 'Admin-only custom field values configured for customers',
+                },
                 // Customer: Update - Customer ID
                 {
                     displayName: 'Customer ID',
@@ -2687,6 +2727,16 @@ class OnPrintShop {
                         },
                     ],
                 },
+                {
+                    displayName: 'Admin Extra Fields', name: 'customerAdminExtraFieldsUpdate', type: 'fixedCollection', default: {},
+                    typeOptions: { multipleValues: true }, placeholder: 'Add Admin Extra Field',
+                    displayOptions: { show: { resource: ['customer'], operation: ['update'] } },
+                    options: [{ displayName: 'Field', name: 'field', values: [
+                                { displayName: 'Field Key', name: 'field_key', type: 'string', default: '', required: true },
+                                { displayName: 'Field Value', name: 'field_value', type: 'string', default: '' },
+                            ] }],
+                    description: 'Admin-only custom field values configured for customers',
+                },
                 // Customer: Get Many - Fetch All Pages
                 {
                     displayName: 'Fetch All Pages',
@@ -2820,6 +2870,7 @@ class OnPrintShop {
                         },
                     },
                     options: [
+                        { name: 'Admin Extra Fields', value: 'admin_extra_fields' },
                         { name: 'Balance Amount', value: 'customers_balance_amount' },
                         { name: 'Company', value: 'customers_company' },
                         { name: 'Corporate ID', value: 'customers_corporate_id' },
@@ -2831,12 +2882,14 @@ class OnPrintShop {
                         { name: 'External Ref', value: 'external_ref' },
                         { name: 'First Name', value: 'customers_first_name' },
                         { name: 'Last Name', value: 'customers_last_name' },
+                        { name: 'Location ID Code', value: 'location_id_code' },
                         { name: 'Pay Limit', value: 'customers_pay_limit' },
                         { name: 'Pay On Enable', value: 'customers_payon_enable' },
                         { name: 'Register Date', value: 'customers_register_date' },
                         { name: 'Reward Points', value: 'reward_points' },
                         { name: 'Secondary Emails', value: 'customers_secondary_emails' },
                         { name: 'Status', value: 'customers_status' },
+                        { name: 'Store Location ID', value: 'store_location_id' },
                         { name: 'Telephone', value: 'customers_telephone' },
                         { name: 'User Group Name', value: 'customers_user_group_name' },
                         { name: 'User ID', value: 'userid' },
@@ -2845,6 +2898,9 @@ class OnPrintShop {
                     ],
                     default: [
                         'userid',
+                        'admin_extra_fields',
+                        'store_location_id',
+                        'location_id_code',
                         'user_type',
                         'customers_name',
                         'customers_first_name',
@@ -2981,6 +3037,7 @@ class OnPrintShop {
                         },
                     },
                     options: [
+                        { name: 'Admin Extra Fields', value: 'admin_extra_fields' },
                         { name: 'Airway Bill Number', value: 'airway_bill_number' },
                         { name: 'Blind Shipping Charge', value: 'blind_shipping_charge' },
                         { name: 'Branch Name', value: 'branch_name' },
@@ -2995,6 +3052,7 @@ class OnPrintShop {
                         { name: 'Invoice Date', value: 'invoice_date' },
                         { name: 'Invoice Number', value: 'invoice_number' },
                         { name: 'Local Orders Date Finished', value: 'local_orders_date_finished' },
+                        { name: 'Location ID Code', value: 'location_id_code' },
                         { name: 'Order Amount', value: 'order_amount' },
                         { name: 'Order Last Modified Date', value: 'order_last_modified_date' },
                         { name: 'Order Name', value: 'order_name' },
@@ -3020,6 +3078,7 @@ class OnPrintShop {
                         { name: 'Shipping Amount', value: 'shipping_amount' },
                         { name: 'Shipping Mode', value: 'shipping_mode' },
                         { name: 'Shipping Type ID', value: 'shipping_type_id' },
+                        { name: 'Store Location ID', value: 'store_location_id' },
                         { name: 'Tax Amount', value: 'tax_amount' },
                         { name: 'Total Amount', value: 'total_amount' },
                         { name: 'Total Weight', value: 'total_weight' },
@@ -3029,6 +3088,9 @@ class OnPrintShop {
                     default: [
                         'user_id',
                         'orders_id',
+                        'store_location_id',
+                        'location_id_code',
+                        'admin_extra_fields',
                         'corporate_id',
                         'order_status',
                         'orders_status_id',
@@ -3441,6 +3503,7 @@ class OnPrintShop {
                         },
                     },
                     options: [
+                        { name: 'Admin Extra Fields', value: 'admin_extra_fields' },
                         { name: 'Airway Bill Number', value: 'airway_bill_number' },
                         { name: 'Blind Shipping Charge', value: 'blind_shipping_charge' },
                         { name: 'Branch Name', value: 'branch_name' },
@@ -3455,6 +3518,7 @@ class OnPrintShop {
                         { name: 'Invoice Date', value: 'invoice_date' },
                         { name: 'Invoice Number', value: 'invoice_number' },
                         { name: 'Local Orders Date Finished', value: 'local_orders_date_finished' },
+                        { name: 'Location ID Code', value: 'location_id_code' },
                         { name: 'Order Amount', value: 'order_amount' },
                         { name: 'Order Last Modified Date', value: 'order_last_modified_date' },
                         { name: 'Order Name', value: 'order_name' },
@@ -3480,6 +3544,7 @@ class OnPrintShop {
                         { name: 'Shipping Amount', value: 'shipping_amount' },
                         { name: 'Shipping Mode', value: 'shipping_mode' },
                         { name: 'Shipping Type ID', value: 'shipping_type_id' },
+                        { name: 'Store Location ID', value: 'store_location_id' },
                         { name: 'Tax Amount', value: 'tax_amount' },
                         { name: 'Total Amount', value: 'total_amount' },
                         { name: 'Total Weight', value: 'total_weight' },
@@ -3489,6 +3554,9 @@ class OnPrintShop {
                     default: [
                         'user_id',
                         'orders_id',
+                        'store_location_id',
+                        'location_id_code',
+                        'admin_extra_fields',
                         'corporate_id',
                         'order_status',
                         'orders_status_id',
@@ -4362,6 +4430,7 @@ class OnPrintShop {
                         },
                     },
                     options: [
+                        { name: 'Admin Extra Fields', value: 'admin_extra_fields' },
                         { name: 'All Store', value: 'all_store' },
                         { name: 'Associate Attribute ID', value: 'associate_attribute_id' },
                         { name: 'Associate Attribute Key', value: 'associate_attribute_key' },
@@ -4412,6 +4481,7 @@ class OnPrintShop {
                     ],
                     default: [
                         'product_id',
+                        'admin_extra_fields',
                         'status',
                         'sort_order',
                         'product_name',
@@ -4552,6 +4622,7 @@ class OnPrintShop {
                         },
                     },
                     options: [
+                        { name: 'Admin Extra Fields', value: 'admin_extra_fields' },
                         { name: 'All Store', value: 'all_store' },
                         { name: 'Associate Attribute ID', value: 'associate_attribute_id' },
                         { name: 'Associate Attribute Key', value: 'associate_attribute_key' },
@@ -4604,6 +4675,7 @@ class OnPrintShop {
                     ],
                     default: [
                         'product_id',
+                        'admin_extra_fields',
                         'status',
                         'sort_order',
                         'product_name',
@@ -7027,7 +7099,7 @@ class OnPrintShop {
                         variables.limit = limit;
                     if (offset)
                         variables.offset = offset;
-                    const query = `query get_quote ($quote_id: Int, $user_id: Int, $limit: Int, $offset: Int) { get_quote (quote_id: $quote_id, user_id: $user_id, limit: $limit, offset: $offset) { quote { quote_id user_id quote_title quote_price quote_vendor_price sort_order quote_status quote_date admin_notes quote_shipping_addr quote_billing_addr ship_amt quote_tax_exampt quoteproduct { isCustomProduct quote_products_id quote_id products_id products_title quote_products_quantity quote_products_price quote_products_vendor_price quote_products_info products_prd_day products_weight quote_product_sku quote_product_notes } } totalQuote } }`;
+                    const query = `query get_quote ($quote_id: Int, $user_id: Int, $limit: Int, $offset: Int) { get_quote (quote_id: $quote_id, user_id: $user_id, limit: $limit, offset: $offset) { quote { quote_id user_id quote_title quote_price quote_vendor_price sort_order quote_status quote_date admin_notes quote_shipping_addr quote_billing_addr ship_amt quote_tax_exampt admin_extra_fields quoteproduct { isCustomProduct quote_products_id quote_id products_id products_title quote_products_quantity quote_products_price quote_products_vendor_price quote_products_info products_prd_day products_weight quote_product_sku quote_product_notes } } totalQuote } }`;
                     const responseData = await requestGraphql({ query, variables });
                     if (responseData && responseData.data && responseData.data.get_quote) {
                         const quotes = responseData.data.get_quote.quote || [];
@@ -7080,7 +7152,7 @@ class OnPrintShop {
                         filters.status = status;
                     const requestedLimit = Math.max(1, limit || 10);
                     const initialOffset = Math.max(0, offset || 0);
-                    const query = `query get_store ($corporate_id: Int, $email: String, $status: Int, $limit: Int, $offset: Int) { get_store (corporate_id: $corporate_id, email: $email, status: $status, limit: $limit, offset: $offset) { store { corporate_id email username corporate_name phone_number status tax_exempt tax_exempt_type order_approval price_visible price_text department_module_enable fix_billing_address fix_shipping_address manage_email_notification main_url created_on modified_on url_type parent_corporate_id manage_private_store markup_type flat_markup corporate_markup_id unassigned_products production_days display_in_company_list department { department_id name email_to status cost_center_code production_days created_on modified_on } } totalStore currentCount } }`;
+                    const query = `query get_store ($corporate_id: Int, $email: String, $status: Int, $limit: Int, $offset: Int) { get_store (corporate_id: $corporate_id, email: $email, status: $status, limit: $limit, offset: $offset) { store { corporate_id email username corporate_name phone_number status tax_exempt tax_exempt_type order_approval price_visible price_text department_module_enable fix_billing_address fix_shipping_address manage_email_notification main_url created_on modified_on url_type parent_corporate_id manage_private_store markup_type flat_markup corporate_markup_id unassigned_products production_days display_in_company_list store_location_id location_id_code admin_extra_fields department { department_id name email_to status cost_center_code production_days created_on modified_on } } totalStore currentCount } }`;
                     const stores = [];
                     const seenStoreIds = new Set();
                     let pageOffset = initialOffset;
@@ -7456,8 +7528,11 @@ class OnPrintShop {
                         if (quote_id)
                             variables.quote_id = quote_id;
                         if (selectedShippingType)
-                            variables.selectedShippingType = selectedShippingType;
-                        const mutation = `mutation setQuote ($userid: Int!, $quote_id: Int, $selectedShippingType: String, $quote_title: String!, $input: SetQuoteInput!) { setQuote (userid: $userid, quote_title: $quote_title, selectedShippingType: $selectedShippingType, quote_id: $quote_id, input: $input) { result message id } }`;
+                            variables.selected_shipping_type = selectedShippingType;
+                        const adminExtraFields = fixedCollectionRows(this.getNodeParameter('setQuote_adminExtraFields', i, {}), 'field');
+                        if (adminExtraFields.length)
+                            variables.admin_extra_fields = adminExtraFields;
+                        const mutation = `mutation setQuote ($userid: Int!, $quote_id: Int, $selected_shipping_type: String, $quote_title: String, $input: SetQuoteInput!, $admin_extra_fields: JSON) { setQuote (userid: $userid, quote_title: $quote_title, selected_shipping_type: $selected_shipping_type, quote_id: $quote_id, input: $input, admin_extra_fields: $admin_extra_fields) { result message id } }`;
                         const responseData = await requestGraphql({ query: mutation, variables });
                         if (responseData && responseData.data && responseData.data.setQuote)
                             returnData.push(responseData.data.setQuote);
@@ -7708,8 +7783,11 @@ class OnPrintShop {
                         if (order_id)
                             variables.order_id = order_id;
                         if (selectedShippingType)
-                            variables.selectedShippingType = selectedShippingType;
-                        const mutation = `mutation setOrder ($userid: Int!, $order_id: Int, $selectedShippingType: Int, $order_title: String!, $input: SetOrderInput!) { setOrder (userid: $userid, order_title: $order_title, selectedShippingType: $selectedShippingType, order_id: $order_id, input: $input) { result message id } }`;
+                            variables.selected_shipping_type = selectedShippingType;
+                        const adminExtraFields = fixedCollectionRows(this.getNodeParameter('setOrder_adminExtraFields', i, {}), 'field');
+                        if (adminExtraFields.length)
+                            variables.admin_extra_fields = adminExtraFields;
+                        const mutation = `mutation setOrder ($userid: Int!, $order_id: Int, $selected_shipping_type: Int, $order_title: String!, $input: SetOrderInput!, $admin_extra_fields: JSON) { setOrder (userid: $userid, order_title: $order_title, selected_shipping_type: $selected_shipping_type, order_id: $order_id, input: $input, admin_extra_fields: $admin_extra_fields) { result message id } }`;
                         const responseData = await requestGraphql({ query: mutation, variables });
                         if (responseData && responseData.data && responseData.data.setOrder)
                             returnData.push(responseData.data.setOrder);
@@ -8297,13 +8375,16 @@ class OnPrintShop {
                     const order_id = this.getNodeParameter("setOrder_order_id", i);
                     variables.order_id = order_id;
                     const selectedShippingType = this.getNodeParameter("setOrder_selectedShippingType", i);
-                    variables.selectedShippingType = selectedShippingType;
+                    variables.selected_shipping_type = selectedShippingType;
                     const order_title = this.getNodeParameter("setOrder_order_title", i);
                     variables.order_title = order_title;
                     const input = JSON.parse(this.getNodeParameter("setOrder_input", i));
                     variables.input = input;
-                    const mutation = `mutation setOrder ($userid: Int!, $order_id: Int, $selectedShippingType: Int, $order_title: String!, $input: SetOrderInput!) {
-    setOrder (userid: $userid, order_title: $order_title, selectedShippingType: $selectedShippingType, order_id: $order_id, input: $input) {
+                    const adminExtraFields = fixedCollectionRows(this.getNodeParameter('setOrder_adminExtraFields', i, {}), 'field');
+                    if (adminExtraFields.length)
+                        variables.admin_extra_fields = adminExtraFields;
+                    const mutation = `mutation setOrder ($userid: Int!, $order_id: Int, $selected_shipping_type: Int, $order_title: String!, $input: SetOrderInput!, $admin_extra_fields: JSON) {
+	setOrder (userid: $userid, order_title: $order_title, selected_shipping_type: $selected_shipping_type, order_id: $order_id, input: $input, admin_extra_fields: $admin_extra_fields) {
         result
         message
         id
@@ -8722,6 +8803,7 @@ class OnPrintShop {
                     const last_name = this.getNodeParameter('last_name', i);
                     const email = this.getNodeParameter('email', i);
                     const optionalFields = this.getNodeParameter('optionalFields', i);
+                    const adminExtraFields = fixedCollectionRows(this.getNodeParameter('customerAdminExtraFieldsCreate', i, {}), 'field');
                     // Generate password if not provided and doing full registration
                     let password = optionalFields.password || '';
                     // If doing normal registration (not two step) and no password provided, generate one
@@ -8752,6 +8834,7 @@ class OnPrintShop {
                         tax_exemption: optionalFields.tax_exemption !== undefined ? optionalFields.tax_exemption : 0,
                         payon_account: optionalFields.payon_account !== undefined ? optionalFields.payon_account : 0,
                         payon_limit: optionalFields.payon_limit !== undefined ? optionalFields.payon_limit : 0,
+                        ...(adminExtraFields.length ? { admin_extra_fields: adminExtraFields } : {}),
                     };
                     // Build the GraphQL mutation
                     const mutation = `
@@ -8794,6 +8877,7 @@ class OnPrintShop {
                     // Update customer
                     const customer_id = this.getNodeParameter('customer_id', i);
                     const updateFields = this.getNodeParameter('updateFields', i);
+                    const adminExtraFields = fixedCollectionRows(this.getNodeParameter('customerAdminExtraFieldsUpdate', i, {}), 'field');
                     // Build input object with only provided fields
                     const input = {};
                     // Add fields if provided
@@ -8831,6 +8915,8 @@ class OnPrintShop {
                         input.payon_account = updateFields.payon_account;
                     if (updateFields.payon_limit !== undefined)
                         input.payon_limit = updateFields.payon_limit;
+                    if (adminExtraFields.length)
+                        input.admin_extra_fields = adminExtraFields;
                     // Build the GraphQL mutation
                     const mutation = `
 						mutation setCustomer ($customer_id: Int, $input: SetCustomerInput!) {

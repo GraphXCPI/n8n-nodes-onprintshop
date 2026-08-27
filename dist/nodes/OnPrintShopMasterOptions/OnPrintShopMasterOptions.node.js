@@ -131,6 +131,10 @@ const masterOptionValues = [
     { displayName: 'Enable Associated Quantity', name: 'enable_assoc_qty', type: 'options', default: 0, options: yesNoOptions },
     { displayName: 'Allow Price Calculation', name: 'allow_price_cal', type: 'options', default: 0, options: yesNoOptions },
     { displayName: 'External Reference', name: 'external_ref', type: 'string', default: '' },
+    nestedFixedCollection('Admin Extra Fields', 'admin_extra_fields', 'field', 'Admin Extra Field', [
+        { displayName: 'Field Key', name: 'field_key', type: 'string', default: '', required: true },
+        { displayName: 'Field Value', name: 'field_value', type: 'string', default: '' },
+    ]),
     { displayName: 'Delete', name: 'delete', type: 'options', default: 0, options: yesNoOptions },
 ];
 const attributeValues = [
@@ -215,6 +219,7 @@ function normalizeNestedRows(row) {
     for (const [name, group] of [
         ['ranges', 'range'], ['prices', 'price'], ['opt_textbox_conditions', 'condition'],
         ['multipliers', 'multiplier'], ['attributes', 'attribute'], ['combinations', 'combination'],
+        ['admin_extra_fields', 'field'],
     ]) {
         if (normalized[name] && typeof normalized[name] === 'object' && !Array.isArray(normalized[name])) {
             normalized[name] = (0, OnPrintShopGraphqlRequest_1.rowsFromFixedCollection)(normalized[name], group).map(normalizeNestedRows);
@@ -526,7 +531,7 @@ class OnPrintShopMasterOptions {
                     const id = this.getNodeParameter('masterOptionId', itemIndex);
                     if (id)
                         variables.master_option_id = id;
-                    data = await request(`query productMasterOptions ($master_option_id: Int, $limit: Int, $offset: Int) { productMasterOptions (master_option_id: $master_option_id, limit: $limit, offset: $offset) { productMasterOptions { master_option_id production_description external_ref title description option_key pricing_method status sort_order options_type linear_formula formula weight_setting price_range_lookup additional_lookup_details hide_from_calc enable_assoc_qty allow_price_cal hire_designer_option required display_in_calculator option_position desc_position display_above_size presentation_group prod_add_opt_export_group_id exclude_setup_cost_reorder master_option_tag attributes } totalProductMasterOptions currentCount } }`, variables, itemIndex);
+                    data = await request(`query productMasterOptions ($master_option_id: Int, $limit: Int, $offset: Int) { productMasterOptions (master_option_id: $master_option_id, limit: $limit, offset: $offset) { productMasterOptions { master_option_id production_description external_ref title description option_key pricing_method status sort_order options_type linear_formula formula weight_setting price_range_lookup additional_lookup_details hide_from_calc enable_assoc_qty allow_price_cal hire_designer_option required display_in_calculator option_position desc_position display_above_size presentation_group prod_add_opt_export_group_id exclude_setup_cost_reorder master_option_tag attributes admin_extra_fields } totalProductMasterOptions currentCount } }`, variables, itemIndex);
                     result = requiredResult(data, 'productMasterOptions', this.getNode(), itemIndex);
                 }
                 else if (resource === 'masterOption' && operation === 'set') {

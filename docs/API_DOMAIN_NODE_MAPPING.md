@@ -7,10 +7,10 @@ This document maps the current OnPrintShop Postman GraphQL collection to the reo
 | Field | Value |
 | --- | --- |
 | Collection source | OnPrintShop public Postman documentation and local collection snapshot |
-| Collection SHA-256 | c5e448a90f015ce016bb4e753346fd79f6383531ef1c2b769ad25849c4c1c6b8 |
-| GraphQL operations found | 88 |
-| Mapped operations | 88 |
-| First-class domain actions | 88 |
+| Collection SHA-256 | a0b4ef0e62f1a5074a9abe1e8744e3f773c4b9798e7cb3869a876df35e6757ca |
+| GraphQL operations found | 92 |
+| Mapped operations | 92 |
+| First-class domain actions | 92 |
 | Raw GraphQL fallback actions | 0 |
 | Unmapped operations | 0 |
 | Stale assignments | 0 |
@@ -25,7 +25,7 @@ This document maps the current OnPrintShop Postman GraphQL collection to the reo
 | OnPrintShop Inventory | onPrintShopInventory | Product stock, stock lists, and master-option stock |
 | OnPrintShop Orders | onPrintShopOrders | Orders, order products, shipments, batches, quotes, and statuses |
 | OnPrintShop Customers | onPrintShopCustomers | Customers and customer addresses |
-| OnPrintShop Store Admin | onPrintShopStoreAdmin | Stores, departments, countries, FAQs, markups, payment terms, and reference data |
+| OnPrintShop Store Admin | onPrintShopStoreAdmin | Stores, store locations, admin extra fields, departments, countries, FAQs, markups, payment terms, and reference data |
 | OnPrintShop GraphQL | onPrintShopGraphql | Raw GraphQL fallback for contract rows not yet modeled as first-class actions |
 
 The legacy `OnPrintShop` node remains registered as `onPrintShop` for existing workflows. The domain nodes are additive; they do not rewrite saved workflow node types or parameter values.
@@ -34,7 +34,7 @@ The legacy `OnPrintShop` node remains registered as `onPrintShop` for existing w
 
 | Coverage | Count | Meaning |
 | --- | --- | --- |
-| first-class | 88 | The operation is available as a focused domain-node action and was verified against compiled node metadata. |
+| first-class | 92 | The operation is available as a focused domain-node action and was verified against compiled node metadata. |
 | raw-graphql | 0 | The operation is assigned to `OnPrintShop GraphQL` until a dedicated UI action is added. |
 | unmapped | 0 | The collection contains an operation without an explicit assignment. This must be fixed before accepting an API update. |
 
@@ -83,53 +83,57 @@ The legacy `OnPrintShop` node remains registered as `onPrintShop` for existing w
 | 39 | query | faq | Queries / FAQ / FAQs | OnPrintShop Store Admin | OnPrintShop Store Admin | faq.getMany | first-class | verified |  |
 | 40 | query | getFaqCategory | Queries / FAQ / FAQs Category | OnPrintShop Store Admin | OnPrintShop Store Admin | faqCategory.getAll | first-class | verified |  |
 | 41 | query | getCountries | Queries / Countries | OnPrintShop Store Admin | OnPrintShop Store Admin | countries.getAll | first-class | verified |  |
-| 42 | query | getPaymentTermMaster | Queries / Get Payment Terms | OnPrintShop Store Admin | OnPrintShop Store Admin | paymentTerms.getAll | first-class | verified |  |
-| 43 | query | faq | Queries / TEST | OnPrintShop Store Admin | OnPrintShop Store Admin | faq.getMany | first-class | verified |  |
-| 44 | mutation | setProductOptionRules | Mutations / Products / Master Options / Set Master Option Rules | OnPrintShop Master Options | OnPrintShop Master Options | rule.set | first-class | verified |  |
-| 45 | mutation | setCustomFormula | Mutations / Products / Master Options / Set Option Formulas | OnPrintShop Master Options | OnPrintShop Master Options | formula.set | first-class | verified |  |
-| 46 | mutation | setOptionGroup | Mutations / Products / Master Options / Set Option Group | OnPrintShop Master Options | OnPrintShop Master Options | optionGroup.set | first-class | verified |  |
-| 47 | mutation | setMasterOptionTag | Mutations / Products / Master Options / Set Master Option Tags | OnPrintShop Master Options | OnPrintShop Master Options | tag.set | first-class | verified |  |
-| 48 | mutation | setMasterOptionAttributes | Mutations / Products / Master Options / Set Master option attributes | OnPrintShop Master Options | OnPrintShop Master Options | attribute.set | first-class | verified |  |
-| 49 | mutation | setMasterOptionRange | Mutations / Products / Master Options / Set Master option range | OnPrintShop Master Options | OnPrintShop Master Options | range.set | first-class | verified |  |
-| 50 | mutation | setMasterOptionAttributePrice | Mutations / Products / Master Options / Set Master option Attribute price | OnPrintShop Master Options | OnPrintShop Master Options | attributePrice.set | first-class | verified |  |
-| 51 | mutation | setMasterOption | Mutations / Products / Master Options / Set Master option | OnPrintShop Master Options | OnPrintShop Master Options | masterOption.set | first-class | verified |  |
-| 52 | mutation | addMasterOptionStockConfig | Mutations / Products / Master Options / Set Master Option Stock | OnPrintShop Master Options | OnPrintShop Master Options | stock.addConfig | first-class | verified |  |
-| 53 | mutation | deleteMasterOptionStockConfig | Mutations / Products / Master Options / Delete Master Option Stock | OnPrintShop Master Options | OnPrintShop Master Options | stock.deleteConfig | first-class | verified |  |
-| 54 | mutation | updateMasterOptionStock | Mutations / Products / Master Options / Credit/Debit Master Option Stock | OnPrintShop Master Options | OnPrintShop Master Options | stock.updateStock | first-class | verified |  |
-| 55 | mutation | setMasterOptionStockSettings | Mutations / Products / Master Options / Set Master Option Stock Setting | OnPrintShop Master Options | OnPrintShop Master Options | stock.setSettings | first-class | verified |  |
-| 56 | mutation | setProduct | Mutations / Products / Set Product | OnPrintShop Product Builder | OnPrintShop Product Builder | mutation.setProduct | first-class | verified |  |
-| 57 | mutation | setProductPrice | Mutations / Products / Set Product Price | OnPrintShop Product Builder | OnPrintShop Product Builder | mutation.setProductPrice | first-class | verified |  |
-| 58 | mutation | setProductSize | Mutations / Products / Set Product Size | OnPrintShop Product Builder | OnPrintShop Product Builder | mutation.setProductSize | first-class | verified |  |
-| 59 | mutation | setProductPages | Mutations / Products / Set Product Pages | OnPrintShop Product Builder | OnPrintShop Product Builder | mutation.setProductPages | first-class | verified |  |
-| 60 | mutation | setProductsImageGallery | Mutations / Products / Set Product Image Gallery | OnPrintShop Product Builder | OnPrintShop Product Builder | mutation.setProductImage | first-class | verified |  |
-| 61 | mutation | setAdditionalOption | Mutations / Products / Set Product Additional Option | OnPrintShop Product Builder | OnPrintShop Product Builder | mutation.setAdditionalOption | first-class | verified |  |
-| 62 | mutation | setProductSku | Mutations / Products / Set Product SKU | OnPrintShop Product Builder | OnPrintShop Product Builder | mutation.setProductSku | first-class | verified |  |
-| 63 | mutation | setAdditionalOptionAttributes | Mutations / Products / Set Product Additional Option  Attribute | OnPrintShop Product Builder | OnPrintShop Product Builder | mutation.setAdditionalOptionAttributes | first-class | verified |  |
-| 64 | mutation | setProductsAttributePrice | Mutations / Products / Set Product Additional Option Attribute Price | OnPrintShop Product Builder | OnPrintShop Product Builder | mutation.setProductsAttributePrice | first-class | verified |  |
-| 65 | mutation | setQuantityBasedAttributePrice | Mutations / Products / Set Quantity Based Attribute Price | OnPrintShop Product Builder | OnPrintShop Product Builder | mutation.setQuantityBasedAttributePrice | first-class | verified |  |
-| 66 | mutation | updateProductStock | Mutations / Products / Update Product Stock | OnPrintShop Inventory | OnPrintShop Inventory | product.updateStock | first-class | verified |  |
-| 67 | mutation | setAssignOptions | Mutations / Products / Assign Options | OnPrintShop Product Builder | OnPrintShop Product Builder | mutation.assignOptions | first-class | verified |  |
-| 68 | mutation | setProductCategory | Mutations / Products / Set Product Category | OnPrintShop Product Builder | OnPrintShop Product Builder | mutation.setProductCategory | first-class | verified |  |
-| 69 | mutation | updateOrderStatus | Mutations / Orders / Update Order or Order Product Status | OnPrintShop Orders | OnPrintShop Orders | mutation.updateOrderStatus | first-class | verified |  |
-| 70 | mutation | setShipment | Mutations / Orders / Set Shipment | OnPrintShop Orders | OnPrintShop Orders | mutation.setShipment | first-class | verified |  |
-| 71 | mutation | setOrderProduct | Mutations / Orders / Set Order Product | OnPrintShop Orders | OnPrintShop Orders | mutation.setOrderProduct | first-class | verified |  |
-| 72 | mutation | setOrderProduct | Mutations / Orders / Set Order Product Extra info only | OnPrintShop Orders | OnPrintShop Orders | mutation.setOrderProduct | first-class | verified |  |
-| 73 | mutation | setBatch | Mutations / Orders / Set Batch | OnPrintShop Orders | OnPrintShop Orders | mutation.setBatch | first-class | verified |  |
-| 74 | mutation | setOrder | Mutations / Orders / Set Order | OnPrintShop Orders | OnPrintShop Orders | mutation.setOrder | first-class | verified |  |
-| 75 | mutation | modifyOrderProduct | Mutations / Orders / Modify Order Product | OnPrintShop Orders | OnPrintShop Orders | mutation.modifyOrderProduct | first-class | verified |  |
-| 76 | mutation | setOrderProductImage | Mutations / Orders / Update Order Product Images | OnPrintShop Orders | OnPrintShop Orders | mutation.updateOrderProductImages | first-class | verified |  |
-| 77 | mutation | setProductDesign | Mutations / Orders / Set Product Design | OnPrintShop Orders | OnPrintShop Orders | mutation.setProductDesign | first-class | verified |  |
-| 78 | mutation | notifyUser | Mutations / Customers / Notify User | OnPrintShop Customers | OnPrintShop Customers | notification.send | first-class | verified |  |
-| 79 | mutation | setCustomer | Mutations / Customers / Set Customer | OnPrintShop Customers | OnPrintShop Customers | customer.create | first-class | verified | Customer create and update both call the setCustomer GraphQL mutation |
-| 80 | mutation | setCustomerAddressDetail | Mutations / Customers / Set Customer Address | OnPrintShop Customers | OnPrintShop Customers | customerAddress.set | first-class | verified |  |
-| 81 | mutation | setUserBasket | Mutations / Customers / Set User Basket | OnPrintShop Customers | OnPrintShop Customers | basket.set | first-class | verified |  |
-| 82 | mutation | setStoreAddress | Mutations / Store / Set Store Address | OnPrintShop Store Admin | OnPrintShop Store Admin | mutation.setStoreAddress | first-class | verified |  |
-| 83 | mutation | setDepartment | Mutations / Store / Set Department | OnPrintShop Store Admin | OnPrintShop Store Admin | mutation.setDepartment | first-class | verified |  |
-| 84 | mutation | setStore | Mutations / Store / Set Store | OnPrintShop Store Admin | OnPrintShop Store Admin | mutation.setStore | first-class | verified |  |
-| 85 | mutation | setStoreMarkup | Mutations / Store / Set Markup Master | OnPrintShop Store Admin | OnPrintShop Store Admin | mutation.setStoreMarkup | first-class | verified |  |
-| 86 | mutation | setQuote | Mutations / Quote / Set Quote | OnPrintShop Orders | OnPrintShop Orders | mutation.setQuote | first-class | verified |  |
-| 87 | mutation | setFaqCategory | Mutations / FAQ / Set FAQ Category | OnPrintShop Store Admin | OnPrintShop Store Admin | mutation.setFaqCategory | first-class | verified |  |
-| 88 | mutation | setFaq | Mutations / FAQ / Set FAQ | OnPrintShop Store Admin | OnPrintShop Store Admin | faq.set | first-class | verified |  |
+| 42 | query | adminExtraFields | Queries / Get Admin Extra Fields | OnPrintShop Store Admin | OnPrintShop Store Admin | adminExtraField.getMany | first-class | verified |  |
+| 43 | query | getStoreLocations | Queries / Get Store Locations | OnPrintShop Store Admin | OnPrintShop Store Admin | storeLocation.getMany | first-class | verified |  |
+| 44 | query | getPaymentTermMaster | Queries / Get Payment Terms | OnPrintShop Store Admin | OnPrintShop Store Admin | paymentTerms.getAll | first-class | verified |  |
+| 45 | query | faq | Queries / TEST | OnPrintShop Store Admin | OnPrintShop Store Admin | faq.getMany | first-class | verified |  |
+| 46 | mutation | setProductOptionRules | Mutations / Products / Master Options / Set Master Option Rules | OnPrintShop Master Options | OnPrintShop Master Options | rule.set | first-class | verified |  |
+| 47 | mutation | setCustomFormula | Mutations / Products / Master Options / Set Option Formulas | OnPrintShop Master Options | OnPrintShop Master Options | formula.set | first-class | verified |  |
+| 48 | mutation | setOptionGroup | Mutations / Products / Master Options / Set Option Group | OnPrintShop Master Options | OnPrintShop Master Options | optionGroup.set | first-class | verified |  |
+| 49 | mutation | setMasterOptionTag | Mutations / Products / Master Options / Set Master Option Tags | OnPrintShop Master Options | OnPrintShop Master Options | tag.set | first-class | verified |  |
+| 50 | mutation | setMasterOptionAttributes | Mutations / Products / Master Options / Set Master option attributes | OnPrintShop Master Options | OnPrintShop Master Options | attribute.set | first-class | verified |  |
+| 51 | mutation | setMasterOptionRange | Mutations / Products / Master Options / Set Master option range | OnPrintShop Master Options | OnPrintShop Master Options | range.set | first-class | verified |  |
+| 52 | mutation | setMasterOptionAttributePrice | Mutations / Products / Master Options / Set Master option Attribute price | OnPrintShop Master Options | OnPrintShop Master Options | attributePrice.set | first-class | verified |  |
+| 53 | mutation | setMasterOption | Mutations / Products / Master Options / Set Master option | OnPrintShop Master Options | OnPrintShop Master Options | masterOption.set | first-class | verified |  |
+| 54 | mutation | addMasterOptionStockConfig | Mutations / Products / Master Options / Set Master Option Stock | OnPrintShop Master Options | OnPrintShop Master Options | stock.addConfig | first-class | verified |  |
+| 55 | mutation | deleteMasterOptionStockConfig | Mutations / Products / Master Options / Delete Master Option Stock | OnPrintShop Master Options | OnPrintShop Master Options | stock.deleteConfig | first-class | verified |  |
+| 56 | mutation | updateMasterOptionStock | Mutations / Products / Master Options / Credit/Debit Master Option Stock | OnPrintShop Master Options | OnPrintShop Master Options | stock.updateStock | first-class | verified |  |
+| 57 | mutation | setMasterOptionStockSettings | Mutations / Products / Master Options / Set Master Option Stock Setting | OnPrintShop Master Options | OnPrintShop Master Options | stock.setSettings | first-class | verified |  |
+| 58 | mutation | setProduct | Mutations / Products / Set Product | OnPrintShop Product Builder | OnPrintShop Product Builder | mutation.setProduct | first-class | verified |  |
+| 59 | mutation | setProductPrice | Mutations / Products / Set Product Price | OnPrintShop Product Builder | OnPrintShop Product Builder | mutation.setProductPrice | first-class | verified |  |
+| 60 | mutation | setProductSize | Mutations / Products / Set Product Size | OnPrintShop Product Builder | OnPrintShop Product Builder | mutation.setProductSize | first-class | verified |  |
+| 61 | mutation | setProductPages | Mutations / Products / Set Product Pages | OnPrintShop Product Builder | OnPrintShop Product Builder | mutation.setProductPages | first-class | verified |  |
+| 62 | mutation | setProductsImageGallery | Mutations / Products / Set Product Image Gallery | OnPrintShop Product Builder | OnPrintShop Product Builder | mutation.setProductImage | first-class | verified |  |
+| 63 | mutation | setAdditionalOption | Mutations / Products / Set Product Additional Option | OnPrintShop Product Builder | OnPrintShop Product Builder | mutation.setAdditionalOption | first-class | verified |  |
+| 64 | mutation | setProductSku | Mutations / Products / Set Product SKU | OnPrintShop Product Builder | OnPrintShop Product Builder | mutation.setProductSku | first-class | verified |  |
+| 65 | mutation | setAdditionalOptionAttributes | Mutations / Products / Set Product Additional Option  Attribute | OnPrintShop Product Builder | OnPrintShop Product Builder | mutation.setAdditionalOptionAttributes | first-class | verified |  |
+| 66 | mutation | setProductsAttributePrice | Mutations / Products / Set Product Additional Option Attribute Price | OnPrintShop Product Builder | OnPrintShop Product Builder | mutation.setProductsAttributePrice | first-class | verified |  |
+| 67 | mutation | setQuantityBasedAttributePrice | Mutations / Products / Set Quantity Based Attribute Price | OnPrintShop Product Builder | OnPrintShop Product Builder | mutation.setQuantityBasedAttributePrice | first-class | verified |  |
+| 68 | mutation | updateProductStock | Mutations / Products / Update Product Stock | OnPrintShop Inventory | OnPrintShop Inventory | product.updateStock | first-class | verified |  |
+| 69 | mutation | setAssignOptions | Mutations / Products / Assign Options | OnPrintShop Product Builder | OnPrintShop Product Builder | mutation.assignOptions | first-class | verified |  |
+| 70 | mutation | setProductCategory | Mutations / Products / Set Product Category | OnPrintShop Product Builder | OnPrintShop Product Builder | mutation.setProductCategory | first-class | verified |  |
+| 71 | mutation | updateOrderStatus | Mutations / Orders / Update Order or Order Product Status | OnPrintShop Orders | OnPrintShop Orders | mutation.updateOrderStatus | first-class | verified |  |
+| 72 | mutation | setShipment | Mutations / Orders / Set Shipment | OnPrintShop Orders | OnPrintShop Orders | mutation.setShipment | first-class | verified |  |
+| 73 | mutation | setOrderProduct | Mutations / Orders / Set Order Product | OnPrintShop Orders | OnPrintShop Orders | mutation.setOrderProduct | first-class | verified |  |
+| 74 | mutation | setOrderProduct | Mutations / Orders / Set Order Product Extra info only | OnPrintShop Orders | OnPrintShop Orders | mutation.setOrderProduct | first-class | verified |  |
+| 75 | mutation | setBatch | Mutations / Orders / Set Batch | OnPrintShop Orders | OnPrintShop Orders | mutation.setBatch | first-class | verified |  |
+| 76 | mutation | setOrder | Mutations / Orders / Set Order | OnPrintShop Orders | OnPrintShop Orders | mutation.setOrder | first-class | verified |  |
+| 77 | mutation | modifyOrderProduct | Mutations / Orders / Modify Order Product | OnPrintShop Orders | OnPrintShop Orders | mutation.modifyOrderProduct | first-class | verified |  |
+| 78 | mutation | setOrderProductImage | Mutations / Orders / Update Order Product Images | OnPrintShop Orders | OnPrintShop Orders | mutation.updateOrderProductImages | first-class | verified |  |
+| 79 | mutation | setProductDesign | Mutations / Orders / Set Product Design | OnPrintShop Orders | OnPrintShop Orders | mutation.setProductDesign | first-class | verified |  |
+| 80 | mutation | notifyUser | Mutations / Customers / Notify User | OnPrintShop Customers | OnPrintShop Customers | notification.send | first-class | verified |  |
+| 81 | mutation | setCustomer | Mutations / Customers / Set Customer | OnPrintShop Customers | OnPrintShop Customers | customer.create | first-class | verified | Customer create and update both call the setCustomer GraphQL mutation |
+| 82 | mutation | setCustomerAddressDetail | Mutations / Customers / Set Customer Address | OnPrintShop Customers | OnPrintShop Customers | customerAddress.set | first-class | verified |  |
+| 83 | mutation | setUserBasket | Mutations / Customers / Set User Basket | OnPrintShop Customers | OnPrintShop Customers | basket.set | first-class | verified |  |
+| 84 | mutation | setStoreAddress | Mutations / Store / Set Store Address | OnPrintShop Store Admin | OnPrintShop Store Admin | mutation.setStoreAddress | first-class | verified |  |
+| 85 | mutation | setDepartment | Mutations / Store / Set Department | OnPrintShop Store Admin | OnPrintShop Store Admin | mutation.setDepartment | first-class | verified |  |
+| 86 | mutation | setStore | Mutations / Store / Set Store | OnPrintShop Store Admin | OnPrintShop Store Admin | mutation.setStore | first-class | verified |  |
+| 87 | mutation | setStoreMarkup | Mutations / Store / Set Markup Master | OnPrintShop Store Admin | OnPrintShop Store Admin | mutation.setStoreMarkup | first-class | verified |  |
+| 88 | mutation | setQuote | Mutations / Quote / Set Quote | OnPrintShop Orders | OnPrintShop Orders | mutation.setQuote | first-class | verified |  |
+| 89 | mutation | setFaqCategory | Mutations / FAQ / Set FAQ Category | OnPrintShop Store Admin | OnPrintShop Store Admin | mutation.setFaqCategory | first-class | verified |  |
+| 90 | mutation | setFaq | Mutations / FAQ / Set FAQ | OnPrintShop Store Admin | OnPrintShop Store Admin | faq.set | first-class | verified |  |
+| 91 | mutation | setAdminExtraField | Mutations / Set Admin Extra Fields | OnPrintShop Store Admin | OnPrintShop Store Admin | adminExtraField.set | first-class | verified |  |
+| 92 | mutation | setStoreLocation | Mutations / Set Store Location | OnPrintShop Store Admin | OnPrintShop Store Admin | storeLocation.set | first-class | verified |  |
 
 ## Update Procedure
 
