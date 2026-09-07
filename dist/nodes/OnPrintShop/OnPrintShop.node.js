@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OnPrintShop = void 0;
 const n8n_workflow_1 = require("n8n-workflow");
+const OnPrintShopGraphqlSyntax_1 = require("../OnPrintShopGraphqlSyntax");
+const OnPrintShopInputNormalization_1 = require("../OnPrintShopInputNormalization");
 const OnPrintShopHelp_1 = require("../OnPrintShopHelp");
 const OnPrintShopTokenManager_1 = require("../OnPrintShopTokenManager");
 const OPS_ROOT_FIELD_ALIASES = {
@@ -22,8 +24,8 @@ const OPS_ROOT_FIELD_ALIASES = {
     get_faq_category: 'getFaqCategory',
     get_payment_term_master: 'getPaymentTermMaster',
     get_quote: 'getQuote',
-    quoteproduct: 'quoteProduct',
-    storeaddress: 'storeAddress',
+    store_markup: 'storeMarkup',
+    faq_category: 'faqCategory',
     courirer_company_name: 'courier_company_name',
 };
 const OPS_RESPONSE_FIELD_ALIASES = {
@@ -102,9 +104,27 @@ function toCamelCaseKey(key) {
     return key.replace(/_([a-z0-9])/g, (_match, character) => character.toUpperCase());
 }
 function replaceGraphqlTokens(query, aliases) {
-    return Object.entries(aliases).reduce((currentQuery, [from, to]) => {
-        return currentQuery.replace(new RegExp(`\\b${from}\\b`, 'g'), to);
-    }, query);
+    let fieldDepth = 0;
+    return (0, OnPrintShopGraphqlSyntax_1.print)((0, OnPrintShopGraphqlSyntax_1.visit)((0, OnPrintShopGraphqlSyntax_1.parse)(query), {
+        Field: {
+            enter(field) {
+                fieldDepth++;
+                // Legacy roots and their result containers differ from nested product fields.
+                const name = fieldDepth <= 2 || field.name.value === 'courirer_company_name'
+                    ? aliases[field.name.value] : undefined;
+                return name ? { ...field, name: { ...field.name, value: name } } : undefined;
+            },
+            leave() { fieldDepth--; },
+        },
+        Variable(variable) {
+            const name = OPS_VARIABLE_ALIASES[variable.name.value];
+            return name ? { ...variable, name: { ...variable.name, value: name } } : undefined;
+        },
+        Argument(argument) {
+            const name = OPS_VARIABLE_ALIASES[argument.name.value];
+            return name ? { ...argument, name: { ...argument.name, value: name } } : undefined;
+        },
+    }));
 }
 function isPlainObject(value) {
     return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -129,29 +149,13 @@ function toNodeApiErrorResponse(error) {
         return error;
     return { message: getErrorMessage(error) };
 }
-function convertObjectKeys(value, aliases, convertCamelCase = false) {
-    if (Array.isArray(value)) {
-        return value.map((item) => convertObjectKeys(item, aliases, convertCamelCase));
-    }
-    if (!isPlainObject(value)) {
-        return value;
-    }
-    const converted = {};
-    for (const [key, nestedValue] of Object.entries(value)) {
-        const nextKey = aliases[key] || (convertCamelCase ? toSnakeCaseKey(key) : key);
-        converted[nextKey] = convertObjectKeys(nestedValue, aliases, convertCamelCase);
-    }
-    return converted;
-}
-function prepareVariablesForOpsSchema(variables) {
+function prepareVariablesForOpsSchema(query, variables) {
     const prepared = {};
     for (const [key, value] of Object.entries(variables || {})) {
-        const nextKey = OPS_VARIABLE_ALIASES[key] || toSnakeCaseKey(key);
-        prepared[nextKey] = key === 'input' || key === 'inputs'
-            ? convertObjectKeys(value, OPS_VARIABLE_ALIASES, true)
-            : value;
+        const nextKey = OPS_VARIABLE_ALIASES[key] || key;
+        prepared[nextKey] = value;
     }
-    return prepared;
+    return (0, OnPrintShopInputNormalization_1.normalizeOnPrintShopInputs)(query, prepared);
 }
 function parseJsonParameter(rawValue, parameterName, node, itemIndex) {
     try {
@@ -274,6 +278,7 @@ function readStoreResponsePage(responseData, node, itemIndex) {
 }
 class OnPrintShop {
     constructor() {
+        var _a, _b, _c;
         this.description = {
             displayName: 'OnPrintShop',
             name: 'onPrintShop',
@@ -1880,7 +1885,7 @@ class OnPrintShop {
                     type: 'json',
                     required: true,
                     displayOptions: { show: { resource: ['mutation'], operation: ['setMasterOptionRules'] } },
-                    default: '{\n  "rule_id": 0,\n  "rule_name": "TEST rule",\n  "rule_type": "param_additional_option_based",\n  "source_option_attribute_ids": "151_316,237_0,456_0",\n  "hide_option_ids": "",\n  "hide_option_attribute_ids": "391,1112,1113,1114,1115",\n  "status": "0",\n  "custom_param": "area",\n  "rules_quantity_select": "0",\n  "custom_param_val": 1,\n  "custom_param_val_to": 100,\n  "sort_order": 99999,\n  "hide_size_ids": "",\n  "opt_textbox_conditions": [\n    {\n      "opt_key": "237_0",\n      "opt_comparison": "<=>",\n      "opt_val_from": 1,\n      "opt_val_to": 100\n    }\n  ],\n  "condition": "AND",\n  "disabled_for_admin": "0",\n  "delete": 0\n}',
+                    default: '{\n  "rule_id": 0,\n  "rule_name": "TEST rule",\n  "rule_type": "param_additional_option_based",\n  "source_option_ids": "",\n  "source_attribute_ids": "",\n  "hide_option_ids": "",\n  "hide_option_attribute_ids": "391,1112,1113,1114,1115",\n  "status": "0",\n  "custom_param": "area",\n  "rules_quantity_select": "0",\n  "custom_param_val": 1,\n  "custom_param_val_to": 100,\n  "sort_order": 99999,\n  "hide_size_ids": "",\n  "opt_textbox_conditions": [\n    {\n      "opt_key": "237_0",\n      "opt_comparison": "<=>",\n      "opt_val_from": 1,\n      "opt_val_to": 100\n    }\n  ],\n  "condition": "AND",\n  "disabled_for_admin": "0",\n  "delete": 0\n}',
                     description: 'ProductOptionRulesInput JSON object',
                 },
                 // Mutation: Set Product Option Rules
@@ -1890,7 +1895,7 @@ class OnPrintShop {
                     type: 'json',
                     required: true,
                     displayOptions: { show: { resource: ['mutation'], operation: ['setProductOptionRules'] } },
-                    default: '{\n  "rule_id": 0,\n  "rule_name": "TEST rule",\n  "rule_type": "param_additional_option_based",\n  "source_option_attribute_ids": "151_316,237_0,456_0",\n  "hide_option_ids": "",\n  "hide_option_attribute_ids": "391,1112,1113,1114,1115",\n  "status": "0",\n  "custom_param": "area",\n  "rules_quantity_select": "0",\n  "custom_param_val": 1,\n  "custom_param_val_to": 100,\n  "sort_order": 99999,\n  "hide_size_ids": "",\n  "opt_textbox_conditions": [\n    {\n      "opt_key": "237_0",\n      "opt_comparison": "<=>",\n      "opt_val_from": 1,\n      "opt_val_to": 100\n    }\n  ],\n  "condition": "AND",\n  "disabled_for_admin": "0",\n  "delete": 0\n}',
+                    default: '{\n  "rule_id": 0,\n  "rule_name": "TEST rule",\n  "rule_type": "param_additional_option_based",\n  "source_option_ids": "",\n  "source_attribute_ids": "",\n  "hide_option_ids": "",\n  "hide_option_attribute_ids": "391,1112,1113,1114,1115",\n  "status": "0",\n  "custom_param": "area",\n  "rules_quantity_select": "0",\n  "custom_param_val": 1,\n  "custom_param_val_to": 100,\n  "sort_order": 99999,\n  "hide_size_ids": "",\n  "opt_textbox_conditions": [\n    {\n      "opt_key": "237_0",\n      "opt_comparison": "<=>",\n      "opt_val_from": 1,\n      "opt_val_to": 100\n    }\n  ],\n  "condition": "AND",\n  "disabled_for_admin": "0",\n  "delete": 0\n}',
                     description: 'ProductOptionRulesInput JSON object',
                 },
                 // Mutation: Set Option Formulas
@@ -2779,14 +2784,14 @@ class OnPrintShop {
                             options: [
                                 {
                                     name: 'Registration Date',
-                                    value: 'REGISTRATION',
+                                    value: 'registration',
                                 },
                                 {
-                                    name: 'Last Modified',
-                                    value: 'MODIFIED',
+                                    name: 'Last Login',
+                                    value: 'login',
                                 },
                             ],
-                            default: 'REGISTRATION',
+                            default: 'registration',
                             description: 'Type of date to filter by',
                         },
                         {
@@ -5257,7 +5262,6 @@ class OnPrintShop {
                         { name: 'Additional Lookup Details', value: 'additional_lookup_details' },
                         { name: 'Allow Price Cal', value: 'allow_price_cal' },
                         { name: 'Attributes', value: 'attributes' },
-                        { name: 'Custom Lookup', value: 'custom_lookup' },
                         { name: 'Description', value: 'description' },
                         { name: 'Enable Assoc Qty', value: 'enable_assoc_qty' },
                         { name: 'External Ref', value: 'external_ref' },
@@ -5343,7 +5347,6 @@ class OnPrintShop {
                         { name: 'Additional Lookup Details', value: 'additional_lookup_details' },
                         { name: 'Allow Price Cal', value: 'allow_price_cal' },
                         { name: 'Attributes', value: 'attributes' },
-                        { name: 'Custom Lookup', value: 'custom_lookup' },
                         { name: 'Description', value: 'description' },
                         { name: 'Enable Assoc Qty', value: 'enable_assoc_qty' },
                         { name: 'External Ref', value: 'external_ref' },
@@ -6306,6 +6309,40 @@ class OnPrintShop {
                 },
             ],
         };
+        for (const [resource, operation, fields] of [
+            ['store', 'getCountries', ['countries_id', 'status', 'limit', 'offset']],
+            ['store', 'storeAddress', ['corporate_id', 'corporate_address_id', 'limit', 'offset']],
+            ['shipToMultipleAddress', 'shipToMultipleAddress', ['order_id']],
+        ]) {
+            for (const field of fields) {
+                const defaultValue = field === 'limit' ? 50 : field === 'status' ? 1 : 0;
+                this.description.properties.push({
+                    displayName: field.split('_').map(part => part === 'id' ? 'ID' : part[0].toUpperCase() + part.slice(1)).join(' '),
+                    name: `${operation}_${field}`, type: 'number',
+                    default: defaultValue,
+                    required: field === 'order_id',
+                    typeOptions: { minValue: field === 'limit' || field === 'order_id' ? 1 : 0 },
+                    displayOptions: { show: { resource: [resource], operation: [operation] } },
+                    description: field === 'limit' ? 'Max number of results to return' : field === 'order_id' ? 'Order ID required by OnPrintShop to retrieve delivery addresses' : `Filter or pagination value for ${field}`,
+                });
+            }
+        }
+        // Legacy action aliases must expose the same inputs as their canonical actions.
+        for (const [resource, operation, sourceResource, sourceOperation] of [
+            ['store', 'setStore', 'mutation', 'setStore'],
+            ['store', 'setStoreAddress', 'mutation', 'setStoreAddress'],
+            ['department', 'setDepartment', 'mutation', 'setDepartment'],
+            ['faq', 'getMany', 'product', 'getManyFAQs'],
+        ]) {
+            for (const property of [...this.description.properties]) {
+                if (property.name === 'operation' || !((_a = getShowValues(property, 'resource')) === null || _a === void 0 ? void 0 : _a.includes(sourceResource))
+                    || !((_b = getShowValues(property, 'operation')) === null || _b === void 0 ? void 0 : _b.includes(sourceOperation)))
+                    continue;
+                const copy = JSON.parse(JSON.stringify(property));
+                copy.displayOptions = { ...copy.displayOptions, show: { ...(_c = copy.displayOptions) === null || _c === void 0 ? void 0 : _c.show, resource: [resource], operation: [operation] } };
+                this.description.properties.push(copy);
+            }
+        }
         this.description = (0, OnPrintShopHelp_1.addOnPrintShopHelp)(this.description);
     }
     async execute() {
@@ -6320,8 +6357,9 @@ class OnPrintShop {
             const query = String(body.query || '');
             const variables = (body.variables || {});
             const aliases = { ...OPS_ROOT_FIELD_ALIASES, ...OPS_VARIABLE_ALIASES };
-            const preparedQuery = replaceGraphqlTokens(query, aliases);
-            const preparedVariables = prepareVariablesForOpsSchema(variables);
+            const isRaw = this.getNodeParameter('resource', 0) === 'graphql';
+            const preparedQuery = isRaw ? query : replaceGraphqlTokens(query, aliases);
+            const preparedVariables = isRaw ? variables : prepareVariablesForOpsSchema(preparedQuery, variables);
             const sendRequest = async () => await this.helpers.httpRequest({
                 method: 'POST',
                 url: `${baseUrl}/api/`,
@@ -6879,14 +6917,19 @@ class OnPrintShop {
                 }
                 if (resource === 'shipToMultipleAddress' && operation === 'getAll') {
                     const queryParameters = this.getNodeParameter('queryParameters', i);
+                    if (!Number.isInteger(Number(queryParameters.orders_id)) || Number(queryParameters.orders_id) <= 0) {
+                        throw new n8n_workflow_1.NodeOperationError(this.getNode(), 'Set a positive Orders ID in Query Parameters to retrieve ship-to-multiple addresses', { itemIndex: i });
+                    }
                     const stmFieldsSelected = getFieldSelection('stmFields');
                     const fetchAllPages = this.getNodeParameter('fetchAllPages', i, false) || false;
-                    const stmFields = stmFieldsSelected.filter(f => !f.startsWith('SELECT_') && f !== 'DESELECT_ALL' && f !== 'SEPARATOR').join('\n\t\t\t\t\t\t\t');
+                    const stmFields = stmFieldsSelected.filter(f => !f.startsWith('SELECT_') && f !== 'DESELECT_ALL' && f !== 'SEPARATOR')
+                        .map(f => f.startsWith('stm_') ? `${f}: ship_to_multiple_address_delivery_${f.slice(4)}` : f).join('\n');
                     const query = `
-						query orders ($orders_id: Int, $limit: Int, $offset: Int) {
-							orders (orders_id: $orders_id, limit: $limit, offset: $offset) {
-								orders { ship_to_multiple_detail { ${stmFields} } }
-								totalOrders
+						query shipToMultipleAddress ($orders_id: Int, $limit: Int, $offset: Int) {
+							shipToMultipleAddress (order_id: $orders_id, limit: $limit, offset: $offset) {
+								shipToMultipleAddress { ${stmFields} }
+								totalShipToMultipleAddresses
+								currentCount
 							}
 						}
 					`;
@@ -6904,15 +6947,12 @@ class OnPrintShop {
                             if (queryParameters.orders_id)
                                 variables.orders_id = Number(queryParameters.orders_id);
                             const responseData = await requestGraphql({ query: query.trim(), variables });
-                            if (responseData && responseData.data && responseData.data.orders) {
-                                const orders = responseData.data.orders.orders || [];
-                                for (const o of orders) {
-                                    if (o && o.ship_to_multiple_detail)
-                                        results.push(o.ship_to_multiple_detail);
-                                }
+                            if (responseData && responseData.data && responseData.data.shipToMultipleAddress) {
+                                const addresses = responseData.data.shipToMultipleAddress.shipToMultipleAddress || [];
+                                results.push(...addresses);
                                 offset += pageSize;
                                 pageCount++;
-                                hasMorePages = orders.length === pageSize;
+                                hasMorePages = addresses.length === pageSize;
                                 const responseTime = Date.now() - requestStartTime;
                                 if (responseTime < 100)
                                     adaptiveDelay = Math.max(25, adaptiveDelay * 0.8);
@@ -6939,12 +6979,8 @@ class OnPrintShop {
                         if (queryParameters.offset)
                             variables.offset = queryParameters.offset;
                         const responseData = await requestGraphql({ query: query.trim(), variables });
-                        if (responseData && responseData.data && responseData.data.orders) {
-                            const orders = responseData.data.orders.orders || [];
-                            for (const o of orders) {
-                                if (o && o.ship_to_multiple_detail)
-                                    returnData.push(o.ship_to_multiple_detail);
-                            }
+                        if (responseData && responseData.data && responseData.data.shipToMultipleAddress) {
+                            returnData.push(...(responseData.data.shipToMultipleAddress.shipToMultipleAddress || []));
                         }
                         else if (responseData && responseData.errors) {
                             throw new n8n_workflow_1.NodeOperationError(this.getNode(), `GraphQL Error: ${JSON.stringify(responseData.errors)}`, { itemIndex: i });
@@ -7041,20 +7077,14 @@ class OnPrintShop {
                 }
                 if (resource === 'status') {
                     const statusFieldsSelected = getFieldSelection('statusFields');
-                    const statusFields = statusFieldsSelected.filter(f => !f.startsWith('SELECT_') && f !== 'DESELECT_ALL' && f !== 'SEPARATOR').join('\n\t\t\t\t\t\t\t');
-                    if (operation === 'orderStatus') {
-                        const query = `query orderStatus { orderStatus { ${statusFields} } }`;
+                    const statusAliases = { id: 'id: process_status_id', title: 'title: process_status_title' };
+                    const statusFields = statusFieldsSelected.filter(f => !f.startsWith('SELECT_') && f !== 'DESELECT_ALL' && f !== 'SEPARATOR').map(f => statusAliases[f] || f).join('\n');
+                    if (operation === 'orderStatus' || operation === 'orderProductStatus') {
+                        // OPS exposes one catalog for both order and order-product statuses.
+                        const query = `query orderStatus { orderStatus { orderStatus { ${statusFields} } totalOrderStatus currentCount } }`;
                         const responseData = await requestGraphql({ query });
                         if (responseData && responseData.data && responseData.data.orderStatus)
-                            returnData.push(...responseData.data.orderStatus);
-                        else if (responseData && responseData.errors)
-                            throw new n8n_workflow_1.NodeOperationError(this.getNode(), `GraphQL Error: ${JSON.stringify(responseData.errors)}`, { itemIndex: i });
-                    }
-                    if (operation === 'orderProductStatus') {
-                        const query = `query orderProductStatus { orderProductStatus { ${statusFields} } }`;
-                        const responseData = await requestGraphql({ query });
-                        if (responseData && responseData.data && responseData.data.orderProductStatus)
-                            returnData.push(...responseData.data.orderProductStatus);
+                            returnData.push(...responseData.data.orderStatus.orderStatus);
                         else if (responseData && responseData.errors)
                             throw new n8n_workflow_1.NodeOperationError(this.getNode(), `GraphQL Error: ${JSON.stringify(responseData.errors)}`, { itemIndex: i });
                     }
@@ -7099,7 +7129,7 @@ class OnPrintShop {
                         variables.limit = limit;
                     if (offset)
                         variables.offset = offset;
-                    const query = `query get_quote ($quote_id: Int, $user_id: Int, $limit: Int, $offset: Int) { get_quote (quote_id: $quote_id, user_id: $user_id, limit: $limit, offset: $offset) { quote { quote_id user_id quote_title quote_price quote_vendor_price sort_order quote_status quote_date admin_notes quote_shipping_addr quote_billing_addr ship_amt quote_tax_exampt admin_extra_fields quoteproduct { isCustomProduct quote_products_id quote_id products_id products_title quote_products_quantity quote_products_price quote_products_vendor_price quote_products_info products_prd_day products_weight quote_product_sku quote_product_notes } } totalQuote } }`;
+                    const query = `query get_quote ($quote_id: Int, $user_id: Int, $limit: Int, $offset: Int) { get_quote (quote_id: $quote_id, user_id: $user_id, limit: $limit, offset: $offset) { quote { quote_id user_id quote_title quote_price quote_vendor_price sort_order quote_status quote_date admin_notes quote_shipping_addr quote_billing_addr ship_amt quote_tax_exampt admin_extra_fields quoteproduct { is_custom_product quote_products_id quote_id products_id products_title quote_products_quantity quote_products_price quote_products_vendor_price quote_products_info products_prd_day products_weight quote_product_sku quote_product_notes } } totalQuote } }`;
                     const responseData = await requestGraphql({ query, variables });
                     if (responseData && responseData.data && responseData.data.get_quote) {
                         const quotes = responseData.data.get_quote.quote || [];
@@ -7125,7 +7155,7 @@ class OnPrintShop {
                         variables.limit = limit;
                     if (offset)
                         variables.offset = offset;
-                    const query = `query quoteproduct ($quote_id: Int, $quote_products_id: Int, $limit: Int, $offset: Int) { quoteproduct (quote_id: $quote_id, quote_products_id: $quote_products_id, limit: $limit, offset: $offset) { quoteproduct { isCustomProduct quote_products_id quote_id products_id products_title quote_products_quantity quote_products_price quote_products_vendor_price quote_products_info products_prd_day products_weight quote_product_sku quote_product_notes } totalQuoteProduct } }`;
+                    const query = `query quoteproduct ($quote_id: Int, $quote_products_id: Int, $limit: Int, $offset: Int) { quoteproduct (quote_id: $quote_id, quote_products_id: $quote_products_id, limit: $limit, offset: $offset) { quoteproduct { is_custom_product quote_products_id quote_id products_id products_title quote_products_quantity quote_products_price quote_products_vendor_price quote_products_info products_prd_day products_weight quote_product_sku quote_product_notes } totalQuoteProduct } }`;
                     const responseData = await requestGraphql({ query, variables });
                     if (responseData && responseData.data && responseData.data.quoteproduct) {
                         const products = responseData.data.quoteproduct.quoteproduct || [];
@@ -7259,7 +7289,7 @@ class OnPrintShop {
                         variables.limit = limit;
                     if (offset)
                         variables.offset = offset;
-                    const query = `query get_faq_category ($faqcat_id: Int, $status: Int, $limit: Int, $offset: Int) { get_faq_category (faqcat_id: $faqcat_id, status: $status, limit: $limit, offset: $offset) { faq_category { faqcat_id faqcat_name status sort_order } totalFaqCategory } }`;
+                    const query = `query get_faq_category ($faqcat_id: Int, $status: Int, $limit: Int, $offset: Int) { get_faq_category (faqcat_id: $faqcat_id, status: $status, limit: $limit, offset: $offset) { faq_category { faqcat_id faq_category_name status sort_order } totalFaqCategory } }`;
                     const responseData = await requestGraphql({ query, variables });
                     if (responseData && responseData.data && responseData.data.get_faq_category) {
                         const categories = responseData.data.get_faq_category.faq_category || [];
@@ -7282,7 +7312,7 @@ class OnPrintShop {
                         variables.limit = limit;
                     if (offset)
                         variables.offset = offset;
-                    const query = `query get_store_markup ($corporate_markup_id: Int, $limit: Int, $offset: Int) { get_store_markup (corporate_markup_id: $corporate_markup_id, limit: $limit, offset: $offset) { storeMarkup { corporate_markup_id markup_title markup_percentage status } totalStoreMarkup } }`;
+                    const query = `query get_store_markup ($corporate_markup_id: Int, $limit: Int, $offset: Int) { get_store_markup (corporate_markup_id: $corporate_markup_id, limit: $limit, offset: $offset) { storeMarkup { corporate_markup_id markup_title markup_details status } totalStoreMarkup } }`;
                     const responseData = await requestGraphql({ query, variables });
                     if (responseData && responseData.data && responseData.data.get_store_markup) {
                         const markups = responseData.data.get_store_markup.storeMarkup || [];
@@ -7354,7 +7384,7 @@ class OnPrintShop {
                         variables.limit = limit;
                     if (offset)
                         variables.offset = offset;
-                    const query = `query getCustomFormula ($formula_id: Int, $limit: Int, $offset: Int) { getCustomFormula (formula_id: $formula_id, limit: $limit, offset: $offset) { customFormula { formula_id formula_name formula_expression } totalCustomFormula } }`;
+                    const query = `query getCustomFormula ($formula_id: Int, $limit: Int, $offset: Int) { getCustomFormula (formula_id: $formula_id, limit: $limit, offset: $offset) { customFormula { formula_id formula_label formula_syntax } totalCustomFormula } }`;
                     const responseData = await requestGraphql({ query, variables });
                     if (responseData && responseData.data && responseData.data.getCustomFormula) {
                         const formulas = responseData.data.getCustomFormula.customFormula || [];
@@ -7380,7 +7410,7 @@ class OnPrintShop {
                         variables.limit = limit;
                     if (offset)
                         variables.offset = offset;
-                    const query = `query getOptionGroup ($prod_add_opt_group_id: Int, $use_for: String, $limit: Int, $offset: Int) { getOptionGroup (prod_add_opt_group_id: $prod_add_opt_group_id, use_for: $use_for, limit: $limit, offset: $offset) { optionGroup { prod_add_opt_group_id group_name use_for } totalOptionGroup } }`;
+                    const query = `query getOptionGroup ($prod_add_opt_group_id: Int, $use_for: String, $limit: Int, $offset: Int) { getOptionGroup (prod_add_opt_group_id: $prod_add_opt_group_id, use_for: $use_for, limit: $limit, offset: $offset) { optionGroup { prod_add_opt_group_id opt_group_name use_for } totalOptionGroup } }`;
                     const responseData = await requestGraphql({ query, variables });
                     if (responseData && responseData.data && responseData.data.getOptionGroup) {
                         const groups = responseData.data.getOptionGroup.optionGroup || [];
@@ -7403,7 +7433,7 @@ class OnPrintShop {
                         variables.limit = limit;
                     if (offset)
                         variables.offset = offset;
-                    const query = `query get_payment_term_master ($term_id: Int, $limit: Int, $offset: Int) { get_payment_term_master (term_id: $term_id, limit: $limit, offset: $offset) { paymentTermMaster { term_id term_name term_days status } totalPaymentTermMaster } }`;
+                    const query = `query get_payment_term_master ($term_id: Int, $limit: Int, $offset: Int) { get_payment_term_master (term_id: $term_id, limit: $limit, offset: $offset) { paymentTermMaster { term_id term_title term_details status } totalPaymentTermMaster } }`;
                     const responseData = await requestGraphql({ query, variables });
                     if (responseData && responseData.data && responseData.data.get_payment_term_master) {
                         const terms = responseData.data.get_payment_term_master.paymentTermMaster || [];
@@ -7429,7 +7459,7 @@ class OnPrintShop {
                         variables.limit = limit;
                     if (offset)
                         variables.offset = offset;
-                    const query = `query storeaddress ($corporate_id: Int, $corporate_address_id: Int, $limit: Int, $offset: Int) { storeaddress (corporate_id: $corporate_id, corporate_address_id: $corporate_address_id, limit: $limit, offset: $offset) { storeAddress { corporate_address_id corporate_id address_name company street_address city state postcode country telephone is_default } totalStoreAddress } }`;
+                    const query = `query storeaddress ($corporate_id: Int, $corporate_address_id: Int, $limit: Int, $offset: Int) { storeaddress (corporate_id: $corporate_id, corporate_address_id: $corporate_address_id, limit: $limit, offset: $offset) { storeAddress: storeaddress { corporate_address_id corporate_id department_id receiver_name companyname corporate_address city state postcode country phone_number address_flag status } totalStoreAddress } }`;
                     const responseData = await requestGraphql({ query, variables });
                     if (responseData && responseData.data && responseData.data.storeaddress) {
                         const addresses = responseData.data.storeaddress.storeAddress || [];
@@ -7630,7 +7660,7 @@ class OnPrintShop {
                     if (operation === 'setMasterOptionRules' || operation === 'setProductOptionRules') {
                         const inputParameterName = operation === 'setProductOptionRules' ? 'setProductOptionRules_input' : 'setMasterOptionRules_input';
                         const input = JSON.parse(this.getNodeParameter(inputParameterName, i));
-                        const mutation = `mutation setProductOptionRules ($input: ProductOptionRulesInput!) { setProductOptionRules (input: $input) { result message rule_id } }`;
+                        const mutation = `mutation setProductOptionRules ($input: ProductOptionRulesInput!) { setProductOptionRules (input: $input) { result message rule_id: id id } }`;
                         const responseData = await requestGraphql({ query: mutation, variables: { input } });
                         if (responseData && responseData.data && responseData.data.setProductOptionRules)
                             returnData.push(responseData.data.setProductOptionRules);
@@ -8723,7 +8753,7 @@ class OnPrintShop {
                 master_option_id
                 attributes
             }
-        total_product_additional_options
+        totalProductAdditionalOptions
     }
 }`;
                     const responseData = await requestGraphql({ query: query, variables });
@@ -8753,7 +8783,7 @@ class OnPrintShop {
             attributes_price
             extra_page_price
         }
-        total_products_attribute_price
+        totalProductsAttributePrice
     }
 }`;
                     const responseData = await requestGraphql({ query: query, variables });
@@ -8765,6 +8795,9 @@ class OnPrintShop {
                 if (resource === "shipToMultipleAddress" && operation === "shipToMultipleAddress") {
                     const variables = {};
                     const order_id = this.getNodeParameter("shipToMultipleAddress_order_id", i);
+                    if (!Number.isInteger(Number(order_id)) || Number(order_id) <= 0) {
+                        throw new n8n_workflow_1.NodeOperationError(this.getNode(), 'Set a positive Order ID to retrieve ship-to-multiple addresses', { itemIndex: i });
+                    }
                     variables.order_id = order_id;
                     const query = `query shipToMultipleAddress ($order_id: Int) {
     shipToMultipleAddress (order_id: $order_id) {
@@ -9878,6 +9911,7 @@ class OnPrintShop {
                     };
                     // Filter out special options and separators
                     const productFields = productFieldsSelected
+                        .filter(field => field !== 'product_size' && field !== 'product_additional_options')
                         .filter(field => !field.startsWith('SELECT_ALL') && !field.startsWith('DESELECT_ALL') && field !== 'SEPARATOR')
                         .join('\n\t\t\t\t\t\t\t');
                     // Build nested product_size fields
@@ -10000,7 +10034,7 @@ class OnPrintShop {
 								product_category {
 									${categoryFields}
 								}
-								total_product_category_size
+								totalProductCategorySize
 							}
 						}
 					`;
@@ -10057,7 +10091,7 @@ class OnPrintShop {
 								product_category {
 									${categoryFields}
 								}
-								total_product_category_size
+								totalProductCategorySize
 							}
 						}
 					`;
@@ -10262,7 +10296,7 @@ class OnPrintShop {
                 if (resource === 'product' && operation === 'getMasterOptions') {
                     // Get product master options
                     const masterOptionIdStr = this.getNodeParameter('masterOptionId', i);
-                    const selectedFields = getFieldSelection('masterOptionsFields', []);
+                    const selectedFields = getFieldSelection('masterOptionsFields', []).filter(field => field !== 'custom_lookup');
                     // Validate Master Option ID is provided
                     if (!masterOptionIdStr || masterOptionIdStr.trim() === '') {
                         throw new n8n_workflow_1.NodeOperationError(this.getNode(), 'Master Option ID is required for Get Master Options operation', { itemIndex: i });
@@ -10277,7 +10311,7 @@ class OnPrintShop {
                         master_option_id: masterOptionId,
                     };
                     // Build fields string from selected fields
-                    const fieldsString = selectedFields.length > 0 ? selectedFields.join('\n\t\t\t\t\t\t') : 'master_option_id\ntitle\ndescription\noption_key\npricing_method\nstatus\nsort_order\noptions_type\nlinear_formula\nformula\nweight_setting\nprice_range_lookup\ncustom_lookup\nadditional_lookup_details\nhide_from_calc\nenable_assoc_qty\nallow_price_cal\nhire_designer_option\nexternal_ref\nattributes';
+                    const fieldsString = selectedFields.length > 0 ? selectedFields.join('\n\t\t\t\t\t\t') : 'master_option_id\ntitle\ndescription\noption_key\npricing_method\nstatus\nsort_order\noptions_type\nlinear_formula\nformula\nweight_setting\nprice_range_lookup\nadditional_lookup_details\nhide_from_calc\nenable_assoc_qty\nallow_price_cal\nhire_designer_option\nexternal_ref\nattributes';
                     // Build the GraphQL query for product master options
                     const query = `
 						query product_master_options ($master_option_id: Int!) {
@@ -10285,7 +10319,7 @@ class OnPrintShop {
 								product_master_options {
 									${fieldsString}
 								}
-								total_product_master_options
+								totalProductMasterOptions
 							}
 						}
 					`;
@@ -10327,7 +10361,7 @@ class OnPrintShop {
                 if (resource === 'product' && operation === 'getManyMasterOptions') {
                     // Get master options for many products
                     const queryParameters = this.getNodeParameter('queryParametersManyMasterOptions', i);
-                    const selectedFields = getFieldSelection('masterOptionsFieldsMany', []);
+                    const selectedFields = getFieldSelection('masterOptionsFieldsMany', []).filter(field => field !== 'custom_lookup');
                     // Build variables object
                     const variables = {};
                     if (queryParameters.master_option_id)
@@ -10337,7 +10371,7 @@ class OnPrintShop {
                     if (queryParameters.offset)
                         variables.offset = queryParameters.offset;
                     // Build fields string from selected fields
-                    const fieldsString = selectedFields.length > 0 ? selectedFields.join('\n\t\t\t\t\t\t') : 'master_option_id\ntitle\ndescription\noption_key\npricing_method\nstatus\nsort_order\noptions_type\nlinear_formula\nformula\nweight_setting\nprice_range_lookup\ncustom_lookup\nadditional_lookup_details\nhide_from_calc\nenable_assoc_qty\nallow_price_cal\nhire_designer_option\nexternal_ref\nattributes';
+                    const fieldsString = selectedFields.length > 0 ? selectedFields.join('\n\t\t\t\t\t\t') : 'master_option_id\ntitle\ndescription\noption_key\npricing_method\nstatus\nsort_order\noptions_type\nlinear_formula\nformula\nweight_setting\nprice_range_lookup\nadditional_lookup_details\nhide_from_calc\nenable_assoc_qty\nallow_price_cal\nhire_designer_option\nexternal_ref\nattributes';
                     // Build the GraphQL query for many product master options
                     const query = `
 					query product_master_options ($master_option_id: Int, $limit: Int, $offset: Int) {
@@ -10345,7 +10379,7 @@ class OnPrintShop {
 							product_master_options {
 								${fieldsString}
 							}
-							total_product_master_options
+							totalProductMasterOptions
 						}
 					}
 				`;
@@ -10407,7 +10441,7 @@ class OnPrintShop {
 									rule_id
 									rule_name
 									rule_type
-									source_option_attribute_ids
+									source_attribute_ids
 									hide_option_ids
 									hide_option_attribute_ids
 									status
@@ -10415,7 +10449,7 @@ class OnPrintShop {
 									comparison_value
 									disabled_for_admin
 								}
-								total_product_option_rules
+								totalProductOptionRules
 							}
 						}
 					`;
@@ -10473,7 +10507,7 @@ class OnPrintShop {
 								rule_id
 								rule_name
 								rule_type
-								source_option_attribute_ids
+									source_attribute_ids
 								hide_option_ids
 								hide_option_attribute_ids
 								status
@@ -10481,7 +10515,7 @@ class OnPrintShop {
 								comparison_value
 								disabled_for_admin
 							}
-							total_product_option_rules
+							totalProductOptionRules
 						}
 					}
 				`;
@@ -10544,7 +10578,7 @@ class OnPrintShop {
 								user_type_id
 								corporate_id
 							}
-							total_product_price
+							totalProductPrice
 							currentCount
 						}
 					}
@@ -10609,7 +10643,7 @@ class OnPrintShop {
 								user_type_id
 								corporate_id
 							}
-							total_product_price
+							totalProductPrice
 							currentCount
 						}
 					}
@@ -10677,7 +10711,7 @@ class OnPrintShop {
 									to_range
 									site_admin_markup
 								}
-								total_product_option_price
+								totalProductOptionPrice
 							}
 						}
 					`;
@@ -10740,7 +10774,7 @@ class OnPrintShop {
 								to_range
 								site_admin_markup
 							}
-							total_product_option_price
+							totalProductOptionPrice
 						}
 					}
 				`;
@@ -11069,7 +11103,8 @@ class OnPrintShop {
                 throw new n8n_workflow_1.NodeOperationError(this.getNode(), getErrorMessage(error), { itemIndex: i });
             }
         }
-        return [this.helpers.returnJsonArray(returnData)];
+        // Batch mutations and nested order lists return arrays; n8n needs one object per item.
+        return [this.helpers.returnJsonArray(returnData.flat())];
     }
 }
 exports.OnPrintShop = OnPrintShop;

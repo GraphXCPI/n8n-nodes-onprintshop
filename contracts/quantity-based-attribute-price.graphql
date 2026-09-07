@@ -1,0 +1,17 @@
+# The Postman Quantity Based Attribute Price example contains a stale root.
+# Verified against the live schema on 2026-09-07; keep the supplied collection unchanged.
+query quantityBasedAttributePrice($price_id: Int, $attribute_id: Int, $limit: Int, $offset: Int) {
+  quantityBasedAttributePrice(price_id: $price_id, attribute_id: $attribute_id, limit: $limit, offset: $offset) {
+    quantityBasedAttributePrice {
+      price_id
+      attribute_id
+      size_from
+      size_to
+      qty
+      qty_to
+      attribute_price
+    }
+    totalQuantityBasedAttributePrice
+    currentCount
+  }
+}

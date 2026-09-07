@@ -1,0 +1,2392 @@
+type AccountSummary {
+  amount: Float
+  comments: String
+  date_added: String
+  department_id: Int
+  duedate: String
+  id: Int
+  paymethod: String
+  storeid: Int
+  term_title: String
+  type: String
+}
+
+type AccountSummaryData {
+  accountSummary: [AccountSummary]!
+  currentCount: Int
+  remainingInvoiceAmount: Float
+  remainingPaidLimit: Float
+  totalAccountSummary: Int
+}
+
+input AddMasterOptionStockConfigInput {
+  apply_to_all: Int
+  attributes: [AttributeStockInput]
+  combinations: [CombinationStockInput]
+  custom_multiplier: Int
+  default_stock: Int
+  multipliers: [MultiplierInput]
+  option_id: Int
+  stock_type: Int!
+}
+
+input AdditionalOptionAttributesInput {
+  attr_desc: String
+  attribute_id: Int
+  attribute_key: String
+  attributes_image: String
+  calculate_on_half_page_count: String
+  default_attribute: String
+  delete: Int
+  hex_color: String
+  label: String
+  master_attribute_id: Int
+  metadata: String
+  multiplier: Float
+  multiplier_type: String
+  op_statusid: Int
+  prod_add_opt_id: Int
+  setup_cost: Float
+  site_language_id: Int
+  sort_order: Int
+  status: String
+}
+
+type AdditionalOptionAttributesMutationResponse {
+  id: Int
+  index: Int
+  message: String
+  result: Boolean
+}
+
+input AdditionalOptionInput {
+  applicable_for: String
+  apply_multiplication: String
+  cover_option: String
+  custom_txtbox_opt_id: Int
+  delete: Int
+  description: String
+  display_above_size: Int
+  display_in_calculator: String
+  exclude_price: String
+  exclude_setup_cost_reorder: Int
+  hide_from_calc: String
+  hire_designer_option: String
+  master_option_id: Int
+  min_default_value: String
+  multiplier: Float
+  multiplier_type: String
+  option_key: String
+  options_code: String
+  options_type: String
+  price_calculate_type: String
+  prod_add_opt_export_group_id: Int
+  prod_add_opt_group_id: Int
+  prod_add_opt_id: Int
+  product_option_desc_position: String
+  product_option_position: String
+  products_id: Int
+  required: String
+  setup_cost: Float
+  size_id: Int
+  sort_order: Int
+  status: String
+  title: String
+}
+
+type AdditionalOptionMutationResponse {
+  id: Int
+  index: Int
+  message: String
+  result: Boolean
+}
+
+type AdminExtraField {
+  admin_extra_field_id: Int
+  attributes: [AdminExtraFieldAttribute]
+  available_to: String
+  default_value: String
+  description: String
+  field_key: String
+  field_type: String
+  regex: String
+  regex_error_message: String
+  sort_order: Int
+  status: String
+  title: String
+  validation_type: Int
+}
+
+type AdminExtraFieldAttribute {
+  admin_extra_field_id: Int
+  attribute_id: Int
+  default_attribute: Int
+  label: String
+  sort_order: Int
+  status: String
+}
+
+input AdminExtraFieldAttributeInput {
+  attribute_id: Int
+  default_attribute: Int
+  delete: Int
+  label: String
+  sort_order: Int
+  status: String
+}
+
+input AdminExtraFieldInput {
+  admin_extra_field_id: Int
+  attributes: [AdminExtraFieldAttributeInput]
+  available_to: String
+  default_value: String
+  delete: Int
+  description: String
+  field_key: String
+  field_type: String
+  regex: String
+  regex_error_message: String
+  sort_order: Int
+  status: String
+  title: String
+  validation_type: Int
+}
+
+type AdminExtraFieldMutationResponse {
+  id: Int
+  index: Int
+  message: String
+  result: Boolean
+}
+
+type AdminExtraFieldValue {
+  admin_extra_field_id: Int
+  entity_id: Int
+  entity_type: String
+  field_type: String
+  field_value: String
+  title: String
+  value_id: Int
+}
+
+input AdminExtraFieldValueInput {
+  admin_extra_field_id: Int!
+  entity_id: Int!
+  entity_type: String!
+  field_value: String
+}
+
+type AdminExtraFieldValuesData {
+  adminExtraFieldValues: [AdminExtraFieldValue]!
+  totalValues: Int
+}
+
+type AdminExtraFieldsData {
+  adminExtraFields: [AdminExtraField]!
+  totalAdminExtraFields: Int
+}
+
+input AssignOptionsInput {
+  attribute_ids: JSON
+  delete: Int
+  display_above_size: String
+  display_in_calculator: String
+  exclude_price: Int
+  exclude_setup_cost_reorder: Int
+  hide_from_calc: String
+  master_option_id: Int
+  option_lbl: String
+  prod_add_opt_group_id: Int
+  product_option_desc_position: String
+  product_option_id: Int
+  product_option_position: String
+  products_id: Int
+  setup_cost: Float
+  sort_order: Int
+}
+
+type AssignOptionsMutationResponse {
+  id: Int
+  index: Int
+  message: String
+  result: Boolean
+}
+
+input AttributeStockInput {
+  attribute_id: Int!
+  stock: Int
+}
+
+type AuthenticateCustomerData {
+  result: JSON!
+  status: String!
+}
+
+type CombinationMatrixData {
+  matrix: [CombinationMatrixEntry]!
+  totalRecords: Int
+}
+
+type CombinationMatrixEntry {
+  attribute_ids: String
+  option_ids: String
+}
+
+input CombinationStockInput {
+  attribute_ids: String!
+  option_ids: String!
+  stock: Int
+}
+
+type Countries {
+  countries_id: Int
+  countries_iso_code_2: String
+  countries_iso_code_3: String
+  countries_name: String
+  status: Int
+}
+
+type CountriesData {
+  countries: [Countries]!
+  currentCount: Int
+  totalCountries: Int
+}
+
+type CustomFormula {
+  formula_id: Int
+  formula_label: String
+  formula_syntax: String
+}
+
+type CustomFormulaData {
+  currentCount: Int
+  customFormula: [CustomFormula]!
+  totalCustomFormula: Int
+}
+
+input CustomFormulaInput {
+  delete: Int
+  formula_id: Int
+  formula_label: String
+  formula_syntax: String
+}
+
+type CustomFormulaMutationResponse {
+  id: Int
+  message: String
+  result: Boolean
+}
+
+type Customer {
+  address_detail: [CustomerAddressDetail]!
+  admin_extra_fields: JSON
+  customers_balance_amount: Float
+  customers_company: String
+  customers_corporate_id: Int
+  customers_corporate_name: String
+  customers_department_id: Int
+  customers_department_name: String
+  customers_email_address: String
+  customers_extrafield: JSON
+  customers_first_name: String
+  customers_last_name: String
+  customers_name: String
+  customers_pay_limit: Float
+  customers_payon_enable: Boolean
+  customers_register_date: String
+  customers_secondary_emails: String
+  customers_status: String
+  customers_telephone: String
+  customers_user_group_name: String
+  customers_username: String
+  external_ref: String
+  location_id_code: String
+  reward_points: Float
+  store_location_id: Int
+  user_type: String
+  userid: Int
+}
+
+type CustomerAddressDetail {
+  address_book_id: Int
+  address_type: String
+  city: String
+  company: String
+  country: String
+  extrafield: JSON
+  first_name: String
+  is_default_address: String
+  last_name: String
+  name: String
+  postcode: String
+  state: String
+  state_code: String
+  street_address: String
+  suburb: String
+  telephone: String
+}
+
+type CustomerAddressDetailData {
+  customerAddressDetails: [CustomerAddressDetail]!
+}
+
+input CustomerAddressInput {
+  address_book_id: Int
+  address_type: String
+  address_verified_by_api: String
+  city: String
+  companyname: String
+  country: String
+  default_address: String
+  default_blind_shipping: String
+  delete: Int
+  extrafield: String
+  firstname: String
+  from_signup: String
+  lastname: String
+  phone_number: String
+  postcode: String
+  state: String
+  street_address: String
+  suburb: String
+  used_as_quote_address: String
+  user_id: Int
+}
+
+type CustomerAddressMutationResponse {
+  id: Int
+  message: String
+  result: Boolean
+}
+
+type CustomerData {
+  currentCount: Int
+  customers: [Customer]!
+  totalCustomers: Int
+}
+
+enum CustomerDateTypeEnum {
+  login
+  registration
+}
+
+type Department {
+  corporate_id: Int
+  cost_center_code: String
+  created_on: String
+  department_id: Int
+  email_to: String
+  modified_on: String
+  name: String
+  production_days: String
+  status: Int
+}
+
+type DepartmentData {
+  currentCount: Int
+  departments: [Department]!
+  totalDepartments: Int
+}
+
+input DepartmentInput {
+  corporate_id: Int
+  cost_center_code: String
+  delete: Int
+  department_id: Int
+  department_payment: String
+  dept_flat_markup: Float
+  dept_markup_id: Int
+  dept_markup_type: String
+  dept_tax_exempt: String
+  email_to: String
+  name: String
+  production_days: Int
+  status: String
+  use_dept_markup: String
+}
+
+type DepartmentMutationResponse {
+  id: Int
+  message: String
+  result: Boolean
+}
+
+type Faq {
+  category_ids: JSON
+  faq_answer: String
+  faq_category_name: String
+  faq_id: Int
+  faq_question: String
+  faq_type: String
+  faqcat_id: Int
+  product_ids: JSON
+  sort_order: Int
+  status: Int
+}
+
+type FaqCategory {
+  faq_category_name: String
+  faqcat_id: Int
+  sort_order: Int
+  status: Int
+}
+
+type FaqCategoryData {
+  currentCount: Int
+  faqCategory: [FaqCategory]!
+  totalFaqCategory: Int
+}
+
+input FaqCategoryInput {
+  delete: Int
+  faq_category_name: String
+  faqcat_id: Int
+  sort_order: Int
+  status: String
+}
+
+type FaqCategoryMutationResponse {
+  id: Int
+  message: String
+  result: Boolean
+}
+
+type FaqData {
+  currentCount: Int
+  faq: [Faq]!
+  totalFaq: Int
+}
+
+input FaqInput {
+  corporate_id: Int
+  delete: Int
+  faq_answer: String
+  faq_id: Int
+  faq_question: String
+  faq_type: String
+  faqcat_id: Int
+  product_category_ids: String
+  site_language_id: Int
+  sort_order: Int
+  status: String
+}
+
+type FaqMutationResponse {
+  id: Int
+  message: String
+  result: Boolean
+}
+
+type GetBatchMasterData {
+  batchDetails: [GetBatchMasterDetail]!
+  currentCount: Int
+  totalBatchDetails: Int
+}
+
+type GetBatchMasterDetail {
+  batch_name: String
+  finishing_instructions: JSON
+  front_cut_filename: String
+  front_image_link: String
+  front_print_filename: String
+  id: Int
+  jobs: JSON
+  nest_height: Float
+  nest_width: Float
+  nesting_size: String
+  print_count: Int
+  print_instructions: JSON
+  rear_cut_filename: String
+  rear_image_link: String
+  rear_print_filename: String
+}
+
+scalar JSON
+
+input MasterOptionAttributePriceInput {
+  attr_id: Int
+  delete: Int
+  prices: [JSON]
+}
+
+type MasterOptionAttributePriceMutationResponse {
+  id: Int
+  index: Int
+  message: String
+  result: Boolean
+}
+
+input MasterOptionAttributesInput {
+  attr_desc: String
+  attribute_key: String
+  attributes_image: String
+  default_attribute: String
+  delete: Int
+  hex_color: String
+  label: String
+  master_attribute_id: Int
+  master_option_id: Int
+  material_thickness: Float
+  multiplier: Float
+  op_statusid: Int
+  production_days: Int
+  production_description: String
+  setup_cost: Float
+  site_language_id: Int
+  sort_order: Int
+  status: String
+  weight: Float
+}
+
+type MasterOptionAttributesMutationResponse {
+  id: Int
+  index: Int
+  message: String
+  result: Boolean
+}
+
+input MasterOptionInput {
+  additional_lookup_details: String
+  admin_extra_fields: JSON
+  allow_price_cal: String
+  custom_lookup: String
+  custom_txtbox_opt_id: Int
+  custom_weight_txtbox_opt_id: Int
+  delete: Int
+  desc_position: Int
+  description: String
+  display_above_size: Int
+  display_in_calculator: Int
+  enable_assoc_qty: String
+  exclude_setup_cost_reorder: Int
+  external_ref: String
+  formated_formula: String
+  formula: String
+  hide_from_calc: String
+  hire_designer_option: String
+  linear_formula: String
+  master_option_id: Int
+  master_option_tag: String
+  min_default_value: String
+  option_key: String
+  option_position: String
+  options_type: String
+  predefined_formula: Int
+  presentation_group: Int
+  price_range_lookup: String
+  pricing_method: String
+  prod_add_opt_export_group_id: Int
+  production_description: String
+  required: Int
+  sort_order: Int
+  status: String
+  title: String
+  weight_setting: String
+}
+
+type MasterOptionMutationResponse {
+  external_ref: String
+  id: Int
+  index: Int
+  message: String
+  result: Boolean
+}
+
+type MasterOptionRange {
+  from_range: String
+  option_id: Int
+  range_id: Int
+  to_range: String
+}
+
+type MasterOptionRangeData {
+  currentCount: Int
+  masterOptionRange: [MasterOptionRange]!
+  totalMasterOptionRange: Int
+}
+
+input MasterOptionRangeInput {
+  delete: Int
+  option_id: Int
+  ranges: [JSON]
+}
+
+type MasterOptionRangeMutationResponse {
+  id: Int
+  message: String
+  result: Boolean
+}
+
+type MasterOptionStockConfigDetail {
+  attribute_ids: String
+  credit_stock: Int
+  debit_stock: Int
+  id: Int
+  multipliers: [MasterOptionStockMultiplier]
+  option_ids: String
+  settings: [MasterOptionStockSettings]
+  stock: Int
+  stock_label: String
+  stock_title: String
+  type: Int
+}
+
+type MasterOptionStockConfigsData {
+  currentCount: Int
+  groups: [MasterOptionStockGroup]!
+  totalRecords: Int
+}
+
+type MasterOptionStockGroup {
+  allow_out_of_stock: Int
+  configs: [MasterOptionStockConfigDetail]
+  group_title: String
+  notify_quantity: Int
+  option_ids: String
+  stock_type: String
+  stock_type_id: Int
+}
+
+type MasterOptionStockHistory {
+  change_type: String
+  comments: String
+  config_id: Int
+  date_added: String
+  id: Int
+  stock_change: Int
+}
+
+type MasterOptionStockHistoryData {
+  currentCount: Int
+  history: [MasterOptionStockHistory]!
+  totalRecords: Int
+}
+
+type MasterOptionStockMultiplier {
+  attribute_id: Int
+  config_id: Int
+  id: Int
+  multiplier: Float
+}
+
+type MasterOptionStockMutationResponse {
+  id: Int
+  index: Int
+  message: String
+  result: Boolean
+}
+
+type MasterOptionStockSettings {
+  allow_order_out_of_stock: Int
+  id: Int
+  notify_quantity: Int
+  option_id: Int
+}
+
+type MasterOptionTag {
+  master_option_tag_id: Int
+  master_option_tag_name: String
+}
+
+type MasterOptionTagData {
+  currentCount: Int
+  masterOptionTag: [MasterOptionTag]!
+  totalMasterOptionTag: Int
+}
+
+input MasterOptionTagInput {
+  delete: Int
+  master_option_tag_id: Int
+  master_option_tag_name: String
+}
+
+type MasterOptionTagMutationResponse {
+  id: Int
+  message: String
+  result: Boolean
+}
+
+input ModifyOrderProductInput {
+  product_arr: [ModifyOrderProductItemInput!]!
+}
+
+input ModifyOrderProductItemInput {
+  comment: String
+  cost: Float
+  customer_price: Float
+  delete: Int
+  height: Float
+  is_custom_product: Int
+  job_title: String
+  lock_price: Int
+  notify_customer: Int
+  options: [JSON]
+  order_product_id: Int
+  per_unit_weight: Float
+  prd_days: Int
+  prd_sku: String
+  product_id: Int
+  product_name: String
+  production_description: String
+  products_quantity: Int
+  size_id: Int
+  size_title: String
+  width: Float
+}
+
+type ModifyOrderProductResultItem {
+  id: Int
+  index: Int
+  message: String
+  result: Boolean
+}
+
+input MultiplierInput {
+  attribute_id: Int!
+  multiplier: Float!
+}
+
+type Mutation {
+  addMasterOptionStockConfig(input: AddMasterOptionStockConfigInput!): [MasterOptionStockMutationResponse]
+  deleteMasterOptionStockConfig(config_id: Int, option_ids: String): [MasterOptionStockMutationResponse]
+  modifyOrderProduct(input: ModifyOrderProductInput!, orderid: Int!): [ModifyOrderProductResultItem]
+  notifyUser(cust_id: Int, input: UserNotifyInput!, usertype: UserNotifyTypeEnum!): userNotifyData
+  setAdditionalOption(inputs: [AdditionalOptionInput!]!): [AdditionalOptionMutationResponse]
+  setAdditionalOptionAttributes(inputs: [AdditionalOptionAttributesInput!]!): [AdditionalOptionAttributesMutationResponse]
+  setAdminExtraField(inputs: [AdminExtraFieldInput!]!): [AdminExtraFieldMutationResponse]
+  setAdminExtraFieldValues(inputs: [AdminExtraFieldValueInput!]!): [AdminExtraFieldMutationResponse]
+  setAssignOptions(inputs: [AssignOptionsInput!]!): [AssignOptionsMutationResponse]
+  setBatch(batch_id: Int, input: SetBatchMasterInput!): SetBatchMasterData
+  setCustomFormula(input: CustomFormulaInput!): CustomFormulaMutationResponse
+  setCustomer(customer_id: Int, input: SetCustomerInput!): SetCustomerData
+  setCustomerAddressDetail(input: CustomerAddressInput!): CustomerAddressMutationResponse
+  setDepartment(input: DepartmentInput!): DepartmentMutationResponse
+  setFaq(input: FaqInput!): FaqMutationResponse
+  setFaqCategory(input: FaqCategoryInput!): FaqCategoryMutationResponse
+  setMasterOption(inputs: [MasterOptionInput!]!): [MasterOptionMutationResponse]
+  setMasterOptionAttributePrice(inputs: [MasterOptionAttributePriceInput!]!): [MasterOptionAttributePriceMutationResponse]
+  setMasterOptionAttributes(inputs: [MasterOptionAttributesInput!]!): [MasterOptionAttributesMutationResponse]
+  setMasterOptionRange(input: MasterOptionRangeInput!): MasterOptionRangeMutationResponse
+  setMasterOptionStockSettings(inputs: [SetMasterOptionStockSettingsInput!]!): [MasterOptionStockMutationResponse]
+  setMasterOptionTag(input: MasterOptionTagInput!): MasterOptionTagMutationResponse
+  setOptionGroup(input: OptionGroupInput!): OptionGroupMutationResponse
+  setOrder(admin_extra_fields: JSON, input: SetOrderInput!, order_id: Int, order_product_status: Int, order_title: String!, selected_shipping_type: Int, userid: Int!): SetOrderData
+  setOrderProduct(height: Float, input: SetOrderProductInput!, order_product_id: Int, width: Float): SetOrderProductData
+  setOrderProductImage(add_version_file_only: Int, ask_for_approval: Int, input: SetOrderProductImageInput!, order_product_id: Int, update_ziflow_link_only: Int): SetOrderProductImageData
+  setProduct(inputs: [ProductInput!]!): [ProductMutationResponse]
+  setProductCategory(inputs: [ProductCategoryInput!]!): [ProductCategoryMutationResponse]
+  setProductDesign(order_product_id: Int, ziflow_link: String, ziflow_preflight_link: String): SetProductDesignData
+  setProductOptionRules(input: ProductOptionRulesInput!): ProductOptionRulesMutationResponse
+  setProductPages(inputs: [ProductPagesInput!]!): [ProductPagesMutationResponse]
+  setProductPrice(inputs: [ProductPriceInput!]!): [ProductPriceMutationResponse]
+  setProductSize(inputs: [ProductSizeInput!]!): [ProductSizeMutationResponse]
+  setProductSku(inputs: [ProductSkuInput!]!): [ProductSkuMutationResponse]
+  setProductsAttributePrice(inputs: [ProductsAttributePriceInput!]!): [ProductsAttributePriceMutationResponse]
+  setProductsImageGallery(input: ProductsImageGalleryBulkInput!, optimizeimg: Int, products_id: Int!): [ProductsImageGalleryMutationResponseItem]
+  setQuantityBasedAttributePrice(inputs: [QuantityBasedAttributePriceInput!]!): [QuantityBasedAttributePriceMutationResponse]
+  setQuote(admin_extra_fields: JSON, input: SetQuoteInput, order_product_status: Int, quote_id: Int, quote_title: String, selected_shipping_type: String, userid: Int!): SetQuoteData
+  setShipment(order_id: Int, shipment_id: Int, shipmentinfo: JSON, tracking_number: String): setShipmentData
+  setStore(input: StoreInput!): StoreMutationResponse
+  setStoreAddress(input: StoreAddressInput!): StoreAddressMutationResponse
+  setStoreLocation(inputs: [StoreLocationInput!]!): [StoreLocationMutationResponse]
+  setStoreMarkup(input: StoreMarkupInput!): StoreMarkupMutationResponse
+  setUserBasket(action: String!, input: SetUserBasketInput, item_index: Int, user_id: Int!): SetUserBasketData
+  updateMasterOptionStock(inputs: [UpdateMasterOptionStockInput!]!): [MasterOptionStockMutationResponse]
+  updateOrderStatus(input: UpdateOrderStatusInput!, orders_id: Int, orders_products_id: Int, type: OrderStatusUpdateTypeEnum!): UpdateOrderStatusData
+  updateProductStock(input: UpdateProductStockInput!, product_sku: String, type: UpdateStockTypeEnum): UpdateProductStockData
+}
+
+type OptionGroup {
+  display_style: String
+  is_collapse: Int
+  opt_group_name: String
+  option_count: Int
+  prod_add_opt_group_id: Int
+  sort_order: Int
+  use_for: String
+}
+
+type OptionGroupData {
+  currentCount: Int
+  optionGroup: [OptionGroup]!
+  totalOptionGroup: Int
+}
+
+input OptionGroupInput {
+  delete: Int
+  display_style: String
+  is_collapse: String
+  opt_group_name: String
+  option_count: Int
+  prod_add_opt_group_id: Int
+  sort_order: Int
+  use_for: String
+}
+
+type OptionGroupMutationResponse {
+  id: Int
+  message: String
+  result: Boolean
+}
+
+type Order {
+  admin_extra_fields: JSON
+  airway_bill_number: String
+  billing_detail: OrderBillingDetail
+  blind_detail: OrderBlindDetail
+  blind_shipping_charge: Float
+  branch_name: String
+  corporate_id: Int
+  cost_center_code: String
+  coupon_amount: Float
+  coupon_code: String
+  coupon_type: String
+  courier_company_name: String
+  currency_code: String
+  customer: Customer
+  delivery_detail: OrderDeliveryDetail
+  department_id: Int
+  extrafield: JSON
+  invoice_date: String
+  invoice_number: String
+  local_orders_date_finished: String
+  location_id_code: String
+  order_amount: Float
+  order_last_modified_date: String
+  order_name: String
+  order_note: String
+  order_number: String
+  order_status: String
+  order_vendor_amount: Float
+  orders_date_finished: String
+  orders_due_date: String
+  orders_extrafield: JSON
+  orders_id: Int!
+  orders_status_id: Int
+  parent_corporate_id: Int
+  partial_payment_details: JSON
+  payment_date: String
+  payment_due_date: String
+  payment_method_name: String
+  payment_processing_fees: Float
+  payment_status_title: String
+  po_number: String
+  printer_email: String
+  printer_name: String
+  product: [OrderProduct]!
+  production_due_date: String
+  refund_amount: Float
+  reviewers: JSON
+  sales_agent_name: String
+  shipment_detail: [OrderShipmentDetail]
+  shipping_amount: Float
+  shipping_mode: String
+  shipping_type_id: Int
+  spent_reward_amount: Float
+  store_location_id: Int
+  tax_amount: JSON
+  total_amount: Float
+  total_weight: Float
+  transactionid: String
+  user_id: Int
+}
+
+type OrderBillingDetail {
+  billing_city: String
+  billing_company: String
+  billing_country: String
+  billing_country_code: String
+  billing_extrafield: JSON
+  billing_name: String
+  billing_postcode: String
+  billing_state: String
+  billing_state_code: String
+  billing_street_address: String
+  billing_suburb: String
+  billing_telephone: String
+  orders_id: Int
+}
+
+type OrderBillingDetailData {
+  currentCount: Int
+  orderBillingDetails: [OrderBillingDetail]!
+  totalOrderBillingDetails: Int
+}
+
+type OrderBlindDetail {
+  blind_city: String
+  blind_company: String
+  blind_country: String
+  blind_country_code: String
+  blind_extrafield: JSON
+  blind_name: String
+  blind_postcode: String
+  blind_state: String
+  blind_state_code: String
+  blind_street_address: String
+  blind_suburb: String
+  orders_id: Int
+}
+
+type OrderBlindDetailData {
+  currentCount: Int
+  orderBlindDetails: [OrderBlindDetail]!
+  totalOrderBlindDetails: Int
+}
+
+type OrderData {
+  currentCount: Int
+  orders: [Order]!
+  totalOrders: Int
+}
+
+type OrderDeliveryDetail {
+  delivery_city: String
+  delivery_company: String
+  delivery_country: String
+  delivery_country_code: String
+  delivery_extrafield: JSON
+  delivery_name: String
+  delivery_postcode: String
+  delivery_state: String
+  delivery_state_code: String
+  delivery_street_address: String
+  delivery_suburb: String
+  delivery_telephone: String
+  orders_id: Int
+}
+
+type OrderDeliveryDetailData {
+  currentCount: Int
+  orderDeliveryDetails: [OrderDeliveryDetail]!
+  totalOrderDeliveryDetails: Int
+}
+
+type OrderProduct {
+  features_details: JSON
+  imagefiles: String
+  inventory_storage_days: Int
+  is_kit: Boolean
+  item_extra_info_json: JSON
+  mass_personalization_files: JSON
+  orders_products_id: Int!
+  orders_products_id_pattern: String
+  orders_products_last_modified_date: String
+  original_line_id: Int
+  original_order_id: Int
+  photo_print_details: JSON
+  predefined_product_type: String
+  print_ready_files: JSON
+  product_id: Int
+  product_info: JSON
+  product_printer_name: String
+  product_production_due_date: String
+  product_size_details: JSON
+  product_status: String
+  product_status_id: Int
+  product_tax: JSON
+  production_description: String
+  products_name: String
+  products_price: Float
+  products_quantity: Int
+  products_sku: String
+  products_title: String
+  products_unit_price: Float
+  products_vendor_price: Float
+  products_weight: String
+  productsize: String
+  proof_files: JSON
+  quote_id: Int
+  quote_id_pattern: String
+  reference_order_id: Int
+  reprint: Int
+  template_info: JSON
+  template_type: String
+  ziflow_link: String
+}
+
+type OrderProductData {
+  currentCount: Int
+  orderProducts: [OrderProduct]!
+  totalOrderProducts: Int
+}
+
+type OrderShipmentDetail {
+  shipment_company: String
+  shipment_package: JSON
+  shipment_shipping_type_id: Int
+  shipment_total_weight: Float
+  shipment_tracking_number: String
+}
+
+type OrderShipmentDetailData {
+  currentCount: Int
+  orderShipmentDetails: [OrderShipmentDetail]!
+  totalOrderShipmentDetails: Int
+}
+
+type OrderStatus {
+  process_status_id: Int
+  process_status_internal: Int
+  process_status_set_as: String
+  process_status_title: String
+  status_type: String
+}
+
+type OrderStatusData {
+  currentCount: Int
+  orderStatus: [OrderStatus]!
+  totalOrderStatus: Int
+}
+
+enum OrderStatusUpdateTypeEnum {
+  order
+  product
+}
+
+type OrderSummary {
+  blind_shipping_charge: Float
+  discount_amount: Float
+  order_count: Int
+  order_duration: String
+  orders(customer_email: String, customer_id: Int, from_date: String, limit: Int, offset: Int, order_product_status: Int, order_status: String, order_type: OrdersOrderTypeEnum, orders_id: Int, orders_products_id: Int, store_id: String, to_date: String): OrderData
+  price: Float
+  refund_amount: Float
+  shipping_amount: Float
+  tax_amount: Float
+  total_amount: Float
+}
+
+type OrderSummaryData {
+  currentCount: Int
+  orderSummary: [OrderSummary]!
+  totalOrderSummary: Int
+}
+
+enum OrderSummaryGroupByEnum {
+  Daily
+  Monthly
+  Weekly
+  Yearly
+}
+
+enum OrdersOrderTypeEnum {
+  gt
+  lt
+}
+
+type PaymentTermMaster {
+  check_order: Int
+  default_term: Int
+  status: Int
+  term_description: String
+  term_details: String
+  term_id: Int
+  term_title: String
+}
+
+type PaymentTermMasterData {
+  currentCount: Int
+  paymentTermMaster: [PaymentTermMaster]!
+  totalPaymentTermMaster: Int
+}
+
+type ProductAdditionalOptions {
+  applicable_for: String
+  apply_multiplication: String
+  attributes: JSON
+  description: String
+  hire_designer_option: String
+  master_option_id: Int
+  option_key: String
+  options_type: String
+  price_calculate_type: Int
+  prod_add_opt_group_id: Int
+  prod_add_opt_id: Int
+  products_id: Int
+  required: String
+  size_id: Int
+  sort_order: Int
+  status: String
+  title: String
+}
+
+type ProductAdditionalOptionsAttributes {
+  attribute_id: Int
+  attribute_key: String
+  attributes_image: String
+  auto_id: Int
+  default_attribute: String
+  label: String
+  master_attribute_id: Int
+  multiplier: Float
+  prod_add_opt_id: Int
+  setup_cost: Float
+  site_language_id: Int
+  sort_order: String
+  status: String
+}
+
+type ProductAdditionalOptionsAttributesData {
+  attributes: [ProductAdditionalOptionsAttributes]!
+  currentCount: Int
+  totalProductAdditionalOptionsAttributesSize: Int
+}
+
+type ProductAdditionalOptionsData {
+  currentCount: Int
+  productAdditionalOptions: [ProductAdditionalOptions]!
+  totalProductAdditionalOptions: Int
+}
+
+type ProductCategory {
+  category_header_content: String
+  category_id: Int
+  category_image: String
+  category_internal_name: String
+  category_name: String
+  category_url: String
+  external_ref: String
+  long_description: String
+  long_description_two: String
+  parent_id: Int
+  schema_markup: String
+  seo_page_description: String
+  seo_page_title: String
+  short_description: String
+  site_language_id: Int
+  sort_order: Int
+  status: Int
+}
+
+type ProductCategoryData {
+  currentCount: Int
+  productCategory: [ProductCategory]!
+  totalProductCategorySize: Int
+}
+
+input ProductCategoryInput {
+  canonical_id: Int
+  category_header_content: String
+  category_icon: String
+  category_icon_alt: String
+  category_id: Int
+  category_image: String
+  category_image_alt: String
+  category_internal_name: String
+  category_name: String
+  category_pro_enable: String
+  category_pro_pattern: String
+  category_promotional_text: String
+  category_url: String
+  delete: Int
+  description: String
+  display_category: String
+  external_ref: String
+  long_description: String
+  long_description_two: String
+  metadata: String
+  parent_id: Int
+  quick_add_to_cart: String
+  schema_markup: String
+  seo_page_description: String
+  seo_page_keywords: String
+  seo_page_title: String
+  site_language_id: Int
+  sort_order: Int
+  status: String
+}
+
+type ProductCategoryMutationResponse {
+  external_ref: String
+  id: Int
+  index: Int
+  message: String
+  result: Boolean
+}
+
+input ProductInput {
+  admin_extra_fields: JSON
+  category_id: Int
+  corporate_id: String
+  custom_panel: String
+  delete: Int
+  department_id: String
+  enable_sheet_calculation: String
+  enable_stock_management: String
+  external_catalogue: Int
+  external_ref: String
+  imagename: String
+  linear_multiplication: String
+  long_description: String
+  long_description_two: String
+  main_sku: String
+  measurement_unit_id: Int
+  multiple_category: String
+  order_product_status_template: Int
+  pages: [ProductPagesInput]
+  predefined_panel: String
+  predefined_product_type: String
+  price_defining_method: String
+  product_desc_image: String
+  product_description: String
+  product_service_type: String
+  product_type: String
+  production_description: String
+  products_draw_area_margins: String
+  products_draw_cutting_margins: String
+  products_id: Int
+  products_internal_title: String
+  products_title: String
+  schema_markup: String
+  seo_page_description: String
+  seo_page_metatags: String
+  seo_page_title: String
+  size_visible: String
+  sizes: [ProductSizeInput]
+  sort_order: Int
+  user_type_id: String
+  visible: Int
+}
+
+type ProductMasterOptions {
+  additional_lookup_details: String
+  admin_extra_fields: JSON
+  allow_price_cal: String
+  attributes: JSON
+  desc_position: Int
+  description: String
+  display_above_size: Int
+  display_in_calculator: Int
+  enable_assoc_qty: String
+  exclude_setup_cost_reorder: Int
+  external_ref: String
+  formula: String
+  hide_from_calc: String
+  hire_designer_option: String
+  linear_formula: String
+  master_option_id: Int
+  master_option_tag: [Int]
+  option_key: String
+  option_position: String
+  options_type: String
+  presentation_group: Int
+  price_range_lookup: String
+  pricing_method: String
+  prod_add_opt_export_group_id: Int
+  production_description: String
+  required: Int
+  sort_order: Int
+  status: String
+  title: String
+  weight_setting: String
+}
+
+type ProductMasterOptionsData {
+  currentCount: Int
+  productMasterOptions: [ProductMasterOptions]!
+  totalProductMasterOptions: Int
+}
+
+type ProductMutationResponse {
+  external_ref: String
+  id: Int
+  index: Int
+  main_sku: String
+  message: String
+  pages_result: [ProductPagesMutationResponse]
+  result: Boolean
+  sizes_result: [ProductSizeMutationResponse]
+}
+
+type ProductOptionRules {
+  comparison_value: JSON
+  disabled_for_admin: String
+  hide_option_attribute_ids: String
+  hide_option_ids: String
+  rule_id: Int
+  rule_name: String
+  rule_type: String
+  sort_order: Int
+  source_attribute_ids: String
+  source_option_ids: String
+  status: String
+}
+
+type ProductOptionRulesData {
+  currentCount: Int
+  productOptionRules: [ProductOptionRules]!
+  totalProductOptionRules: Int
+}
+
+input ProductOptionRulesInput {
+  comparison_value: String
+  condition: String
+  custom_param: String
+  custom_param_height: Float
+  custom_param_height_to: Float
+  custom_param_val: Float
+  custom_param_val_to: Float
+  custom_param_width: Float
+  custom_param_width_to: Float
+  delete: Int
+  disabled_for_admin: String
+  hide_option_attribute_ids: String
+  hide_option_ids: String
+  hide_size_ids: String
+  opt_textbox_conditions: JSON
+  rule_id: Int
+  rule_name: String
+  rule_type: String
+  rules_quantity: Int
+  rules_quantity_select: String
+  rules_quantity_to: Int
+  sort_order: Int
+  source_attribute_ids: String
+  source_option_ids: String
+  status: String
+}
+
+type ProductOptionRulesMutationResponse {
+  id: Int
+  message: String
+  result: Boolean
+}
+
+type ProductOptionsPrice {
+  additional_lookup: String
+  attr_id: Int
+  from_range: String
+  price: Float
+  range_id: Int
+  site_admin_markup: String
+  to_range: String
+  vendor_price: Float
+}
+
+type ProductOptionsPriceData {
+  currentCount: Int
+  productOptionsPrice: [ProductOptionsPrice]!
+  totalProductOptionPrice: Int
+}
+
+input ProductPagesInput {
+  delete: Int
+  page_title: String
+  pages_id: Int
+  products_id: Int
+  sort_order: Int
+  visible: String
+}
+
+type ProductPagesMutationResponse {
+  id: Int
+  index: Int
+  message: String
+  result: Boolean
+}
+
+type ProductPrice {
+  corporate_id: Int
+  price: Float
+  products_id: Int
+  qty_from: String
+  qty_to: String
+  size_id: Int
+  user_type_id: Int
+  vendor_price: Float
+}
+
+type ProductPriceData {
+  currentCount: Int
+  productPrice: [ProductPrice]!
+  totalProductPrice: Int
+}
+
+input ProductPriceInput {
+  corporate_id: Int
+  delete: Int
+  price: Float
+  price_defining_method: String
+  product_price_id: Int
+  products_id: Int
+  qty: Int
+  qty_to: Int
+  size_id: Int
+  user_type_id: String
+  vendor_price: Float
+  visible: String
+}
+
+type ProductPriceMutationResponse {
+  id: Int
+  index: Int
+  message: String
+  result: Boolean
+}
+
+type ProductSize {
+  cover_height: Float
+  cover_height_original: Float
+  cover_width: Float
+  cover_width_original: Float
+  default_size: Int
+  jobs_per_sheet: Int
+  no_of_folding: Int
+  products_id: Int!
+  setup_cost: Float
+  site_language_id: Int
+  size_height: Float
+  size_height_original: Float
+  size_id: Int
+  size_image: String
+  size_title: String
+  size_unit: String
+  size_width: Float
+  size_width_original: Float
+  sort_order: Int
+  visible: String
+  weight: String
+}
+
+type ProductSizeData {
+  currentCount: Int
+  productSize: [ProductSize]!
+  totalProductSize: Int
+}
+
+input ProductSizeInput {
+  default_size: Int
+  delete: Int
+  products_id: Int
+  setup_cost: Float
+  site_language_id: Int
+  size_height: Float
+  size_hex_color: String
+  size_id: Int
+  size_image: String
+  size_title: String
+  size_width: Float
+  sort_order: Int
+  visible: String
+}
+
+type ProductSizeMutationResponse {
+  id: Int
+  index: Int
+  message: String
+  result: Boolean
+}
+
+input ProductSkuInput {
+  attribute_ids: String
+  delete: Int
+  prod_add_opt_ids: String
+  products_id: Int
+  size_id: Int
+  sku: String
+  sku_type: String
+}
+
+type ProductSkuMatrix {
+  attribute_ids: String
+  prod_add_opt_ids: String
+  size_id: Int
+}
+
+type ProductSkuMatrixData {
+  matrix: [ProductSkuMatrix]!
+  totalRecords: Int
+}
+
+type ProductSkuMutationResponse {
+  id: Int
+  index: Int
+  message: String
+  result: Boolean
+}
+
+type ProductStock {
+  credited_stock: Int
+  current_stock: Float
+  debited_stock: Int
+  location: String
+  option_details: JSON
+  product_id: Int
+  product_name: String
+  size_id: Int
+  size_title: String
+  stock_id: Int
+}
+
+type ProductStockData {
+  currentCount: Int
+  productStocks: [ProductStock]!
+  totalProductStocks: Int
+}
+
+type Products {
+  external_ref: String
+  isstock: Boolean
+  main_sku: String
+  product_id: Int!
+  product_name: String
+}
+
+type ProductsAttributePrice {
+  attribute_id: Int
+  attribute_price_id: Int
+  attributes_price: Float
+  extra_page_price: Float
+  quantity: Float
+  quantity_to: Float
+  size_id: Int
+}
+
+type ProductsAttributePriceData {
+  currentCount: Int
+  productsAttributePrice: [ProductsAttributePrice]!
+  totalProductsAttributePrice: Int
+}
+
+input ProductsAttributePriceInput {
+  attribute_id: Int
+  attribute_price_id: Int
+  attributes_price: Float
+  delete: Int
+  extra_page_price: Float
+  product_id: Int
+  site_admin_markup: Float
+  size_from: Float
+  size_id: Int
+  size_to: Float
+  vendor_price: Float
+}
+
+type ProductsAttributePriceMutationResponse {
+  id: Int
+  index: Int
+  message: String
+  result: Boolean
+}
+
+type ProductsData {
+  currentCount: Int
+  products: [Products]!
+  totalProducts: Int
+}
+
+type ProductsDetails {
+  admin_extra_fields: JSON
+  all_store: Int
+  associate_attribute_id: String
+  associate_attribute_key: String
+  associate_calculation_type: String
+  associate_multiplier: String
+  associate_option_id: String
+  associate_option_key: String
+  associate_size_id: String
+  associate_status: String
+  associated_category_ids: String
+  associated_category_names: JSON
+  custom_cross_check_height_width: String
+  custom_size_info: JSON
+  custom_size_restrict_data: JSON
+  default_category_id: Int
+  default_category_name: String
+  default_production_days: String
+  external_catalogue: Int
+  external_ref: String
+  kit_products: String
+  kit_type_id: String
+  large_image: String
+  long_description: String
+  long_description_two: String
+  main_sku: String
+  measurement_unit_id: Int
+  predefined_product_type: String
+  price_defining_method: String
+  product_additional_options: [ProductAdditionalOptions]!
+  product_cut_off_time: String
+  product_default_quantity_interval: String
+  product_hire_designer_cost: String
+  product_id: Int!
+  product_minimum_price: String
+  product_name: String
+  product_setup_cost: String
+  product_size: [ProductSize]!
+  product_start_price: String
+  product_type: String
+  product_url: String
+  production_description: String
+  productpages: String
+  products_draw_area_margins: JSON
+  products_draw_cutting_margins: JSON
+  products_internal_name: String
+  schema_markup: String
+  search_keywords: String
+  seo_page_description: String
+  seo_page_metatags: String
+  seo_page_title: String
+  short_description: String
+  small_image: String
+  sort_order: Int
+  status: String
+}
+
+type ProductsDetailsData {
+  currentCount: Int
+  products: [ProductsDetails]!
+  totalProducts: Int
+}
+
+type ProductsImageGallery {
+  attribute_id: Int
+  attribute_ids: JSON
+  corporate_id: Int
+  option_id: Int
+  option_ids: JSON
+  products_id: Int
+  products_image_gallery_id: Int
+  products_large_image_name: String
+  products_thumb_image_name: String
+  sort_order: Int
+  status: String
+  title: String
+}
+
+input ProductsImageGalleryBulkInput {
+  image_arr: [ProductsImageGalleryItemInput!]!
+}
+
+type ProductsImageGalleryData {
+  currentCount: Int
+  productsImageGallery: [ProductsImageGallery]!
+  totalProductsImageGallery: Int
+}
+
+input ProductsImageGalleryItemInput {
+  attribute_id: Int
+  attribute_ids: String
+  corporate_id: Int
+  delete: Int
+  language: Int
+  metadata: String
+  option_id: Int
+  option_ids: String
+  products_image_gallery_id: Int
+  products_large_image_name: String
+  sort_order: Int
+  status: String
+  title: String
+}
+
+type ProductsImageGalleryMutationResponseItem {
+  id: Int
+  index: Int
+  message: String
+  result: Boolean
+}
+
+type QuantityBasedAttributePrice {
+  attribute_id: Int
+  attribute_price: Float
+  price_id: Int
+  qty: Int
+  qty_to: Int
+  size_from: Float
+  size_to: Float
+}
+
+type QuantityBasedAttributePriceData {
+  currentCount: Int
+  quantityBasedAttributePrice: [QuantityBasedAttributePrice]!
+  totalQuantityBasedAttributePrice: Int
+}
+
+input QuantityBasedAttributePriceInput {
+  attribute_id: Int
+  attribute_price: Float
+  delete: Int
+  price_id: Int
+  quantity_from: Int
+  quantity_to: Int
+  site_admin_markup: Float
+  size_from: Float
+  size_to: Float
+  vendor_price: Float
+}
+
+type QuantityBasedAttributePriceMutationResponse {
+  id: Int
+  index: Int
+  message: String
+  result: Boolean
+}
+
+type Query {
+  accountSummary(limit: Int, offset: Int, storeid: Int): AccountSummaryData
+  adminExtraFieldValues(entity_id: Int!, entity_type: String!): AdminExtraFieldValuesData
+  adminExtraFields(admin_extra_field_id: Int, available_to: String, limit: Int, offset: Int, status: String): AdminExtraFieldsData
+  attributes(limit: Int, offset: Int, prod_add_opt_id: Int): ProductAdditionalOptionsAttributesData
+  authenticateCustomer(email: String, password: String): AuthenticateCustomerData
+  customerAddressDetails(limit: Int, offset: Int, user_id: Int): CustomerAddressDetailData
+  customers(corporate_id: Int, date_type: CustomerDateTypeEnum, department_id: Int, email: String, from_date: String, limit: Int, offset: Int, to_date: String): CustomerData
+  faq(faq_id: Int, faqcat_id: Int, limit: Int, offset: Int): FaqData
+  getBatch(batch_id: Int, limit: Int, offset: Int, search: String): GetBatchMasterData
+  getCountries(countries_id: Int, limit: Int, offset: Int, status: Int): CountriesData
+  getCustomFormula(formula_id: Int, limit: Int, offset: Int): CustomFormulaData
+  getDepartments(corporate_id: Int, department_id: Int, limit: Int, offset: Int): DepartmentData
+  getFaqCategory(faqcat_id: Int, limit: Int, offset: Int, status: Int): FaqCategoryData
+  getMasterOptionCombinationMatrix(option_ids: [Int!]!): CombinationMatrixData
+  getMasterOptionRange(limit: Int, offset: Int, option_id: Int, range_id: Int): MasterOptionRangeData
+  getMasterOptionStockConfigs(config_id: Int, limit: Int, offset: Int, optionFilter: [Int]): MasterOptionStockConfigsData
+  getMasterOptionStockHistory(config_id: Int, limit: Int, offset: Int): MasterOptionStockHistoryData
+  getMasterOptionTag(limit: Int, master_option_tag_id: Int, offset: Int): MasterOptionTagData
+  getOptionGroup(limit: Int, offset: Int, prod_add_opt_group_id: Int, use_for: String): OptionGroupData
+  getPaymentTermMaster(limit: Int, offset: Int, status: Int, term_id: Int): PaymentTermMasterData
+  getProductSkuMatrix(prod_add_opt_ids: String, products_id: Int!): ProductSkuMatrixData
+  getQuote(limit: Int, offset: Int, quote_id: Int, user_id: Int): QuoteData
+  getStore(corporate_id: Int, email: String, limit: Int, offset: Int, status: Int): StoreData
+  getStoreLocations(limit: Int, location_id_code: String, offset: Int, status: String, store_location_id: Int): StoreLocationData
+  getStoreMarkup(corporate_id: Int, corporate_markup_id: Int, limit: Int, offset: Int, status: Int): StoreMarkupData
+  getUserBasket(basket_id: Int, limit: Int, offset: Int, user_id: Int!): UserBasketData
+  orderBillingDetails(limit: Int, offset: Int, orders_id: Int): OrderBillingDetailData
+  orderBlindDetails(limit: Int, offset: Int, orders_id: Int): OrderBlindDetailData
+  orderDeliveryDetails(limit: Int, offset: Int, orders_id: Int): OrderDeliveryDetailData
+  orderProducts(limit: Int, offset: Int, orders_id: Int, product_id: Int): OrderProductData
+  orderShipmentDetails(limit: Int, offset: Int, orders_id: Int): OrderShipmentDetailData
+  orderStatus(limit: Int, offset: Int, process_status_id: Int): OrderStatusData
+  orderSummary(customer_reference: String, from_date: String, group_by: OrderSummaryGroupByEnum = Daily, limit: Int, offset: Int, order_status: String, orders_id: Int, to_date: String): OrderSummaryData
+  orders(customer_email: String, customer_id: Int, from_date: String, limit: Int, offset: Int, order_product_status: Int, order_status: String, order_type: OrdersOrderTypeEnum, orders_id: Int, orders_products_id: Int, store_id: String, to_date: String): OrderData
+  productAdditionalOptions(limit: Int, offset: Int, products_id: Int): ProductAdditionalOptionsData
+  productCategory(category_id: Int, limit: Int, offset: Int): ProductCategoryData
+  productMasterOptions(limit: Int, master_option_id: Int, offset: Int): ProductMasterOptionsData
+  productOptionRules(limit: Int, offset: Int, rule_id: Int): ProductOptionRulesData
+  productOptionsPrice(attr_id: Int, limit: Int, offset: Int): ProductOptionsPriceData
+  productPrice(limit: Int, offset: Int, product_uuid: String): ProductPriceData
+  productSize(limit: Int, offset: Int, products_id: Int, size_id: Int): ProductSizeData
+  productStocks(limit: Int, offset: Int, product_id: Int, type: StockTypeEnum!): ProductStockData
+  products(limit: Int, offset: Int, products_id: Int): ProductsData
+  productsAttributePrice(attribute_id: Int, attribute_price_id: Int, limit: Int, offset: Int, size_id: Int): ProductsAttributePriceData
+  productsDetails(all_store: Int, external_catalogue: Int, limit: Int, offset: Int, products_id: Int, status: Int): ProductsDetailsData
+  productsImageGallery(corporate_id: Int, limit: Int, offset: Int, products_id: Int, products_image_gallery_id: Int): ProductsImageGalleryData
+  quantityBasedAttributePrice(attribute_id: Int, limit: Int, offset: Int, price_id: Int): QuantityBasedAttributePriceData
+  quoteproduct(limit: Int, offset: Int, products_id: Int, quote_id: Int, quote_products_id: Int): QuoteProductData
+  shipToMultipleAddress(limit: Int, offset: Int, order_id: Int): ShipToMultipleAddressData
+  storeCreditSummary(from_date: String, limit: Int, offset: Int, storeid: Int, to_date: String, user_id: Int): StoreCreditSummaryData
+  storeaddress(corporate_address_id: Int, corporate_id: Int, department_id: Int, limit: Int, offset: Int): StoreAddressData
+  validateCustomerToken(token: String): ValidateCustomerTokenData
+}
+
+type Quote {
+  admin_extra_fields: JSON
+  admin_notes: String
+  quote_billing_addr: JSON
+  quote_date: String
+  quote_id: Int
+  quote_price: Float
+  quote_shipping_addr: JSON
+  quote_status: Int
+  quote_tax_exampt: Boolean
+  quote_title: String
+  quote_vendor_price: Float
+  quoteproduct: [QuoteProduct]!
+  ship_amt: Float
+  sort_order: Int
+  user_id: Int
+}
+
+type QuoteData {
+  currentCount: Int
+  quote: [Quote]!
+  totalQuote: Int
+}
+
+type QuoteProduct {
+  is_custom_product: Int
+  orders_products_id: Int
+  production_description: String
+  products_id: Int
+  products_prd_day: String
+  products_title: String
+  products_weight: Float
+  quote_id: Int
+  quote_product_notes: String
+  quote_product_sku: String
+  quote_products_id: Int
+  quote_products_info: JSON
+  quote_products_price: Float
+  quote_products_quantity: Int
+  quote_products_vendor_price: Float
+}
+
+type QuoteProductData {
+  currentCount: Int
+  quoteproduct: [QuoteProduct]!
+  totalQuoteProduct: Int
+}
+
+input SetBasketItemInput {
+  cost: Float
+  customer_price: Float
+  height: Float
+  is_custom_product: Boolean
+  job_name: String!
+  options: JSON
+  per_unit_weight: Float
+  prd_days: Int
+  prd_sku: String
+  product_id: Int
+  product_name: String
+  quantity: Int!
+  size_id: Int
+  size_title: String
+  template_id: Int
+  width: Float
+}
+
+type SetBatchMasterData {
+  batch_link: String!
+  batch_pdf_link: String!
+  id: Int
+  message: String!
+  result: Boolean!
+}
+
+input SetBatchMasterInput {
+  batch_name: String
+  finishing_instructions: JSON
+  front_cut_filename: String
+  front_image_link: String
+  front_print_filename: String
+  jobs: JSON
+  nest_height: Float
+  nest_width: Float
+  nesting_size: String
+  print_count: Int
+  print_instructions: JSON
+  rear_cut_filename: String
+  rear_image_link: String
+  rear_print_filename: String
+  send_mail: Int
+}
+
+type SetCustomerData {
+  external_ref: String
+  id: Int
+  message: String!
+  result: Boolean!
+}
+
+input SetCustomerInput {
+  admin_extra_fields: JSON
+  company_name: String
+  corporateid: Int
+  departmentid: Int
+  email: String
+  external_ref: String
+  first_name: String
+  last_name: String
+  password: String
+  payon_account: Int
+  payon_limit: Int
+  phone_no: String
+  registration_type: Int
+  secondary_emails: String
+  set_password: Int
+  status: Int
+  tax_exemption: Int
+  user_group: Int
+}
+
+input SetMasterOptionStockSettingsInput {
+  allow_order_out_of_stock: Int!
+  notify_quantity: Int!
+  option_id: Int!
+}
+
+type SetOrderData {
+  id: Int
+  message: String!
+  result: Boolean!
+}
+
+input SetOrderInput {
+  products_arr: [SetOrderProductsInput!]!
+}
+
+type SetOrderProductData {
+  id: Int
+  message: String!
+  result: Boolean!
+}
+
+type SetOrderProductImageData {
+  id: Int
+  message: String!
+  result: Boolean!
+}
+
+input SetOrderProductImageInput {
+  imagefiles: JSON
+}
+
+input SetOrderProductInput {
+  comment: String
+  extra_json_info: String
+  is_extra_info: Boolean
+  lock_price: Int
+  notify_customer: Int
+}
+
+input SetOrderProductsInput {
+  cost: Float
+  customer_price: Float
+  delete: Int
+  height: Float
+  is_custom_product: Int
+  job_title: String
+  lock_price: Int
+  options: [JSON]
+  order_product_id: Int
+  per_unit_weight: Float
+  prd_days: Int
+  prd_sku: String
+  price_adjustment: Int
+  product_id: Int
+  product_name: String
+  production_description: String
+  products_quantity: Int!
+  size_id: Int
+  size_title: String
+  width: Float
+}
+
+type SetProductDesignData {
+  id: Int
+  message: String!
+  result: Boolean!
+}
+
+type SetQuoteData {
+  id: Int
+  message: String!
+  result: Boolean!
+}
+
+input SetQuoteInput {
+  products_arr: [SetQuoteProductInput!]!
+}
+
+input SetQuoteProductInput {
+  cost: Float
+  customer_price: Float
+  delete: Int
+  height: Float
+  is_custom_product: Int
+  job_title: String
+  lock_price: Int
+  options: [JSON]
+  per_unit_weight: Float
+  prd_days: Int
+  prd_sku: String
+  price_adjustment: Int
+  product_id: Int
+  product_name: String
+  production_description: String
+  products_quantity: Int
+  quote_product_id: Int
+  size_title: String
+  width: Float
+}
+
+type SetUserBasketData {
+  id: Int
+  message: String!
+  result: Boolean!
+}
+
+input SetUserBasketInput {
+  items: [SetBasketItemInput!]
+}
+
+type ShipToMultipleAddress {
+  ship_to_multiple_address_blind_address: JSON
+  ship_to_multiple_address_delivery_city: String
+  ship_to_multiple_address_delivery_company: String
+  ship_to_multiple_address_delivery_country: String
+  ship_to_multiple_address_delivery_name: String
+  ship_to_multiple_address_delivery_postcode: String
+  ship_to_multiple_address_delivery_state: String
+  ship_to_multiple_address_delivery_street_address: String
+  ship_to_multiple_address_delivery_suburb: String
+  ship_to_multiple_address_delivery_telephone: String
+  ship_to_multiple_address_extra_field: JSON
+  ship_to_multiple_address_product_details: JSON
+  ship_to_multiple_address_production_due_date: String
+  ship_to_multiple_address_shipment_due_date: String
+  ship_to_multiple_address_shipping_mode: String
+  ship_to_multiple_address_shipping_name: String
+  ship_to_multiple_address_shipping_price: Float
+  ship_to_multiple_address_shipping_type_id: Int
+}
+
+type ShipToMultipleAddressData {
+  currentCount: Int
+  shipToMultipleAddress: [ShipToMultipleAddress]!
+  totalShipToMultipleAddresses: Int
+}
+
+enum StockChangeTypeEnum {
+  C
+  D
+}
+
+enum StockTypeEnum {
+  product
+  product_option
+}
+
+type Store {
+  admin_extra_fields: JSON
+  corporate_id: Int
+  corporate_markup_id: Int
+  corporate_name: String
+  created_on: String
+  department: [Department]
+  department_module_enable: Int
+  display_in_company_list: String
+  email: String
+  fix_billing_address: Int
+  fix_shipping_address: Int
+  flat_markup: String
+  location_id_code: String
+  main_url: String
+  manage_email_notification: Int
+  manage_private_store: Int
+  markup_type: String
+  modified_on: String
+  order_approval: Int
+  parent_corporate_id: Int
+  phone_number: String
+  price_text: String
+  price_visible: String
+  production_days: String
+  status: Int
+  store_location_id: Int
+  tax_exempt: Int
+  tax_exempt_type: String
+  unassigned_products: String
+  url_type: String
+  username: String
+}
+
+type StoreAddress {
+  address_flag: String
+  available_to: String
+  city: String
+  companyname: String
+  corporate_address: String
+  corporate_address_id: Int
+  corporate_id: Int
+  country: String
+  country_iso_code: String
+  department_id: Int
+  extrafield: JSON
+  office_name: String
+  phone_number: String
+  postcode: String
+  receiver_name: String
+  state: String
+  status: Int
+  suburb: String
+}
+
+type StoreAddressData {
+  currentCount: Int
+  storeaddress: [StoreAddress]!
+  totalStoreAddress: Int
+}
+
+input StoreAddressInput {
+  address_flag: String
+  available_to: String
+  city: String
+  companyname: String
+  corporate_address: String
+  corporate_address_id: Int
+  corporate_id: Int
+  country: String
+  country_iso_code: String
+  delete: Int
+  department_id: Int
+  extrafield: String
+  office_name: String
+  phone_number: String
+  postcode: String
+  receiver_name: String
+  state: String
+  status: String
+  suburb: String
+  used_as_quote_address: String
+}
+
+type StoreAddressMutationResponse {
+  id: Int
+  message: String
+  result: Boolean
+}
+
+type StoreCreditSummary {
+  comments: String
+  customer_name: String
+  maintain_by: String
+  order_id: Int
+  order_id_type: String
+  reward_transaction_type: String
+  store_name: String
+  storeid: Int
+  tran_type: String
+  transaction_date_time: String
+  transaction_msg: String
+  type: String
+  user_id: Int
+}
+
+type StoreCreditSummaryData {
+  currentCount: Int
+  remainingCredit: Float
+  storeCreditSummary: [StoreCreditSummary]!
+  totalStoreCreditSummary: Int
+}
+
+type StoreData {
+  currentCount: Int
+  store: [Store]!
+  totalStore: Int
+}
+
+input StoreInput {
+  admin_extra_fields: JSON
+  allow_partial_payment: Int
+  assign_product: String
+  corporate_id: Int
+  corporate_markup_id: Int
+  corporate_name: String
+  customerid: Int
+  default_billing_address: Int
+  default_shipping_address: Int
+  delete: Int
+  department_module_enable: String
+  display_in_company_list: String
+  email: String
+  fix_billing_address: String
+  fix_shipping_address: String
+  flat_markup: Float
+  main_url: String
+  manage_email_notification: Int
+  markup_type: String
+  order_approval: String
+  parent_corporate_id: Int
+  password: String
+  pay_limit: String
+  payment_term_id: Int
+  payon: String
+  phone_number: String
+  price_text: String
+  price_visible: String
+  production_days: Int
+  status: String
+  tax_exempt: String
+  tax_exempt_type: String
+  unassign_product: String
+  url_type: String
+  user_create_type: Int
+  username: String
+}
+
+type StoreLocation {
+  admin_extra_fields: JSON
+  location_id_code: String
+  location_name: String
+  location_payment_ids: String
+  location_shipping_ids: String
+  main_payment_ids: String
+  main_shipping_ids: String
+  site_logo: String
+  sort_order: Int
+  status: String
+  store_address: String
+  store_email: String
+  store_location_id: Int
+  store_phone: String
+  stores: [Store]!
+}
+
+type StoreLocationData {
+  currentCount: Int
+  storeLocations: [StoreLocation]!
+  totalStoreLocations: Int
+}
+
+input StoreLocationInput {
+  admin_extra_fields: JSON
+  assign_store_ids: String
+  delete: Int
+  location_id_code: String
+  location_name: String
+  location_payment_ids: String
+  location_shipping_ids: String
+  main_payment_ids: String
+  main_shipping_ids: String
+  site_logo: String
+  sort_order: Int
+  status: String
+  store_address: String
+  store_email: String
+  store_location_id: Int
+  store_phone: String
+}
+
+type StoreLocationMutationResponse {
+  id: Int
+  index: Int
+  message: String
+  result: Boolean
+}
+
+type StoreMarkup {
+  appliedon: String
+  corporate_id: Int
+  corporate_markup_id: Int
+  markup_by: String
+  markup_details: JSON
+  markup_title: String
+  markup_type: String
+  status: Int
+}
+
+type StoreMarkupData {
+  currentCount: Int
+  storeMarkup: [StoreMarkup]!
+  totalStoreMarkup: Int
+}
+
+input StoreMarkupInput {
+  appliedon: String
+  corporate_id: Int
+  corporate_markup_id: Int
+  delete: Int
+  markup_by: String
+  markup_details: JSON
+  markup_title: String
+  markup_type: String
+  status: String
+}
+
+type StoreMarkupMutationResponse {
+  id: Int
+  message: String
+  result: Boolean
+}
+
+type StoreMutationResponse {
+  id: Int
+  message: String
+  result: Boolean
+}
+
+input UpdateMasterOptionStockInput {
+  change_type: StockChangeTypeEnum!
+  comments: String
+  config_id: Int!
+  stock_quantity: Int!
+}
+
+type UpdateOrderStatusData {
+  id: Int
+  message: String!
+  result: Boolean!
+}
+
+input UpdateOrderStatusInput {
+  comment: String
+  courier_company_name: String
+  notify: Int
+  order_product_status: String
+  order_status: String
+  product_info: String
+  shipping_method: String
+  shipping_type: String
+  template_info: String
+  tracking_number: String
+}
+
+type UpdateProductStockData {
+  id: Int
+  message: String!
+  result: Boolean!
+  stock_details: JSON
+  stock_quantity: Int
+}
+
+input UpdateProductStockInput {
+  stock_details: JSON
+}
+
+enum UpdateStockTypeEnum {
+  product
+  product_option
+}
+
+type UserBasket {
+  basket_id: Int
+  cart_count: Int
+  cart_data_cache: JSON
+  cart_detail: JSON
+  cart_id: String
+  cart_payment_request: Int
+  date: String
+  department_id: Int
+  ship_to_multiple_address_detail: JSON
+  user_id: Int
+}
+
+type UserBasketData {
+  baskets: [UserBasket]!
+  currentCount: Int
+  totalBaskets: Int
+}
+
+input UserNotifyInput {
+  attachments: String
+  bcc: String
+  body: String
+  cc: String
+  msg_type: String
+  subject: String
+}
+
+enum UserNotifyTypeEnum {
+  admin
+  user
+  workflow
+}
+
+type ValidateCustomerTokenData {
+  result: JSON!
+  status: String!
+}
+
+type setShipmentData {
+  id: Int
+  message: String!
+  result: Boolean!
+}
+
+type userNotifyData {
+  id: Int
+  message: String!
+  result: Boolean!
+}

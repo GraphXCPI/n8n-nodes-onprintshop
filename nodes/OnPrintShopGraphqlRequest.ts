@@ -12,6 +12,7 @@ import {
 	isOnPrintShopAuthenticationFailure,
 	safeOnPrintShopRequestError,
 } from './OnPrintShopTokenManager';
+import { normalizeOnPrintShopInputs } from './OnPrintShopInputNormalization';
 
 export async function createOnPrintShopGraphqlClient(context: IExecuteFunctions): Promise<(
 	query: string,
@@ -23,6 +24,7 @@ export async function createOnPrintShopGraphqlClient(context: IExecuteFunctions)
 	let accessToken = await getOnPrintShopAccessToken(context, credentials);
 
 	return async (query: string, variables: IDataObject = {}, itemIndex = 0): Promise<IDataObject> => {
+		variables = normalizeOnPrintShopInputs(query, variables);
 		const sendRequest = async (): Promise<IDataObject> => {
 			return await context.helpers.httpRequest({
 				method: 'POST',

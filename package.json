@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-onprintshop",
-  "version": "1.2.7",
+  "version": "1.2.8",
   "description": "n8n node for OnPrintShop integration",
   "keywords": [
     "n8n-community-node-package",
@@ -26,21 +26,24 @@
   "main": "dist/nodes/OnPrintShop/OnPrintShop.node.js",
   "types": "dist/nodes/OnPrintShop/OnPrintShop.node.d.ts",
   "scripts": {
-    "build": "node ./node_modules/typescript/bin/tsc && node scripts/build-icons.js",
+    "build": "node ./node_modules/typescript/bin/tsc && node scripts/bundle-graphql.js && node scripts/build-icons.js",
     "dev": "node ./node_modules/typescript/bin/tsc --watch",
     "clean": "rm -rf dist",
     "verify:store-get-many": "npm run build && node scripts/verify-store-get-many.js",
     "verify:customer-contract": "npm run build && node scripts/verify-customer-contract.js",
     "verify:stock-order-contract": "npm run build && node scripts/verify-stock-order-contract.js",
     "verify:token-cache": "npm run build && node scripts/verify-token-cache.js",
-    "verify:release": "npm run clean && npm run build && node scripts/verify-store-get-many.js && node scripts/verify-customer-contract.js && node scripts/verify-stock-order-contract.js && node scripts/verify-token-cache.js && npm run n8n-node:build && npm pack --dry-run",
-    "n8n-node:build": "pnpm dlx @n8n/node-cli build",
+    "verify:runtime-contract": "OPS_AUDIT_UI=1 node scripts/audit-runtime-contract.js && OPS_AUDIT_UI=1 OPS_AUDIT_ALL_FIELDS=1 OPS_AUDIT_RESPONSES=1 node scripts/audit-runtime-contract.js && node scripts/verify-runtime-regressions.js",
+    "verify:release": "npm run clean && npm run build && npm run verify:runtime-contract && node scripts/verify-store-get-many.js && node scripts/verify-customer-contract.js && node scripts/verify-stock-order-contract.js && node scripts/verify-token-cache.js && npm run n8n-node:build && npm pack --dry-run",
+    "n8n-node:build": "pnpm dlx @n8n/node-cli build && node scripts/bundle-graphql.js",
     "n8n-node:lint": "pnpm --package=@n8n/node-cli dlx node scripts/run-n8n-node-lint.js",
     "prepublishOnly": "npm run build"
   },
   "files": [
     "dist",
     "docs/API_DOMAIN_NODE_MAPPING.md",
+    "docs/API_CONFORMANCE.md",
+    "docs/RUNTIME_API_MAPPING.md",
     "docs/NODE_OPERATOR_GUIDE.md",
     "CUSTOMER_INSTALL.md"
   ],
@@ -70,6 +73,8 @@
   },
   "devDependencies": {
     "@types/node": "^18.0.0",
+    "esbuild": "^0.28.2",
+    "graphql": "^16.14.2",
     "typescript": "^5.9.2"
   },
   "peerDependencies": {

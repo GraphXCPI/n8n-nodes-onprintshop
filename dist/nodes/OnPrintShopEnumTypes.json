@@ -1,0 +1,37 @@
+{
+    "CustomerDateTypeEnum": [
+        "login",
+        "registration"
+    ],
+    "OrdersOrderTypeEnum": [
+        "lt",
+        "gt"
+    ],
+    "OrderStatusUpdateTypeEnum": [
+        "order",
+        "product"
+    ],
+    "OrderSummaryGroupByEnum": [
+        "Daily",
+        "Weekly",
+        "Monthly",
+        "Yearly"
+    ],
+    "StockChangeTypeEnum": [
+        "C",
+        "D"
+    ],
+    "StockTypeEnum": [
+        "product_option",
+        "product"
+    ],
+    "UpdateStockTypeEnum": [
+        "product_option",
+        "product"
+    ],
+    "UserNotifyTypeEnum": [
+        "user",
+        "admin",
+        "workflow"
+    ]
+}

@@ -97,7 +97,7 @@ const queryProperties: INodeProperties[] = [
 	intField('Size ID', 'productAttributePrice_sizeId', ['productAttributePrice'], ['getMany']),
 	...paginationFields('productAttributePrice'),
 	intField('Attribute ID', 'quantityAttributePrice_attributeId', ['quantityAttributePrice'], ['getMany']),
-	intField('Size ID', 'quantityAttributePrice_sizeId', ['quantityAttributePrice'], ['getMany']),
+	intField('Price ID', 'quantityAttributePrice_priceId', ['quantityAttributePrice'], ['getMany']),
 	...paginationFields('quantityAttributePrice'),
 	intField('Gallery Image ID', 'productImage_galleryId', ['productImage'], ['getMany']),
 	intField('Product ID', 'productImage_productsId', ['productImage'], ['getMany']),
@@ -316,6 +316,11 @@ export function extendOnPrintShopDomainDescription(description: INodeTypeDescrip
 	if (!resources.length && domain !== 'onPrintShopCustomers' && domain !== 'onPrintShopStoreAdmin') return description;
 
 	const resourceProperty = description.properties.find((property) => property.name === 'resource');
+	if (resourceProperty?.type === 'hidden' && resources.length) {
+		resourceProperty.type = 'options';
+		resourceProperty.noDataExpression = true;
+		resourceProperty.options = [{ name: 'Product', value: String(resourceProperty.default) }];
+	}
 	if (resourceProperty && Array.isArray(resourceProperty.options)) {
 		resourceProperty.options.push(...resources);
 	}
@@ -406,8 +411,11 @@ export async function executeOnPrintShopContractAction(context: IExecuteFunction
 					data = await request('query productsAttributePrice($attribute_id: Int, $size_id: Int, $limit: Int, $offset: Int) { productsAttributePrice(attribute_id: $attribute_id, size_id: $size_id, limit: $limit, offset: $offset) { productsAttributePrice { attribute_price_id attribute_id size_id quantity quantity_to attributes_price extra_page_price } totalProductsAttributePrice currentCount } }', variables, itemIndex);
 					result = data.productsAttributePrice;
 				} else {
-					data = await request('query products_attribute_price($attribute_id: Int, $size_id: Int, $limit: Int, $offset: Int) { products_attribute_price(attribute_id: $attribute_id, size_id: $size_id, limit: $limit, offset: $offset) { products_attribute_price { attribute_price_id attribute_id size_id quantity quantity_to attributes_price extra_page_price } total_products_attribute_price currentCount } }', variables, itemIndex);
-					result = data.products_attribute_price;
+					delete variables.size_id;
+					const priceId = optionalInt(context, 'quantityAttributePrice_priceId', itemIndex);
+					if (priceId) variables.price_id = priceId;
+					data = await request('query quantityBasedAttributePrice($price_id: Int, $attribute_id: Int, $limit: Int, $offset: Int) { quantityBasedAttributePrice(price_id: $price_id, attribute_id: $attribute_id, limit: $limit, offset: $offset) { quantityBasedAttributePrice { price_id attribute_id size_from size_to qty qty_to attribute_price } totalQuantityBasedAttributePrice currentCount } }', variables, itemIndex);
+					result = data.quantityBasedAttributePrice;
 				}
 			} else if (resource === 'productImage') {
 				const variables = compactObject({ products_image_gallery_id: optionalInt(context, 'productImage_galleryId', itemIndex), products_id: optionalInt(context, 'productImage_productsId', itemIndex), corporate_id: optionalInt(context, 'productImage_corporateId', itemIndex), ...pageVariables(context, resource, itemIndex) });

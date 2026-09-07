@@ -6,11 +6,13 @@ exports.compactObject = compactObject;
 exports.resultItems = resultItems;
 const n8n_workflow_1 = require("n8n-workflow");
 const OnPrintShopTokenManager_1 = require("./OnPrintShopTokenManager");
+const OnPrintShopInputNormalization_1 = require("./OnPrintShopInputNormalization");
 async function createOnPrintShopGraphqlClient(context) {
     const credentials = await context.getCredentials('onPrintShopApi');
     const baseUrl = String(credentials.baseUrl || 'https://api.onprintshop.com').replace(/\/$/, '');
     let accessToken = await (0, OnPrintShopTokenManager_1.getOnPrintShopAccessToken)(context, credentials);
     return async (query, variables = {}, itemIndex = 0) => {
+        variables = (0, OnPrintShopInputNormalization_1.normalizeOnPrintShopInputs)(query, variables);
         const sendRequest = async () => {
             return await context.helpers.httpRequest({
                 method: 'POST',
