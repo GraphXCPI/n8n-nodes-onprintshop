@@ -35,6 +35,7 @@ input AdditionalOptionAttributesInput {
   attribute_id: Int
   attribute_key: String
   attributes_image: String
+  attributes_image_url: String
   calculate_on_half_page_count: String
   default_attribute: String
   delete: Int
@@ -520,6 +521,7 @@ input MasterOptionAttributesInput {
   attr_desc: String
   attribute_key: String
   attributes_image: String
+  attributes_image_url: String
   default_attribute: String
   delete: Int
   hex_color: String
@@ -757,6 +759,7 @@ type Mutation {
   setAdminExtraFieldValues(inputs: [AdminExtraFieldValueInput!]!): [AdminExtraFieldMutationResponse]
   setAssignOptions(inputs: [AssignOptionsInput!]!): [AssignOptionsMutationResponse]
   setBatch(batch_id: Int, input: SetBatchMasterInput!): SetBatchMasterData
+  setBatchJob(input: SetBatchJobMasterInput!, order_product_id: Int, pagename: String, pagename_rear: String): SetBatchJobMasterData
   setCustomFormula(input: CustomFormulaInput!): CustomFormulaMutationResponse
   setCustomer(customer_id: Int, input: SetCustomerInput!): SetCustomerData
   setCustomerAddressDetail(input: CustomerAddressInput!): CustomerAddressMutationResponse
@@ -773,6 +776,7 @@ type Mutation {
   setOrder(admin_extra_fields: JSON, input: SetOrderInput!, order_id: Int, order_product_status: Int, order_title: String!, selected_shipping_type: Int, userid: Int!): SetOrderData
   setOrderProduct(height: Float, input: SetOrderProductInput!, order_product_id: Int, width: Float): SetOrderProductData
   setOrderProductImage(add_version_file_only: Int, ask_for_approval: Int, input: SetOrderProductImageInput!, order_product_id: Int, update_ziflow_link_only: Int): SetOrderProductImageData
+  setOrderProductImageFromUrl(add_version_file_only: Int, ask_for_approval: Int, input: SetOrderProductImageFromUrlInput!, order_product_id: Int, update_ziflow_link_only: Int): SetOrderProductImageFromUrlData
   setProduct(inputs: [ProductInput!]!): [ProductMutationResponse]
   setProductCategory(inputs: [ProductCategoryInput!]!): [ProductCategoryMutationResponse]
   setProductDesign(order_product_id: Int, ziflow_link: String, ziflow_preflight_link: String): SetProductDesignData
@@ -1170,9 +1174,11 @@ input ProductCategoryInput {
   category_header_content: String
   category_icon: String
   category_icon_alt: String
+  category_icon_url: String
   category_id: Int
   category_image: String
   category_image_alt: String
+  category_image_url: String
   category_internal_name: String
   category_name: String
   category_pro_enable: String
@@ -1216,6 +1222,7 @@ input ProductInput {
   enable_stock_management: String
   external_catalogue: Int
   external_ref: String
+  image_url: String
   imagename: String
   linear_multiplication: String
   long_description: String
@@ -1229,6 +1236,7 @@ input ProductInput {
   predefined_product_type: String
   price_defining_method: String
   product_desc_image: String
+  product_desc_image_url: String
   product_description: String
   product_service_type: String
   product_type: String
@@ -1465,6 +1473,7 @@ input ProductSizeInput {
   size_hex_color: String
   size_id: Int
   size_image: String
+  size_image_url: String
   size_title: String
   size_width: Float
   sort_order: Int
@@ -1670,10 +1679,12 @@ input ProductsImageGalleryItemInput {
   attribute_ids: String
   corporate_id: Int
   delete: Int
+  image_url: String
   language: Int
   metadata: String
   option_id: Int
   option_ids: String
+  product_desc_image_type: String
   products_image_gallery_id: Int
   products_large_image_name: String
   sort_order: Int
@@ -1846,6 +1857,15 @@ input SetBasketItemInput {
   width: Float
 }
 
+type SetBatchJobMasterData {
+  message: String!
+  result: Boolean!
+}
+
+input SetBatchJobMasterInput {
+  extra_json_info: String
+}
+
 type SetBatchMasterData {
   batch_link: String!
   batch_pdf_link: String!
@@ -1926,6 +1946,16 @@ type SetOrderProductImageData {
   id: Int
   message: String!
   result: Boolean!
+}
+
+type SetOrderProductImageFromUrlData {
+  id: Int
+  message: String!
+  result: Boolean!
+}
+
+input SetOrderProductImageFromUrlInput {
+  imagefiles: JSON
 }
 
 input SetOrderProductImageInput {
@@ -2241,6 +2271,7 @@ input StoreLocationInput {
   main_payment_ids: String
   main_shipping_ids: String
   site_logo: String
+  site_logo_url: String
   sort_order: Int
   status: String
   store_address: String

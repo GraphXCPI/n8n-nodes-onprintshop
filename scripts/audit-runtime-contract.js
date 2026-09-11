@@ -36,7 +36,7 @@ function sample(p) {
   if (p.type === 'options') return p.default ?? p.options?.[0]?.value;
   if (p.type === 'dateTime' || /(^|_)date$|Date$|from_date|to_date/.test(p.name)) return '2026-01-01T00:00:00Z';
   if (p.default !== undefined && p.default !== '') return p.default;
-  return /email/i.test(p.name) ? 'audit@example.invalid' : /id|number/i.test(p.name) ? '1' : 'audit';
+  return /url$/i.test(p.name) ? 'https://example.invalid/file.pdf' : /email/i.test(p.name) ? 'audit@example.invalid' : /id|number/i.test(p.name) ? '1' : 'audit';
 }
 async function main() {
   const results = [];

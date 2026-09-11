@@ -4,6 +4,7 @@
     "attribute_id": "Int",
     "attribute_key": "String",
     "attributes_image": "String",
+    "attributes_image_url": "String",
     "calculate_on_half_page_count": "String",
     "default_attribute": "String",
     "delete": "Int",
@@ -194,6 +195,7 @@
     "attr_desc": "String",
     "attribute_key": "String",
     "attributes_image": "String",
+    "attributes_image_url": "String",
     "default_attribute": "String",
     "delete": "Int",
     "hex_color": "String",
@@ -304,9 +306,11 @@
     "category_header_content": "String",
     "category_icon": "String",
     "category_icon_alt": "String",
+    "category_icon_url": "String",
     "category_id": "Int",
     "category_image": "String",
     "category_image_alt": "String",
+    "category_image_url": "String",
     "category_internal_name": "String",
     "category_name": "String",
     "category_pro_enable": "String",
@@ -341,6 +345,7 @@
     "enable_stock_management": "String",
     "external_catalogue": "Int",
     "external_ref": "String",
+    "image_url": "String",
     "imagename": "String",
     "linear_multiplication": "String",
     "long_description": "String",
@@ -354,6 +359,7 @@
     "predefined_product_type": "String",
     "price_defining_method": "String",
     "product_desc_image": "String",
+    "product_desc_image_url": "String",
     "product_description": "String",
     "product_service_type": "String",
     "product_type": "String",
@@ -443,10 +449,12 @@
     "attribute_ids": "String",
     "corporate_id": "Int",
     "delete": "Int",
+    "image_url": "String",
     "language": "Int",
     "metadata": "String",
     "option_id": "Int",
     "option_ids": "String",
+    "product_desc_image_type": "String",
     "products_image_gallery_id": "Int",
     "products_large_image_name": "String",
     "sort_order": "Int",
@@ -463,6 +471,7 @@
     "size_hex_color": "String",
     "size_id": "Int",
     "size_image": "String",
+    "size_image_url": "String",
     "size_title": "String",
     "size_width": "Float",
     "sort_order": "Int",
@@ -506,6 +515,9 @@
     "size_title": "String",
     "template_id": "Int",
     "width": "Float"
+  },
+  "SetBatchJobMasterInput": {
+    "extra_json_info": "String"
   },
   "SetBatchMasterInput": {
     "batch_name": "String",
@@ -551,6 +563,9 @@
   },
   "SetOrderInput": {
     "products_arr": "[SetOrderProductsInput!]!"
+  },
+  "SetOrderProductImageFromUrlInput": {
+    "imagefiles": "JSON"
   },
   "SetOrderProductImageInput": {
     "imagefiles": "JSON"
@@ -682,6 +697,7 @@
     "main_payment_ids": "String",
     "main_shipping_ids": "String",
     "site_logo": "String",
+    "site_logo_url": "String",
     "sort_order": "Int",
     "status": "String",
     "store_address": "String",

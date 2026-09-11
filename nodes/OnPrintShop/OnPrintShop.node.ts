@@ -14,6 +14,7 @@ import {
 } from 'n8n-workflow';
 import { parse, print, visit } from '../OnPrintShopGraphqlSyntax';
 import { normalizeOnPrintShopInputs } from '../OnPrintShopInputNormalization';
+import { addUploadInputs, readUploadInput, readOrderUrlInput } from '../OnPrintShopUploadInputs';
 
 import {
 	addOnPrintShopHelp,
@@ -6410,6 +6411,7 @@ export class OnPrintShop implements INodeType {
 	};
 
 	constructor() {
+		addUploadInputs(this.description);
 		for (const [resource, operation, fields] of [
 			['store', 'getCountries', ['countries_id', 'status', 'limit', 'offset']],
 			['store', 'storeAddress', ['corporate_id', 'corporate_address_id', 'limit', 'offset']],
@@ -7438,7 +7440,7 @@ export class OnPrintShop implements INodeType {
 						else if (responseData && responseData.errors) throw new NodeOperationError(this.getNode(), `GraphQL Error: ${JSON.stringify(responseData.errors)}`, { itemIndex: i });
 					}
 					if (operation === 'setProduct') {
-						const inputs = toBatchInputs(parseJsonParameter(this.getNodeParameter('setProduct_input', i) as string, 'setProduct_input', this.getNode(), i), 'setProduct_input', this.getNode(), i);
+						const inputs = toBatchInputs(parseJsonParameter(readUploadInput(this, 'setProduct', i), 'setProduct_input', this.getNode(), i), 'setProduct_input', this.getNode(), i);
 						const mutation = `mutation setProduct ($inputs: [ProductInput!]!) { setProduct (inputs: $inputs) { index result message id external_ref sizes_result { index result message id } pages_result { index result message id } } }`;
 						const responseData = await requestGraphql({ query: mutation, variables: { inputs } });
 						if (responseData && responseData.data && responseData.data.setProduct) returnData.push(responseData.data.setProduct);
@@ -7483,12 +7485,21 @@ export class OnPrintShop implements INodeType {
 					if (operation === 'setProductImage') {
 						const products_id = this.getNodeParameter('setProductImage_products_id', i) as number;
 						const optimizeimg = this.getNodeParameter('setProductImage_optimizeimg', i) as number;
-						const input = JSON.parse(this.getNodeParameter('setProductImage_input', i) as string);
+						const input = JSON.parse(readUploadInput(this, 'setProductImage', i));
 						const variables: IDataObject = { products_id, optimizeimg, input };
 						const mutation = `mutation setProductsImageGallery ($products_id: Int!, $optimizeimg: Int, $input: ProductsImageGalleryBulkInput!) { setProductsImageGallery (products_id: $products_id, optimizeimg: $optimizeimg, input: $input) { index result message id } }`;
 						const responseData = await requestGraphql({ query: mutation, variables });
 						if (responseData && responseData.data && responseData.data.setProductsImageGallery) returnData.push(responseData.data.setProductsImageGallery);
 						else if (responseData && responseData.errors) throw new NodeOperationError(this.getNode(), `GraphQL Error: ${JSON.stringify(responseData.errors)}`, { itemIndex: i });
+					}
+					if (operation === 'setOrderProductImageFromUrl') {
+						const order_product_id = this.getNodeParameter('urlUploadOrderProductId', i) as number;
+						if (!Number.isInteger(order_product_id) || order_product_id <= 0) throw new NodeOperationError(this.getNode(), 'Provide a positive Order Product ID', { itemIndex: i });
+						const input = readOrderUrlInput(this, i);
+						const options = this.getNodeParameter('urlUploadOptions', i, {}) as IDataObject;
+						const response = await requestGraphql({ query: 'mutation setOrderProductImageFromUrl($order_product_id: Int, $input: SetOrderProductImageFromUrlInput!, $add_version_file_only: Int, $ask_for_approval: Int, $update_ziflow_link_only: Int) { setOrderProductImageFromUrl(order_product_id: $order_product_id, input: $input, add_version_file_only: $add_version_file_only, ask_for_approval: $ask_for_approval, update_ziflow_link_only: $update_ziflow_link_only) { result message id } }', variables: { order_product_id, input, ...options } });
+						if (response.errors?.length) throw new NodeOperationError(this.getNode(), 'OnPrintShop rejected the URL upload. Check the order product, file accessibility, and input fields.', { itemIndex: i });
+						if (response.data?.setOrderProductImageFromUrl) returnData.push(response.data.setOrderProductImageFromUrl);
 					}
 					if (operation === 'updateOrderProductImages') {
 						const order_product_id = this.getNodeParameter('updateOrderProductImages_order_product_id', i) as number;
@@ -7565,7 +7576,7 @@ export class OnPrintShop implements INodeType {
 						else if (responseData && responseData.errors) throw new NodeOperationError(this.getNode(), `GraphQL Error: ${JSON.stringify(responseData.errors)}`, { itemIndex: i });
 					}
 					if (operation === 'setMasterOptionAttributes') {
-						const inputs = toBatchInputs(parseJsonParameter(this.getNodeParameter('setMasterOptionAttributes_input', i) as string, 'setMasterOptionAttributes_input', this.getNode(), i), 'setMasterOptionAttributes_input', this.getNode(), i);
+						const inputs = toBatchInputs(parseJsonParameter(readUploadInput(this, 'setMasterOptionAttributes', i), 'setMasterOptionAttributes_input', this.getNode(), i), 'setMasterOptionAttributes_input', this.getNode(), i);
 						const mutation = `mutation setMasterOptionAttributes ($inputs: [MasterOptionAttributesInput!]!) { setMasterOptionAttributes (inputs: $inputs) { index result message id } }`;
 						const responseData = await requestGraphql({ query: mutation, variables: { inputs } });
 						if (responseData && responseData.data && responseData.data.setMasterOptionAttributes) returnData.push(responseData.data.setMasterOptionAttributes);
@@ -7593,7 +7604,7 @@ export class OnPrintShop implements INodeType {
 						else if (responseData && responseData.errors) throw new NodeOperationError(this.getNode(), `GraphQL Error: ${JSON.stringify(responseData.errors)}`, { itemIndex: i });
 					}
 					if (operation === 'setProductSize') {
-						const inputs = toBatchInputs(parseJsonParameter(this.getNodeParameter('setProductSize_input', i) as string, 'setProductSize_input', this.getNode(), i), 'setProductSize_input', this.getNode(), i);
+						const inputs = toBatchInputs(parseJsonParameter(readUploadInput(this, 'setProductSize', i), 'setProductSize_input', this.getNode(), i), 'setProductSize_input', this.getNode(), i);
 						const mutation = `mutation setProductSize ($inputs: [ProductSizeInput!]!) { setProductSize (inputs: $inputs) { index result message id } }`;
 						const responseData = await requestGraphql({ query: mutation, variables: { inputs } });
 						if (responseData && responseData.data && responseData.data.setProductSize) returnData.push(responseData.data.setProductSize);
@@ -7636,7 +7647,7 @@ export class OnPrintShop implements INodeType {
 						else if (responseData && responseData.errors) throw new NodeOperationError(this.getNode(), `GraphQL Error: ${JSON.stringify(responseData.errors)}`, { itemIndex: i });
 					}
 					if (operation === 'setProductCategory') {
-						const inputs = toBatchInputs(parseJsonParameter(this.getNodeParameter('setProductCategory_input', i) as string, 'setProductCategory_input', this.getNode(), i), 'setProductCategory_input', this.getNode(), i);
+						const inputs = toBatchInputs(parseJsonParameter(readUploadInput(this, 'setProductCategory', i), 'setProductCategory_input', this.getNode(), i), 'setProductCategory_input', this.getNode(), i);
 						const mutation = `mutation setProductCategory ($inputs: [ProductCategoryInput!]!) { setProductCategory (inputs: $inputs) { index result message id external_ref } }`;
 						const responseData = await requestGraphql({ query: mutation, variables: { inputs } });
 						if (responseData && responseData.data && responseData.data.setProductCategory) returnData.push(responseData.data.setProductCategory);
@@ -7681,7 +7692,7 @@ export class OnPrintShop implements INodeType {
 						else if (responseData && responseData.errors) throw new NodeOperationError(this.getNode(), `GraphQL Error: ${JSON.stringify(responseData.errors)}`, { itemIndex: i });
 					}
 					if (operation === 'setAdditionalOptionAttributes') {
-						const inputs = toBatchInputs(parseJsonParameter(this.getNodeParameter('setAdditionalOptionAttributes_input', i) as string, 'setAdditionalOptionAttributes_input', this.getNode(), i), 'setAdditionalOptionAttributes_input', this.getNode(), i);
+						const inputs = toBatchInputs(parseJsonParameter(readUploadInput(this, 'setAdditionalOptionAttributes', i), 'setAdditionalOptionAttributes_input', this.getNode(), i), 'setAdditionalOptionAttributes_input', this.getNode(), i);
 						const mutation = `mutation setAdditionalOptionAttributes ($inputs: [AdditionalOptionAttributesInput!]!) { setAdditionalOptionAttributes (inputs: $inputs) { index result message id } }`;
 						const responseData = await requestGraphql({ query: mutation, variables: { inputs } });
 						if (responseData && responseData.data && responseData.data.setAdditionalOptionAttributes) returnData.push(responseData.data.setAdditionalOptionAttributes);

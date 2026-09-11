@@ -199,6 +199,7 @@ const mutationProperties: INodeProperties[] = [
 			{ displayName: 'Location Payment IDs', name: 'location_payment_ids', type: 'string', default: '', description: 'Comma-separated IDs' },
 			{ displayName: 'Main Payment IDs', name: 'main_payment_ids', type: 'string', default: '', description: 'Comma-separated IDs' },
 			{ displayName: 'Main Shipping IDs', name: 'main_shipping_ids', type: 'string', default: '', description: 'Comma-separated IDs' },
+			{ displayName: 'Site Logo URL', name: 'site_logo_url', type: 'string', default: '', description: 'Direct image URL accessible to OnPrintShop' },
 			{ displayName: 'Sort Order', name: 'sort_order', type: 'number', default: 0 },
 			{ displayName: 'Status', name: 'status', type: 'options', default: 1, options: [{ name: 'Active', value: 1 }, { name: 'Inactive', value: 0 }] },
 			{ displayName: 'Store Address', name: 'store_address', type: 'string', default: '' },

@@ -151,6 +151,7 @@ export const ONPRINTSHOP_ORDERS_DOMAIN: OnPrintShopDomainConfig = {
 			'setQuote',
 			'setShipment',
 			'updateOrderProductImages',
+			'setOrderProductImageFromUrl',
 			'updateOrderStatus',
 			'updateZiflowLinkImages',
 		],

@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-onprintshop",
-  "version": "1.2.8",
+  "version": "1.2.9",
   "description": "n8n node for OnPrintShop integration",
   "keywords": [
     "n8n-community-node-package",
@@ -34,7 +34,8 @@
     "verify:stock-order-contract": "npm run build && node scripts/verify-stock-order-contract.js",
     "verify:token-cache": "npm run build && node scripts/verify-token-cache.js",
     "verify:runtime-contract": "OPS_AUDIT_UI=1 node scripts/audit-runtime-contract.js && OPS_AUDIT_UI=1 OPS_AUDIT_ALL_FIELDS=1 OPS_AUDIT_RESPONSES=1 node scripts/audit-runtime-contract.js && node scripts/verify-runtime-regressions.js",
-    "verify:release": "npm run clean && npm run build && npm run verify:runtime-contract && node scripts/verify-store-get-many.js && node scripts/verify-customer-contract.js && node scripts/verify-stock-order-contract.js && node scripts/verify-token-cache.js && npm run n8n-node:build && npm pack --dry-run",
+    "verify:upload-urls": "npm run build && node scripts/verify-upload-urls.js",
+    "verify:release": "npm run clean && npm run build && npm run verify:runtime-contract && node scripts/verify-upload-urls.js && node scripts/verify-store-get-many.js && node scripts/verify-customer-contract.js && node scripts/verify-stock-order-contract.js && node scripts/verify-token-cache.js && npm run n8n-node:build && npm pack --dry-run",
     "n8n-node:build": "pnpm dlx @n8n/node-cli build && node scripts/bundle-graphql.js",
     "n8n-node:lint": "pnpm --package=@n8n/node-cli dlx node scripts/run-n8n-node-lint.js",
     "prepublishOnly": "npm run build"
@@ -45,7 +46,8 @@
     "docs/API_CONFORMANCE.md",
     "docs/RUNTIME_API_MAPPING.md",
     "docs/NODE_OPERATOR_GUIDE.md",
-    "CUSTOMER_INSTALL.md"
+    "CUSTOMER_INSTALL.md",
+    "docs/URL_UPLOAD_MIGRATION.md"
   ],
   "publishConfig": {
     "access": "public",

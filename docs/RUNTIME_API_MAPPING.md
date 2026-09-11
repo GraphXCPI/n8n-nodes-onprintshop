@@ -1,10 +1,10 @@
 # Runtime API Mapping
 
 Generated from actual node executor requests, not action labels or Postman substring matches.
-Schema snapshot: 2026-09-07; SHA-256: `6dce983d1a409873cec686cf265af367105a9877a908b8a153afa9e44045ffcc`.
+Schema snapshot: 2026-09-11; SHA-256: `887fc38784687c8aa06007204b4d8d0725c15bba3fc15e707603f3fbd6d92027`.
 
-- 275 exposed structured action paths, including legacy aliases and domain nodes.
-- 88 distinct root operations exercised by these action paths.
+- 277 exposed structured action paths, including legacy aliases and domain nodes.
+- 89 distinct root operations exercised by these action paths.
 - Default and all-selectable-field queries, typed variables, required UI lookups, and schema-shaped responses are checked by the release gate.
 - This is not proof of live mutation behavior, every optional input combination, pagination behavior, or tenant-specific permissions.
 - Raw GraphQL is intentionally excluded from the generated-action audit; preservation of user documents and JSON is regression-tested separately.
@@ -24,6 +24,7 @@ The following schema roots do not have a separately exercised structured root ac
 - `query.productSize`
 - `query.validateCustomerToken`
 - `mutation.setAdminExtraFieldValues`
+- `mutation.setBatchJob`
 
 ## Action Map
 
@@ -132,6 +133,7 @@ The following schema roots do not have a separately exercised structured root ac
 | onPrintShopOrders | mutation | updateOrderProductImages | mutation.setOrderProductImage | Pass |
 | onPrintShopOrders | mutation | updateOrderStatus | mutation.updateOrderStatus | Pass |
 | onPrintShopOrders | mutation | updateZiflowLinkImages | mutation.setOrderProductImage | Pass |
+| onPrintShopOrders | mutation | setOrderProductImageFromUrl | mutation.setOrderProductImageFromUrl | Pass |
 | onPrintShopOrders | order | createShipment | mutation.setShipment | Pass |
 | onPrintShopOrders | order | get | query.orders | Pass |
 | onPrintShopOrders | order | getAll | query.orders | Pass |
@@ -249,6 +251,7 @@ The following schema roots do not have a separately exercised structured root ac
 | onPrintShop | mutation | updateOrderProductImages | mutation.setOrderProductImage | Pass |
 | onPrintShop | mutation | updateOrderStatus | mutation.updateOrderStatus | Pass |
 | onPrintShop | mutation | updateZiflowLinkImages | mutation.setOrderProductImage | Pass |
+| onPrintShop | mutation | setOrderProductImageFromUrl | mutation.setOrderProductImageFromUrl | Pass |
 | onPrintShop | optionFormulas | getAll | query.getCustomFormula | Pass |
 | onPrintShop | optionGroup | getAll | query.getOptionGroup | Pass |
 | onPrintShop | order | createShipment | mutation.setShipment | Pass |

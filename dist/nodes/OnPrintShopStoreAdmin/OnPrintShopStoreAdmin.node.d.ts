@@ -1,4 +1,0 @@
-import { OnPrintShopDomainNode } from '../OnPrintShopDomainNode';
-export declare class OnPrintShopStoreAdmin extends OnPrintShopDomainNode {
-    description: import("n8n-workflow").INodeTypeDescription;
-}

@@ -27,7 +27,7 @@ for (const [kind,type] of [['query',schema.getQueryType()],['mutation',schema.ge
 const text = `# Runtime API Mapping
 
 Generated from actual node executor requests, not action labels or Postman substring matches.
-Schema snapshot: 2026-09-07; SHA-256: \`${crypto.createHash('sha256').update(sdl).digest('hex')}\`.
+Schema snapshot: 2026-09-11; SHA-256: \`${crypto.createHash('sha256').update(sdl).digest('hex')}\`.
 
 - ${report.actions} exposed structured action paths, including legacy aliases and domain nodes.
 - ${seen.size} distinct root operations exercised by these action paths.

@@ -4,9 +4,11 @@
 
 The reference Postman collection documents intended requests. The checked-in,
 description-free `contracts/ops-schema.graphql` records the authorized live
-GraphQL contract observed on 2026-09-07. Both Live and Staging accepted schema
-validation of the candidate's 275 generated action paths. Action paths include
-legacy aliases; they are not 275 distinct API endpoints.
+GraphQL contract observed on 2026-09-11. The candidate's 277 generated action
+paths are validated against this snapshot with mocked responses. Action paths
+include legacy aliases; they are not 277 distinct API endpoints. This is not a
+production write test. See `URL_UPLOAD_MIGRATION.md` for the additive upload
+changes, asynchronous completion semantics, and environment capability checks.
 
 See `RUNTIME_API_MAPPING.md` for every tested node/resource/operation and its
 actual API root, including an explicit list of roots without a structured action.

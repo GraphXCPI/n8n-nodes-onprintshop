@@ -7,10 +7,10 @@ This document maps the current OnPrintShop Postman GraphQL collection to the reo
 | Field | Value |
 | --- | --- |
 | Collection source | OnPrintShop public Postman documentation and local collection snapshot |
-| Collection SHA-256 | a0b4ef0e62f1a5074a9abe1e8744e3f773c4b9798e7cb3869a876df35e6757ca |
-| GraphQL operations found | 92 |
-| Mapped operations | 92 |
-| First-class domain actions | 92 |
+| Collection SHA-256 | 6cf7fc9e951af1def3d211da96d9b552eb5066cb78c81e307d7f11a1ccf9db0a |
+| GraphQL operations found | 93 |
+| Mapped operations | 93 |
+| First-class domain actions | 93 |
 | Raw GraphQL fallback actions | 0 |
 | Unmapped operations | 0 |
 | Stale assignments | 0 |
@@ -34,7 +34,7 @@ The legacy `OnPrintShop` node remains registered as `onPrintShop` for existing w
 
 | Coverage | Count | Meaning |
 | --- | --- | --- |
-| first-class | 92 | The operation is available as a focused domain-node action and was verified against compiled node metadata. |
+| first-class | 93 | The operation is available as a focused domain-node action and was verified against compiled node metadata. |
 | raw-graphql | 0 | The operation is assigned to `OnPrintShop GraphQL` until a dedicated UI action is added. |
 | unmapped | 0 | The collection contains an operation without an explicit assignment. This must be fixed before accepting an API update. |
 
@@ -120,20 +120,21 @@ The legacy `OnPrintShop` node remains registered as `onPrintShop` for existing w
 | 76 | mutation | setOrder | Mutations / Orders / Set Order | OnPrintShop Orders | OnPrintShop Orders | mutation.setOrder | first-class | verified |  |
 | 77 | mutation | modifyOrderProduct | Mutations / Orders / Modify Order Product | OnPrintShop Orders | OnPrintShop Orders | mutation.modifyOrderProduct | first-class | verified |  |
 | 78 | mutation | setOrderProductImage | Mutations / Orders / Update Order Product Images | OnPrintShop Orders | OnPrintShop Orders | mutation.updateOrderProductImages | first-class | verified |  |
-| 79 | mutation | setProductDesign | Mutations / Orders / Set Product Design | OnPrintShop Orders | OnPrintShop Orders | mutation.setProductDesign | first-class | verified |  |
-| 80 | mutation | notifyUser | Mutations / Customers / Notify User | OnPrintShop Customers | OnPrintShop Customers | notification.send | first-class | verified |  |
-| 81 | mutation | setCustomer | Mutations / Customers / Set Customer | OnPrintShop Customers | OnPrintShop Customers | customer.create | first-class | verified | Customer create and update both call the setCustomer GraphQL mutation |
-| 82 | mutation | setCustomerAddressDetail | Mutations / Customers / Set Customer Address | OnPrintShop Customers | OnPrintShop Customers | customerAddress.set | first-class | verified |  |
-| 83 | mutation | setUserBasket | Mutations / Customers / Set User Basket | OnPrintShop Customers | OnPrintShop Customers | basket.set | first-class | verified |  |
-| 84 | mutation | setStoreAddress | Mutations / Store / Set Store Address | OnPrintShop Store Admin | OnPrintShop Store Admin | mutation.setStoreAddress | first-class | verified |  |
-| 85 | mutation | setDepartment | Mutations / Store / Set Department | OnPrintShop Store Admin | OnPrintShop Store Admin | mutation.setDepartment | first-class | verified |  |
-| 86 | mutation | setStore | Mutations / Store / Set Store | OnPrintShop Store Admin | OnPrintShop Store Admin | mutation.setStore | first-class | verified |  |
-| 87 | mutation | setStoreMarkup | Mutations / Store / Set Markup Master | OnPrintShop Store Admin | OnPrintShop Store Admin | mutation.setStoreMarkup | first-class | verified |  |
-| 88 | mutation | setQuote | Mutations / Quote / Set Quote | OnPrintShop Orders | OnPrintShop Orders | mutation.setQuote | first-class | verified |  |
-| 89 | mutation | setFaqCategory | Mutations / FAQ / Set FAQ Category | OnPrintShop Store Admin | OnPrintShop Store Admin | mutation.setFaqCategory | first-class | verified |  |
-| 90 | mutation | setFaq | Mutations / FAQ / Set FAQ | OnPrintShop Store Admin | OnPrintShop Store Admin | faq.set | first-class | verified |  |
-| 91 | mutation | setAdminExtraField | Mutations / Set Admin Extra Fields | OnPrintShop Store Admin | OnPrintShop Store Admin | adminExtraField.set | first-class | verified |  |
-| 92 | mutation | setStoreLocation | Mutations / Set Store Location | OnPrintShop Store Admin | OnPrintShop Store Admin | storeLocation.set | first-class | verified |  |
+| 79 | mutation | SetOrderProductImageFromUrl | Mutations / Orders / Update Order Product Images URL - Staging | OnPrintShop Orders | OnPrintShop Orders | mutation.setOrderProductImageFromUrl | first-class | verified |  |
+| 80 | mutation | setProductDesign | Mutations / Orders / Set Product Design | OnPrintShop Orders | OnPrintShop Orders | mutation.setProductDesign | first-class | verified |  |
+| 81 | mutation | notifyUser | Mutations / Customers / Notify User | OnPrintShop Customers | OnPrintShop Customers | notification.send | first-class | verified |  |
+| 82 | mutation | setCustomer | Mutations / Customers / Set Customer | OnPrintShop Customers | OnPrintShop Customers | customer.create | first-class | verified | Customer create and update both call the setCustomer GraphQL mutation |
+| 83 | mutation | setCustomerAddressDetail | Mutations / Customers / Set Customer Address | OnPrintShop Customers | OnPrintShop Customers | customerAddress.set | first-class | verified |  |
+| 84 | mutation | setUserBasket | Mutations / Customers / Set User Basket | OnPrintShop Customers | OnPrintShop Customers | basket.set | first-class | verified |  |
+| 85 | mutation | setStoreAddress | Mutations / Store / Set Store Address | OnPrintShop Store Admin | OnPrintShop Store Admin | mutation.setStoreAddress | first-class | verified |  |
+| 86 | mutation | setDepartment | Mutations / Store / Set Department | OnPrintShop Store Admin | OnPrintShop Store Admin | mutation.setDepartment | first-class | verified |  |
+| 87 | mutation | setStore | Mutations / Store / Set Store | OnPrintShop Store Admin | OnPrintShop Store Admin | mutation.setStore | first-class | verified |  |
+| 88 | mutation | setStoreMarkup | Mutations / Store / Set Markup Master | OnPrintShop Store Admin | OnPrintShop Store Admin | mutation.setStoreMarkup | first-class | verified |  |
+| 89 | mutation | setQuote | Mutations / Quote / Set Quote | OnPrintShop Orders | OnPrintShop Orders | mutation.setQuote | first-class | verified |  |
+| 90 | mutation | setFaqCategory | Mutations / FAQ / Set FAQ Category | OnPrintShop Store Admin | OnPrintShop Store Admin | mutation.setFaqCategory | first-class | verified |  |
+| 91 | mutation | setFaq | Mutations / FAQ / Set FAQ | OnPrintShop Store Admin | OnPrintShop Store Admin | faq.set | first-class | verified |  |
+| 92 | mutation | setAdminExtraField | Mutations / Set Admin Extra Fields | OnPrintShop Store Admin | OnPrintShop Store Admin | adminExtraField.set | first-class | verified |  |
+| 93 | mutation | setStoreLocation | Mutations / Set Store Location | OnPrintShop Store Admin | OnPrintShop Store Admin | storeLocation.set | first-class | verified |  |
 
 ## Update Procedure
 
