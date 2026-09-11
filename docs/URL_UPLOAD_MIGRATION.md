@@ -76,6 +76,11 @@ Product Builder actions listed above now offer Input Mode = Fields or JSON Array
 For action `OP`, saved keys are `OP_inputMode` (`fields` or `json`),
 `OP_entries.entry[].fields` (named fields), and the unchanged `OP_input` (JSON).
 Example: `setProductSize_entries.entry[0].fields.size_image_url`.
+The 1.2.10 Fields-mode layout correction also exposes primary inputs directly
+on each entry (for example `setProductSize_entries.entry[0].size_image_url`).
+Nonempty direct inputs take precedence; empty direct defaults do not overwrite
+saved nested inputs. Explicit empty/zero values can still be sent using Additional
+Fields or JSON. Existing nested field selections remain supported.
 The legacy default remains JSON; existing workflows do not switch modes.
 Only explicitly selected form fields are sent, avoiding implicit zero/empty
 updates to unrelated properties. IDs and other create/update requirements still

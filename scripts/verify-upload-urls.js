@@ -3,6 +3,7 @@ const { OnPrintShop } = require('../dist/nodes/OnPrintShop/OnPrintShop.node');
 const { OnPrintShopOrders } = require('../dist/nodes/OnPrintShopOrders/OnPrintShopOrders.node');
 const { OnPrintShopMasterOptions } = require('../dist/nodes/OnPrintShopMasterOptions/OnPrintShopMasterOptions.node');
 const { OnPrintShopStoreAdmin } = require('../dist/nodes/OnPrintShopStoreAdmin/OnPrintShopStoreAdmin.node');
+const { OnPrintShopProductBuilder } = require('../dist/nodes/OnPrintShopProductBuilder/OnPrintShopProductBuilder.node');
 const { readUploadInput, readOrderUrlInput } = require('../dist/nodes/OnPrintShopUploadInputs');
 const schema = require('../nodes/OnPrintShopInputTypes.json');
 const g = require('graphql');
@@ -36,6 +37,12 @@ function context(params, root, requests) {
 }
 (async () => {
   const properties = new OnPrintShop().description.properties;
+  const domainProperties = new OnPrintShopProductBuilder().description.properties;
+  const categoryUI = domainProperties.find(p => p.name === 'setProductCategory_entries');
+  for (const name of ['category_id', 'category_name', 'category_image_url', 'category_icon_url']) {
+    assert.ok(categoryUI.options[0].values.some(p => p.name === name), `Domain category control ${name}`);
+  }
+  assert.ok(domainProperties.findIndex(p => p.name === 'setProductCategory_inputMode') < domainProperties.findIndex(p => p.name === 'setProductCategory_input'));
   const nested = { sizes: '[{"size_title":"A"}]', pages: '[]', admin_extra_fields: '[{"field_key":"test","field_value":"test"}]' };
   const nestedParams = { setProduct_inputMode: 'fields', setProduct_entries: { entry: [{ fields: nested }] } };
   assert.deepEqual(JSON.parse(readUploadInput(context(nestedParams, '', []), 'setProduct', 0))[0].sizes, [{ size_title: 'A' }]);
@@ -48,14 +55,24 @@ function context(params, root, requests) {
     assert.equal(requests.length, 1);
     const rows = requests[0].variables.inputs || requests[0].variables.input.image_arr;
     assert.deepEqual(rows, [fields, fields]);
-    const ui = properties.find(p => p.name === `${op}_entries`).options[0].values[0].options;
+    const controls = properties.find(p => p.name === `${op}_entries`).options[0].values;
+    const ui = controls.find(p => p.name === 'fields').options;
+    assert.ok(properties.findIndex(p => p.name === `${op}_inputMode`) < properties.findIndex(p => p.name === `${op}_input`));
+    assert.ok(controls.some(p => p.name.endsWith('_url') && p.type === 'string'), `${op}: direct URL control`);
     for (const key of Object.keys(fields)) assert.ok(ui.some(p => p.name === key), `${op}.${key} UI missing`);
+    const directFields = Object.fromEntries(Object.entries(fields).filter(([key]) => controls.some(p => p.name === key)));
+    params[`${op}_entries`] = { entry: [{ ...directFields, fields: Object.fromEntries(Object.entries(fields).filter(([key]) => !(key in directFields))) }] };
+    const directRequests = [];
+    await new OnPrintShop().execute.call(context(params, root, directRequests));
+    assert.deepEqual(directRequests[0].variables.inputs || directRequests[0].variables.input.image_arr, [fields]);
     params[`${op}_inputMode`] = 'json';
     const old = op === 'setProductImage' ? { image_arr: [{ products_large_image_name: 'existing.png' }] } : [{ attributes_image: 'existing.png' }];
     params[`${op}_input`] = old;
     assert.deepEqual(JSON.parse(readUploadInput(context(params, root, []), op, 0)), old);
   }
   const files = [{ pagename: 'Front', file_url: url }, { pagename: 'Back', file_url: url, ziflow_link: 'https://example.invalid/proof' }];
+  const compatible = context({ setProductCategory_inputMode: 'fields', setProductCategory_entries: { entry: [{ category_id: 0, category_name: '', category_image_url: '', fields: { category_id: 12, category_name: 'Saved', status: '0', category_icon_url: '' } }] } }, '', []);
+  assert.deepEqual(JSON.parse(readUploadInput(compatible, 'setProductCategory', 0)), [{ category_id: 12, category_name: 'Saved', status: '0', category_icon_url: '' }]);
   for (const mode of ['fields', 'json']) {
     const params = { resource: 'mutation', operation: 'setOrderProductImageFromUrl', urlUploadOrderProductId: 1, urlUploadInputMode: mode, urlUploadFiles: { file: files }, urlUploadJson: { imagefiles: files }, urlUploadOptions: { ask_for_approval: 0 } };
     const requests = [];
