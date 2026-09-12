@@ -14,6 +14,12 @@ Return Fields Mode supports All Fields or Custom Selection. Nested selections us
 
 Safe Mode blocks every mutation. Operations using customer passwords or tokens have masked input controls. Remote errors never copy the request or response payload into execution errors.
 
+Mutation Partial Response Handling defaults to Fail. Return Available Results is an explicit compatibility option for workflows that previously consumed a non-null mutation result alongside GraphQL errors. It does not turn failed result rows into successes: inspect every result and reconcile partial writes. Missing mutation data still fails, and queries never use this option.
+
+Pagination is opt-in for customers, productsDetails, orders and getStore. Off preserves a single request. All retrieves the available records from the configured offset; Limit stops at the configured maximum record count. Page size, delay and maximum pages are bounded controls. Pagination rejects repeated pages and inconsistent counts instead of silently returning an incomplete result. Paginated output includes `_pagination` with pages, pageSize and totalRecords.
+
+Continue-on-fail remote errors include a safe errorCode and retryable classification. DATA_NOT_FOUND, OPS_AUTH, OPS_PERMISSION, OPS_SCHEMA, OPS_VALIDATION, OPS_TRANSPORT and OPS_UNKNOWN are distinguished without copying upstream payloads. Mutation errors never advertise retryable: true because the write outcome may be unknown; reconcile remote state before retrying.
+
 ## Verification boundary
 
 The verification suite compares the complete root inventory with the schema, checks every argument control and nested typed input, compares Fields and JSON request payloads, validates every individual return-field selection, and tests multi-item output, required-field errors, Safe Mode, and continue-on-fail. It is a contract and mocked execution test, not permission to claim successful live writes.

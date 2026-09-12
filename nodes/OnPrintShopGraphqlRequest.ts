@@ -18,12 +18,13 @@ export async function createOnPrintShopGraphqlClient(context: IExecuteFunctions)
 	query: string,
 	variables?: IDataObject,
 	itemIndex?: number,
+	options?: { partialDataRoot?: string },
 ) => Promise<IDataObject>> {
 	const credentials = await context.getCredentials('onPrintShopApi');
 	const baseUrl = String(credentials.baseUrl || 'https://api.onprintshop.com').replace(/\/$/, '');
 	let accessToken = await getOnPrintShopAccessToken(context, credentials);
 
-	return async (query: string, variables: IDataObject = {}, itemIndex = 0): Promise<IDataObject> => {
+	return async (query: string, variables: IDataObject = {}, itemIndex = 0, options: { partialDataRoot?: string } = {}): Promise<IDataObject> => {
 		variables = normalizeOnPrintShopInputs(query, variables);
 		const sendRequest = async (): Promise<IDataObject> => {
 			return await context.helpers.httpRequest({
@@ -77,7 +78,12 @@ export async function createOnPrintShopGraphqlClient(context: IExecuteFunctions)
 			}
 		}
 
+		const data = (response.data || {}) as IDataObject;
 		if (Array.isArray(response.errors) && response.errors.length > 0) {
+			// Legacy mutation routes prefer a present result; all other calls still fail closed.
+			if (options.partialDataRoot && Object.prototype.hasOwnProperty.call(data, options.partialDataRoot) && data[options.partialDataRoot]) {
+				return data;
+			}
 			throw new NodeOperationError(
 				context.getNode(),
 				`OnPrintShop GraphQL error: ${JSON.stringify(response.errors)}`,
@@ -85,7 +91,7 @@ export async function createOnPrintShopGraphqlClient(context: IExecuteFunctions)
 			);
 		}
 
-		return (response.data || {}) as IDataObject;
+		return data;
 	};
 }
 

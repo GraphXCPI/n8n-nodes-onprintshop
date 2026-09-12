@@ -11,7 +11,7 @@ async function createOnPrintShopGraphqlClient(context) {
     const credentials = await context.getCredentials('onPrintShopApi');
     const baseUrl = String(credentials.baseUrl || 'https://api.onprintshop.com').replace(/\/$/, '');
     let accessToken = await (0, OnPrintShopTokenManager_1.getOnPrintShopAccessToken)(context, credentials);
-    return async (query, variables = {}, itemIndex = 0) => {
+    return async (query, variables = {}, itemIndex = 0, options = {}) => {
         variables = (0, OnPrintShopInputNormalization_1.normalizeOnPrintShopInputs)(query, variables);
         const sendRequest = async () => {
             return await context.helpers.httpRequest({
@@ -47,10 +47,15 @@ async function createOnPrintShopGraphqlClient(context) {
                 throw new n8n_workflow_1.NodeApiError(context.getNode(), (0, OnPrintShopTokenManager_1.safeOnPrintShopRequestError)(retryError, [accessToken]), { itemIndex });
             }
         }
+        const data = (response.data || {});
         if (Array.isArray(response.errors) && response.errors.length > 0) {
+            // Legacy mutation routes prefer a present result; all other calls still fail closed.
+            if (options.partialDataRoot && Object.prototype.hasOwnProperty.call(data, options.partialDataRoot) && data[options.partialDataRoot]) {
+                return data;
+            }
             throw new n8n_workflow_1.NodeOperationError(context.getNode(), `OnPrintShop GraphQL error: ${JSON.stringify(response.errors)}`, { itemIndex });
         }
-        return (response.data || {});
+        return data;
     };
 }
 function rowsFromFixedCollection(value, groupName) {

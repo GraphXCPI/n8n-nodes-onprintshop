@@ -84,6 +84,10 @@ function safeOnPrintShopRequestError(error, sensitiveValues = []) {
             message = message.split(value).join('[redacted]');
     }
     const statusCode = Number((_b = (_a = candidate.statusCode) !== null && _a !== void 0 ? _a : candidate.httpCode) !== null && _b !== void 0 ? _b : candidate.status);
+    const networkCode = String(candidate.code || '');
+    if (['ETIMEDOUT', 'ECONNRESET', 'ECONNREFUSED', 'ENOTFOUND', 'EAI_AGAIN'].includes(networkCode)) {
+        message = 'OnPrintShop network or timeout failure';
+    }
     return {
         message,
         ...(Number.isFinite(statusCode) ? { statusCode } : {}),
