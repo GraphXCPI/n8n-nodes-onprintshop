@@ -15,6 +15,7 @@ import {
 import { parse, print, visit } from '../OnPrintShopGraphqlSyntax';
 import { normalizeOnPrintShopInputs } from '../OnPrintShopInputNormalization';
 import { addUploadInputs, readUploadInput, readOrderUrlInput } from '../OnPrintShopUploadInputs';
+import { addCompleteApi, executeCompleteApi } from '../OnPrintShopCompleteApi';
 
 import {
 	addOnPrintShopHelp,
@@ -6446,9 +6447,12 @@ export class OnPrintShop implements INodeType {
 			}
 		}
 		this.description = addOnPrintShopHelp(this.description);
+		addCompleteApi(this.description);
 	}
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
+		const completeResult = await executeCompleteApi(this);
+		if (completeResult) return completeResult;
 		const items = this.getInputData();
 		const returnData: IDataObject[] = [];
 

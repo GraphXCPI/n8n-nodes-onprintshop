@@ -2,6 +2,10 @@
 
 This guide explains how to choose and configure the OnPrintShop n8n nodes. It is written for workflow builders, not as a raw OnPrintShop GraphQL schema reference.
 
+## Complete API Controls (1.3.0)
+
+Choose **Complete API** inside the relevant domain node for schema-complete argument controls and return selections. This is additive: saved convenience actions retain their parameters and output behavior. New controls preserve the API root envelope, so update downstream mappings when intentionally switching an existing workflow to this area. See [the full operation inventory and verification limits](COMPLETE_API_CONTROLS.md).
+
 ## Store Get Many
 
 `Store -> Get Many` preserves `Limit` as the maximum output count. If OnPrintShop returns a short page while `totalStore` reports additional matching records, the node follows response pagination until it reaches the configured limit or reported total. It raises an explicit completeness error if pagination cannot advance instead of silently returning a partial store set.

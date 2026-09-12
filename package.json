@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-onprintshop",
-  "version": "1.2.10",
+  "version": "1.3.0",
   "description": "n8n node for OnPrintShop integration",
   "keywords": [
     "n8n-community-node-package",
@@ -26,7 +26,7 @@
   "main": "dist/nodes/OnPrintShop/OnPrintShop.node.js",
   "types": "dist/nodes/OnPrintShop/OnPrintShop.node.d.ts",
   "scripts": {
-    "build": "node ./node_modules/typescript/bin/tsc && node scripts/bundle-graphql.js && node scripts/build-icons.js",
+    "build": "node scripts/generate-complete-api.js && node ./node_modules/typescript/bin/tsc && node scripts/bundle-graphql.js && node scripts/build-icons.js",
     "dev": "node ./node_modules/typescript/bin/tsc --watch",
     "clean": "rm -rf dist",
     "verify:store-get-many": "npm run build && node scripts/verify-store-get-many.js",
@@ -35,8 +35,9 @@
     "verify:token-cache": "npm run build && node scripts/verify-token-cache.js",
     "verify:runtime-contract": "OPS_AUDIT_UI=1 node scripts/audit-runtime-contract.js && OPS_AUDIT_UI=1 OPS_AUDIT_ALL_FIELDS=1 OPS_AUDIT_RESPONSES=1 node scripts/audit-runtime-contract.js && node scripts/verify-runtime-regressions.js",
     "verify:upload-urls": "npm run build && node scripts/verify-upload-urls.js",
-    "verify:release": "npm run clean && npm run build && npm run verify:runtime-contract && node scripts/verify-upload-urls.js && node scripts/verify-store-get-many.js && node scripts/verify-customer-contract.js && node scripts/verify-stock-order-contract.js && node scripts/verify-token-cache.js && npm run n8n-node:build && npm pack --dry-run",
-    "n8n-node:build": "pnpm dlx @n8n/node-cli build && node scripts/bundle-graphql.js",
+    "verify:complete-api": "npm run build && node scripts/verify-complete-api.js",
+    "verify:release": "npm run clean && npm run build && node scripts/verify-complete-api.js && npm run verify:runtime-contract && node scripts/verify-upload-urls.js && node scripts/verify-store-get-many.js && node scripts/verify-customer-contract.js && node scripts/verify-stock-order-contract.js && node scripts/verify-token-cache.js && npm run n8n-node:lint && npm run n8n-node:build && npm pack --dry-run",
+    "n8n-node:build": "pnpm dlx @n8n/node-cli build && node scripts/bundle-graphql.js && node scripts/build-icons.js",
     "n8n-node:lint": "pnpm --package=@n8n/node-cli dlx node scripts/run-n8n-node-lint.js",
     "prepublishOnly": "npm run build"
   },
@@ -47,7 +48,8 @@
     "docs/RUNTIME_API_MAPPING.md",
     "docs/NODE_OPERATOR_GUIDE.md",
     "CUSTOMER_INSTALL.md",
-    "docs/URL_UPLOAD_MIGRATION.md"
+    "docs/URL_UPLOAD_MIGRATION.md",
+    "docs/COMPLETE_API_CONTROLS.md"
   ],
   "publishConfig": {
     "access": "public",

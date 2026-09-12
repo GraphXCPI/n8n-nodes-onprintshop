@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.OnPrintShopMasterOptions = void 0;
 const n8n_workflow_1 = require("n8n-workflow");
 const OnPrintShopGraphqlRequest_1 = require("../OnPrintShopGraphqlRequest");
+const OnPrintShopCompleteApi_1 = require("../OnPrintShopCompleteApi");
 const show = (resource, operations) => ({
     show: { resource: [resource], operation: operations },
 });
@@ -516,8 +517,12 @@ class OnPrintShopMasterOptions {
                 },
             ],
         };
+        (0, OnPrintShopCompleteApi_1.addCompleteApi)(this.description, 'onPrintShopMasterOptions');
     }
     async execute() {
+        const completeResult = await (0, OnPrintShopCompleteApi_1.executeCompleteApi)(this);
+        if (completeResult)
+            return completeResult;
         const inputItems = this.getInputData();
         const output = [];
         const request = await (0, OnPrintShopGraphqlRequest_1.createOnPrintShopGraphqlClient)(this);

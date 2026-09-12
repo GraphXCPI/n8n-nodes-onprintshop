@@ -17,6 +17,7 @@ import {
 } from '../OnPrintShopGraphqlRequest';
 
 type Field = INodeProperties;
+import { addCompleteApi, executeCompleteApi } from '../OnPrintShopCompleteApi';
 
 const show = (resource: string, operations: string[]): INodeProperties['displayOptions'] => ({
 	show: { resource: [resource], operation: operations },
@@ -593,7 +594,13 @@ export class OnPrintShopMasterOptions implements INodeType {
 		],
 	};
 
+	constructor() {
+		addCompleteApi(this.description, 'onPrintShopMasterOptions');
+	}
+
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
+		const completeResult = await executeCompleteApi(this);
+		if (completeResult) return completeResult;
 		const inputItems = this.getInputData();
 		const output: INodeExecutionData[] = [];
 		const request = await createOnPrintShopGraphqlClient(this);

@@ -4,6 +4,8 @@ Community node package for using the OnPrintShop GraphQL API from n8n.
 
 This package provides focused OnPrintShop domain nodes, a legacy all-in-one compatibility node for existing workflows, and one OAuth credential type. It is intended for workflow builders who need product, order, customer, inventory, store-admin, and approved raw GraphQL access from n8n.
 
+The **Complete API** area in each domain node provides typed argument controls and return-field selectors for the API contract. Existing convenience actions remain unchanged for saved workflows. See [Complete API controls and inventory](docs/COMPLETE_API_CONTROLS.md) for input modes, output behavior, and verification limits.
+
 ## Install
 
 In n8n, open **Settings > Community Nodes**, choose **Install a community node**, and enter:
@@ -15,7 +17,7 @@ n8n-nodes-onprintshop
 To install a specific version:
 
 ```text
-n8n-nodes-onprintshop@1.2.10
+n8n-nodes-onprintshop@1.3.0
 ```
 
 For Docker or queue-mode deployments, install the package into the shared n8n community-node folder and restart every process that loads nodes. See [CUSTOMER_INSTALL.md](CUSTOMER_INSTALL.md) for details.

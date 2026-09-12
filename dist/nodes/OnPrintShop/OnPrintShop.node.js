@@ -5,6 +5,7 @@ const n8n_workflow_1 = require("n8n-workflow");
 const OnPrintShopGraphqlSyntax_1 = require("../OnPrintShopGraphqlSyntax");
 const OnPrintShopInputNormalization_1 = require("../OnPrintShopInputNormalization");
 const OnPrintShopUploadInputs_1 = require("../OnPrintShopUploadInputs");
+const OnPrintShopCompleteApi_1 = require("../OnPrintShopCompleteApi");
 const OnPrintShopHelp_1 = require("../OnPrintShopHelp");
 const OnPrintShopTokenManager_1 = require("../OnPrintShopTokenManager");
 const OPS_ROOT_FIELD_ALIASES = {
@@ -6346,9 +6347,13 @@ class OnPrintShop {
             }
         }
         this.description = (0, OnPrintShopHelp_1.addOnPrintShopHelp)(this.description);
+        (0, OnPrintShopCompleteApi_1.addCompleteApi)(this.description);
     }
     async execute() {
         var _a, _b, _c, _d, _e, _f;
+        const completeResult = await (0, OnPrintShopCompleteApi_1.executeCompleteApi)(this);
+        if (completeResult)
+            return completeResult;
         const items = this.getInputData();
         const returnData = [];
         const credentials = await this.getCredentials('onPrintShopApi');

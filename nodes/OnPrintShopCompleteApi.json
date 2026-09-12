@@ -1,0 +1,2824 @@
+[
+  {
+    "name": "accountSummary",
+    "kind": "query",
+    "domain": "onPrintShopStoreAdmin",
+    "args": {
+      "limit": "Int",
+      "offset": "Int",
+      "storeid": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "accountSummary.amount",
+      "accountSummary.comments",
+      "accountSummary.date_added",
+      "accountSummary.department_id",
+      "accountSummary.duedate",
+      "accountSummary.id",
+      "accountSummary.paymethod",
+      "accountSummary.storeid",
+      "accountSummary.term_title",
+      "accountSummary.type",
+      "currentCount",
+      "remainingInvoiceAmount",
+      "remainingPaidLimit",
+      "totalAccountSummary"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "adminExtraFieldValues",
+    "kind": "query",
+    "domain": "onPrintShopStoreAdmin",
+    "args": {
+      "entity_id": "Int!",
+      "entity_type": "String!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "adminExtraFieldValues.admin_extra_field_id",
+      "adminExtraFieldValues.entity_id",
+      "adminExtraFieldValues.entity_type",
+      "adminExtraFieldValues.field_type",
+      "adminExtraFieldValues.field_value",
+      "adminExtraFieldValues.title",
+      "adminExtraFieldValues.value_id",
+      "totalValues"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "adminExtraFields",
+    "kind": "query",
+    "domain": "onPrintShopStoreAdmin",
+    "args": {
+      "admin_extra_field_id": "Int",
+      "available_to": "String",
+      "limit": "Int",
+      "offset": "Int",
+      "status": "String"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "adminExtraFields.admin_extra_field_id",
+      "adminExtraFields.attributes.admin_extra_field_id",
+      "adminExtraFields.attributes.attribute_id",
+      "adminExtraFields.attributes.default_attribute",
+      "adminExtraFields.attributes.label",
+      "adminExtraFields.attributes.sort_order",
+      "adminExtraFields.attributes.status",
+      "adminExtraFields.available_to",
+      "adminExtraFields.default_value",
+      "adminExtraFields.description",
+      "adminExtraFields.field_key",
+      "adminExtraFields.field_type",
+      "adminExtraFields.regex",
+      "adminExtraFields.regex_error_message",
+      "adminExtraFields.sort_order",
+      "adminExtraFields.status",
+      "adminExtraFields.title",
+      "adminExtraFields.validation_type",
+      "totalAdminExtraFields"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "attributes",
+    "kind": "query",
+    "domain": "onPrintShopProducts",
+    "args": {
+      "limit": "Int",
+      "offset": "Int",
+      "prod_add_opt_id": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "attributes.attribute_id",
+      "attributes.attribute_key",
+      "attributes.attributes_image",
+      "attributes.auto_id",
+      "attributes.default_attribute",
+      "attributes.label",
+      "attributes.master_attribute_id",
+      "attributes.multiplier",
+      "attributes.prod_add_opt_id",
+      "attributes.setup_cost",
+      "attributes.site_language_id",
+      "attributes.sort_order",
+      "attributes.status",
+      "currentCount",
+      "totalProductAdditionalOptionsAttributesSize"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "authenticateCustomer",
+    "kind": "query",
+    "domain": "onPrintShopCustomers",
+    "args": {
+      "email": "String",
+      "password": "String"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "result",
+      "status"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "customerAddressDetails",
+    "kind": "query",
+    "domain": "onPrintShopCustomers",
+    "args": {
+      "limit": "Int",
+      "offset": "Int",
+      "user_id": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "customerAddressDetails.address_book_id",
+      "customerAddressDetails.address_type",
+      "customerAddressDetails.city",
+      "customerAddressDetails.company",
+      "customerAddressDetails.country",
+      "customerAddressDetails.extrafield",
+      "customerAddressDetails.first_name",
+      "customerAddressDetails.is_default_address",
+      "customerAddressDetails.last_name",
+      "customerAddressDetails.name",
+      "customerAddressDetails.postcode",
+      "customerAddressDetails.state",
+      "customerAddressDetails.state_code",
+      "customerAddressDetails.street_address",
+      "customerAddressDetails.suburb",
+      "customerAddressDetails.telephone"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "customers",
+    "kind": "query",
+    "domain": "onPrintShopCustomers",
+    "args": {
+      "corporate_id": "Int",
+      "date_type": "CustomerDateTypeEnum",
+      "department_id": "Int",
+      "email": "String",
+      "from_date": "String",
+      "limit": "Int",
+      "offset": "Int",
+      "to_date": "String"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "customers.address_detail.address_book_id",
+      "customers.address_detail.address_type",
+      "customers.address_detail.city",
+      "customers.address_detail.company",
+      "customers.address_detail.country",
+      "customers.address_detail.extrafield",
+      "customers.address_detail.first_name",
+      "customers.address_detail.is_default_address",
+      "customers.address_detail.last_name",
+      "customers.address_detail.name",
+      "customers.address_detail.postcode",
+      "customers.address_detail.state",
+      "customers.address_detail.state_code",
+      "customers.address_detail.street_address",
+      "customers.address_detail.suburb",
+      "customers.address_detail.telephone",
+      "customers.admin_extra_fields",
+      "customers.customers_balance_amount",
+      "customers.customers_company",
+      "customers.customers_corporate_id",
+      "customers.customers_corporate_name",
+      "customers.customers_department_id",
+      "customers.customers_department_name",
+      "customers.customers_email_address",
+      "customers.customers_extrafield",
+      "customers.customers_first_name",
+      "customers.customers_last_name",
+      "customers.customers_name",
+      "customers.customers_pay_limit",
+      "customers.customers_payon_enable",
+      "customers.customers_register_date",
+      "customers.customers_secondary_emails",
+      "customers.customers_status",
+      "customers.customers_telephone",
+      "customers.customers_user_group_name",
+      "customers.customers_username",
+      "customers.external_ref",
+      "customers.location_id_code",
+      "customers.reward_points",
+      "customers.store_location_id",
+      "customers.user_type",
+      "customers.userid",
+      "totalCustomers"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "faq",
+    "kind": "query",
+    "domain": "onPrintShopStoreAdmin",
+    "args": {
+      "faq_id": "Int",
+      "faqcat_id": "Int",
+      "limit": "Int",
+      "offset": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "faq.category_ids",
+      "faq.faq_answer",
+      "faq.faq_category_name",
+      "faq.faq_id",
+      "faq.faq_question",
+      "faq.faq_type",
+      "faq.faqcat_id",
+      "faq.product_ids",
+      "faq.sort_order",
+      "faq.status",
+      "totalFaq"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "getBatch",
+    "kind": "query",
+    "domain": "onPrintShopOrders",
+    "args": {
+      "batch_id": "Int",
+      "limit": "Int",
+      "offset": "Int",
+      "search": "String"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "batchDetails.batch_name",
+      "batchDetails.finishing_instructions",
+      "batchDetails.front_cut_filename",
+      "batchDetails.front_image_link",
+      "batchDetails.front_print_filename",
+      "batchDetails.id",
+      "batchDetails.jobs",
+      "batchDetails.nest_height",
+      "batchDetails.nest_width",
+      "batchDetails.nesting_size",
+      "batchDetails.print_count",
+      "batchDetails.print_instructions",
+      "batchDetails.rear_cut_filename",
+      "batchDetails.rear_image_link",
+      "batchDetails.rear_print_filename",
+      "currentCount",
+      "totalBatchDetails"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "getCountries",
+    "kind": "query",
+    "domain": "onPrintShopStoreAdmin",
+    "args": {
+      "countries_id": "Int",
+      "limit": "Int",
+      "offset": "Int",
+      "status": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "countries.countries_id",
+      "countries.countries_iso_code_2",
+      "countries.countries_iso_code_3",
+      "countries.countries_name",
+      "countries.status",
+      "currentCount",
+      "totalCountries"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "getCustomFormula",
+    "kind": "query",
+    "domain": "onPrintShopProductBuilder",
+    "args": {
+      "formula_id": "Int",
+      "limit": "Int",
+      "offset": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "customFormula.formula_id",
+      "customFormula.formula_label",
+      "customFormula.formula_syntax",
+      "totalCustomFormula"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "getDepartments",
+    "kind": "query",
+    "domain": "onPrintShopStoreAdmin",
+    "args": {
+      "corporate_id": "Int",
+      "department_id": "Int",
+      "limit": "Int",
+      "offset": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "departments.corporate_id",
+      "departments.cost_center_code",
+      "departments.created_on",
+      "departments.department_id",
+      "departments.email_to",
+      "departments.modified_on",
+      "departments.name",
+      "departments.production_days",
+      "departments.status",
+      "totalDepartments"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "getFaqCategory",
+    "kind": "query",
+    "domain": "onPrintShopStoreAdmin",
+    "args": {
+      "faqcat_id": "Int",
+      "limit": "Int",
+      "offset": "Int",
+      "status": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "faqCategory.faq_category_name",
+      "faqCategory.faqcat_id",
+      "faqCategory.sort_order",
+      "faqCategory.status",
+      "totalFaqCategory"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "getMasterOptionCombinationMatrix",
+    "kind": "query",
+    "domain": "onPrintShopInventory",
+    "args": {
+      "option_ids": "[Int!]!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "matrix.attribute_ids",
+      "matrix.option_ids",
+      "totalRecords"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "getMasterOptionRange",
+    "kind": "query",
+    "domain": "onPrintShopProductBuilder",
+    "args": {
+      "limit": "Int",
+      "offset": "Int",
+      "option_id": "Int",
+      "range_id": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "masterOptionRange.from_range",
+      "masterOptionRange.option_id",
+      "masterOptionRange.range_id",
+      "masterOptionRange.to_range",
+      "totalMasterOptionRange"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "getMasterOptionStockConfigs",
+    "kind": "query",
+    "domain": "onPrintShopInventory",
+    "args": {
+      "config_id": "Int",
+      "limit": "Int",
+      "offset": "Int",
+      "optionFilter": "[Int]"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "groups.allow_out_of_stock",
+      "groups.configs.attribute_ids",
+      "groups.configs.credit_stock",
+      "groups.configs.debit_stock",
+      "groups.configs.id",
+      "groups.configs.multipliers.attribute_id",
+      "groups.configs.multipliers.config_id",
+      "groups.configs.multipliers.id",
+      "groups.configs.multipliers.multiplier",
+      "groups.configs.option_ids",
+      "groups.configs.settings.allow_order_out_of_stock",
+      "groups.configs.settings.id",
+      "groups.configs.settings.notify_quantity",
+      "groups.configs.settings.option_id",
+      "groups.configs.stock",
+      "groups.configs.stock_label",
+      "groups.configs.stock_title",
+      "groups.configs.type",
+      "groups.group_title",
+      "groups.notify_quantity",
+      "groups.option_ids",
+      "groups.stock_type",
+      "groups.stock_type_id",
+      "totalRecords"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "getMasterOptionStockHistory",
+    "kind": "query",
+    "domain": "onPrintShopInventory",
+    "args": {
+      "config_id": "Int",
+      "limit": "Int",
+      "offset": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "history.change_type",
+      "history.comments",
+      "history.config_id",
+      "history.date_added",
+      "history.id",
+      "history.stock_change",
+      "totalRecords"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "getMasterOptionTag",
+    "kind": "query",
+    "domain": "onPrintShopProductBuilder",
+    "args": {
+      "limit": "Int",
+      "master_option_tag_id": "Int",
+      "offset": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "masterOptionTag.master_option_tag_id",
+      "masterOptionTag.master_option_tag_name",
+      "totalMasterOptionTag"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "getOptionGroup",
+    "kind": "query",
+    "domain": "onPrintShopProductBuilder",
+    "args": {
+      "limit": "Int",
+      "offset": "Int",
+      "prod_add_opt_group_id": "Int",
+      "use_for": "String"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "optionGroup.display_style",
+      "optionGroup.is_collapse",
+      "optionGroup.opt_group_name",
+      "optionGroup.option_count",
+      "optionGroup.prod_add_opt_group_id",
+      "optionGroup.sort_order",
+      "optionGroup.use_for",
+      "totalOptionGroup"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "getPaymentTermMaster",
+    "kind": "query",
+    "domain": "onPrintShopStoreAdmin",
+    "args": {
+      "limit": "Int",
+      "offset": "Int",
+      "status": "Int",
+      "term_id": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "paymentTermMaster.check_order",
+      "paymentTermMaster.default_term",
+      "paymentTermMaster.status",
+      "paymentTermMaster.term_description",
+      "paymentTermMaster.term_details",
+      "paymentTermMaster.term_id",
+      "paymentTermMaster.term_title",
+      "totalPaymentTermMaster"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "getProductSkuMatrix",
+    "kind": "query",
+    "domain": "onPrintShopProducts",
+    "args": {
+      "prod_add_opt_ids": "String",
+      "products_id": "Int!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "matrix.attribute_ids",
+      "matrix.prod_add_opt_ids",
+      "matrix.size_id",
+      "totalRecords"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "getQuote",
+    "kind": "query",
+    "domain": "onPrintShopOrders",
+    "args": {
+      "limit": "Int",
+      "offset": "Int",
+      "quote_id": "Int",
+      "user_id": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "quote.admin_extra_fields",
+      "quote.admin_notes",
+      "quote.quote_billing_addr",
+      "quote.quote_date",
+      "quote.quote_id",
+      "quote.quote_price",
+      "quote.quote_shipping_addr",
+      "quote.quote_status",
+      "quote.quote_tax_exampt",
+      "quote.quote_title",
+      "quote.quote_vendor_price",
+      "quote.quoteproduct.is_custom_product",
+      "quote.quoteproduct.orders_products_id",
+      "quote.quoteproduct.production_description",
+      "quote.quoteproduct.products_id",
+      "quote.quoteproduct.products_prd_day",
+      "quote.quoteproduct.products_title",
+      "quote.quoteproduct.products_weight",
+      "quote.quoteproduct.quote_id",
+      "quote.quoteproduct.quote_product_notes",
+      "quote.quoteproduct.quote_product_sku",
+      "quote.quoteproduct.quote_products_id",
+      "quote.quoteproduct.quote_products_info",
+      "quote.quoteproduct.quote_products_price",
+      "quote.quoteproduct.quote_products_quantity",
+      "quote.quoteproduct.quote_products_vendor_price",
+      "quote.ship_amt",
+      "quote.sort_order",
+      "quote.user_id",
+      "totalQuote"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "getStore",
+    "kind": "query",
+    "domain": "onPrintShopStoreAdmin",
+    "args": {
+      "corporate_id": "Int",
+      "email": "String",
+      "limit": "Int",
+      "offset": "Int",
+      "status": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "store.admin_extra_fields",
+      "store.corporate_id",
+      "store.corporate_markup_id",
+      "store.corporate_name",
+      "store.created_on",
+      "store.department.corporate_id",
+      "store.department.cost_center_code",
+      "store.department.created_on",
+      "store.department.department_id",
+      "store.department.email_to",
+      "store.department.modified_on",
+      "store.department.name",
+      "store.department.production_days",
+      "store.department.status",
+      "store.department_module_enable",
+      "store.display_in_company_list",
+      "store.email",
+      "store.fix_billing_address",
+      "store.fix_shipping_address",
+      "store.flat_markup",
+      "store.location_id_code",
+      "store.main_url",
+      "store.manage_email_notification",
+      "store.manage_private_store",
+      "store.markup_type",
+      "store.modified_on",
+      "store.order_approval",
+      "store.parent_corporate_id",
+      "store.phone_number",
+      "store.price_text",
+      "store.price_visible",
+      "store.production_days",
+      "store.status",
+      "store.store_location_id",
+      "store.tax_exempt",
+      "store.tax_exempt_type",
+      "store.unassigned_products",
+      "store.url_type",
+      "store.username",
+      "totalStore"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "getStoreLocations",
+    "kind": "query",
+    "domain": "onPrintShopStoreAdmin",
+    "args": {
+      "limit": "Int",
+      "location_id_code": "String",
+      "offset": "Int",
+      "status": "String",
+      "store_location_id": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "storeLocations.admin_extra_fields",
+      "storeLocations.location_id_code",
+      "storeLocations.location_name",
+      "storeLocations.location_payment_ids",
+      "storeLocations.location_shipping_ids",
+      "storeLocations.main_payment_ids",
+      "storeLocations.main_shipping_ids",
+      "storeLocations.site_logo",
+      "storeLocations.sort_order",
+      "storeLocations.status",
+      "storeLocations.store_address",
+      "storeLocations.store_email",
+      "storeLocations.store_location_id",
+      "storeLocations.store_phone",
+      "storeLocations.stores.admin_extra_fields",
+      "storeLocations.stores.corporate_id",
+      "storeLocations.stores.corporate_markup_id",
+      "storeLocations.stores.corporate_name",
+      "storeLocations.stores.created_on",
+      "storeLocations.stores.department.corporate_id",
+      "storeLocations.stores.department.cost_center_code",
+      "storeLocations.stores.department.created_on",
+      "storeLocations.stores.department.department_id",
+      "storeLocations.stores.department.email_to",
+      "storeLocations.stores.department.modified_on",
+      "storeLocations.stores.department.name",
+      "storeLocations.stores.department.production_days",
+      "storeLocations.stores.department.status",
+      "storeLocations.stores.department_module_enable",
+      "storeLocations.stores.display_in_company_list",
+      "storeLocations.stores.email",
+      "storeLocations.stores.fix_billing_address",
+      "storeLocations.stores.fix_shipping_address",
+      "storeLocations.stores.flat_markup",
+      "storeLocations.stores.location_id_code",
+      "storeLocations.stores.main_url",
+      "storeLocations.stores.manage_email_notification",
+      "storeLocations.stores.manage_private_store",
+      "storeLocations.stores.markup_type",
+      "storeLocations.stores.modified_on",
+      "storeLocations.stores.order_approval",
+      "storeLocations.stores.parent_corporate_id",
+      "storeLocations.stores.phone_number",
+      "storeLocations.stores.price_text",
+      "storeLocations.stores.price_visible",
+      "storeLocations.stores.production_days",
+      "storeLocations.stores.status",
+      "storeLocations.stores.store_location_id",
+      "storeLocations.stores.tax_exempt",
+      "storeLocations.stores.tax_exempt_type",
+      "storeLocations.stores.unassigned_products",
+      "storeLocations.stores.url_type",
+      "storeLocations.stores.username",
+      "totalStoreLocations"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "getStoreMarkup",
+    "kind": "query",
+    "domain": "onPrintShopStoreAdmin",
+    "args": {
+      "corporate_id": "Int",
+      "corporate_markup_id": "Int",
+      "limit": "Int",
+      "offset": "Int",
+      "status": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "storeMarkup.appliedon",
+      "storeMarkup.corporate_id",
+      "storeMarkup.corporate_markup_id",
+      "storeMarkup.markup_by",
+      "storeMarkup.markup_details",
+      "storeMarkup.markup_title",
+      "storeMarkup.markup_type",
+      "storeMarkup.status",
+      "totalStoreMarkup"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "getUserBasket",
+    "kind": "query",
+    "domain": "onPrintShopCustomers",
+    "args": {
+      "basket_id": "Int",
+      "limit": "Int",
+      "offset": "Int",
+      "user_id": "Int!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "baskets.basket_id",
+      "baskets.cart_count",
+      "baskets.cart_data_cache",
+      "baskets.cart_detail",
+      "baskets.cart_id",
+      "baskets.cart_payment_request",
+      "baskets.date",
+      "baskets.department_id",
+      "baskets.ship_to_multiple_address_detail",
+      "baskets.user_id",
+      "currentCount",
+      "totalBaskets"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "orderBillingDetails",
+    "kind": "query",
+    "domain": "onPrintShopOrders",
+    "args": {
+      "limit": "Int",
+      "offset": "Int",
+      "orders_id": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "orderBillingDetails.billing_city",
+      "orderBillingDetails.billing_company",
+      "orderBillingDetails.billing_country",
+      "orderBillingDetails.billing_country_code",
+      "orderBillingDetails.billing_extrafield",
+      "orderBillingDetails.billing_name",
+      "orderBillingDetails.billing_postcode",
+      "orderBillingDetails.billing_state",
+      "orderBillingDetails.billing_state_code",
+      "orderBillingDetails.billing_street_address",
+      "orderBillingDetails.billing_suburb",
+      "orderBillingDetails.billing_telephone",
+      "orderBillingDetails.orders_id",
+      "totalOrderBillingDetails"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "orderBlindDetails",
+    "kind": "query",
+    "domain": "onPrintShopOrders",
+    "args": {
+      "limit": "Int",
+      "offset": "Int",
+      "orders_id": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "orderBlindDetails.blind_city",
+      "orderBlindDetails.blind_company",
+      "orderBlindDetails.blind_country",
+      "orderBlindDetails.blind_country_code",
+      "orderBlindDetails.blind_extrafield",
+      "orderBlindDetails.blind_name",
+      "orderBlindDetails.blind_postcode",
+      "orderBlindDetails.blind_state",
+      "orderBlindDetails.blind_state_code",
+      "orderBlindDetails.blind_street_address",
+      "orderBlindDetails.blind_suburb",
+      "orderBlindDetails.orders_id",
+      "totalOrderBlindDetails"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "orderDeliveryDetails",
+    "kind": "query",
+    "domain": "onPrintShopOrders",
+    "args": {
+      "limit": "Int",
+      "offset": "Int",
+      "orders_id": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "orderDeliveryDetails.delivery_city",
+      "orderDeliveryDetails.delivery_company",
+      "orderDeliveryDetails.delivery_country",
+      "orderDeliveryDetails.delivery_country_code",
+      "orderDeliveryDetails.delivery_extrafield",
+      "orderDeliveryDetails.delivery_name",
+      "orderDeliveryDetails.delivery_postcode",
+      "orderDeliveryDetails.delivery_state",
+      "orderDeliveryDetails.delivery_state_code",
+      "orderDeliveryDetails.delivery_street_address",
+      "orderDeliveryDetails.delivery_suburb",
+      "orderDeliveryDetails.delivery_telephone",
+      "orderDeliveryDetails.orders_id",
+      "totalOrderDeliveryDetails"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "orderProducts",
+    "kind": "query",
+    "domain": "onPrintShopOrders",
+    "args": {
+      "limit": "Int",
+      "offset": "Int",
+      "orders_id": "Int",
+      "product_id": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "orderProducts.features_details",
+      "orderProducts.imagefiles",
+      "orderProducts.inventory_storage_days",
+      "orderProducts.is_kit",
+      "orderProducts.item_extra_info_json",
+      "orderProducts.mass_personalization_files",
+      "orderProducts.orders_products_id",
+      "orderProducts.orders_products_id_pattern",
+      "orderProducts.orders_products_last_modified_date",
+      "orderProducts.original_line_id",
+      "orderProducts.original_order_id",
+      "orderProducts.photo_print_details",
+      "orderProducts.predefined_product_type",
+      "orderProducts.print_ready_files",
+      "orderProducts.product_id",
+      "orderProducts.product_info",
+      "orderProducts.product_printer_name",
+      "orderProducts.product_production_due_date",
+      "orderProducts.product_size_details",
+      "orderProducts.product_status",
+      "orderProducts.product_status_id",
+      "orderProducts.product_tax",
+      "orderProducts.production_description",
+      "orderProducts.products_name",
+      "orderProducts.products_price",
+      "orderProducts.products_quantity",
+      "orderProducts.products_sku",
+      "orderProducts.products_title",
+      "orderProducts.products_unit_price",
+      "orderProducts.products_vendor_price",
+      "orderProducts.products_weight",
+      "orderProducts.productsize",
+      "orderProducts.proof_files",
+      "orderProducts.quote_id",
+      "orderProducts.quote_id_pattern",
+      "orderProducts.reference_order_id",
+      "orderProducts.reprint",
+      "orderProducts.template_info",
+      "orderProducts.template_type",
+      "orderProducts.ziflow_link",
+      "totalOrderProducts"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "orderShipmentDetails",
+    "kind": "query",
+    "domain": "onPrintShopOrders",
+    "args": {
+      "limit": "Int",
+      "offset": "Int",
+      "orders_id": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "orderShipmentDetails.shipment_company",
+      "orderShipmentDetails.shipment_package",
+      "orderShipmentDetails.shipment_shipping_type_id",
+      "orderShipmentDetails.shipment_total_weight",
+      "orderShipmentDetails.shipment_tracking_number",
+      "totalOrderShipmentDetails"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "orderStatus",
+    "kind": "query",
+    "domain": "onPrintShopOrders",
+    "args": {
+      "limit": "Int",
+      "offset": "Int",
+      "process_status_id": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "orderStatus.process_status_id",
+      "orderStatus.process_status_internal",
+      "orderStatus.process_status_set_as",
+      "orderStatus.process_status_title",
+      "orderStatus.status_type",
+      "totalOrderStatus"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "orderSummary",
+    "kind": "query",
+    "domain": "onPrintShopOrders",
+    "args": {
+      "customer_reference": "String",
+      "from_date": "String",
+      "group_by": "OrderSummaryGroupByEnum",
+      "limit": "Int",
+      "offset": "Int",
+      "order_status": "String",
+      "orders_id": "Int",
+      "to_date": "String"
+    },
+    "nestedArgs": {
+      "orderSummary.orders": {
+        "customer_email": "String",
+        "customer_id": "Int",
+        "from_date": "String",
+        "limit": "Int",
+        "offset": "Int",
+        "order_product_status": "Int",
+        "order_status": "String",
+        "order_type": "OrdersOrderTypeEnum",
+        "orders_id": "Int",
+        "orders_products_id": "Int",
+        "store_id": "String",
+        "to_date": "String"
+      }
+    },
+    "returns": [
+      "currentCount",
+      "orderSummary.blind_shipping_charge",
+      "orderSummary.discount_amount",
+      "orderSummary.order_count",
+      "orderSummary.order_duration",
+      "orderSummary.orders.currentCount",
+      "orderSummary.orders.orders.admin_extra_fields",
+      "orderSummary.orders.orders.airway_bill_number",
+      "orderSummary.orders.orders.billing_detail.billing_city",
+      "orderSummary.orders.orders.billing_detail.billing_company",
+      "orderSummary.orders.orders.billing_detail.billing_country",
+      "orderSummary.orders.orders.billing_detail.billing_country_code",
+      "orderSummary.orders.orders.billing_detail.billing_extrafield",
+      "orderSummary.orders.orders.billing_detail.billing_name",
+      "orderSummary.orders.orders.billing_detail.billing_postcode",
+      "orderSummary.orders.orders.billing_detail.billing_state",
+      "orderSummary.orders.orders.billing_detail.billing_state_code",
+      "orderSummary.orders.orders.billing_detail.billing_street_address",
+      "orderSummary.orders.orders.billing_detail.billing_suburb",
+      "orderSummary.orders.orders.billing_detail.billing_telephone",
+      "orderSummary.orders.orders.billing_detail.orders_id",
+      "orderSummary.orders.orders.blind_detail.blind_city",
+      "orderSummary.orders.orders.blind_detail.blind_company",
+      "orderSummary.orders.orders.blind_detail.blind_country",
+      "orderSummary.orders.orders.blind_detail.blind_country_code",
+      "orderSummary.orders.orders.blind_detail.blind_extrafield",
+      "orderSummary.orders.orders.blind_detail.blind_name",
+      "orderSummary.orders.orders.blind_detail.blind_postcode",
+      "orderSummary.orders.orders.blind_detail.blind_state",
+      "orderSummary.orders.orders.blind_detail.blind_state_code",
+      "orderSummary.orders.orders.blind_detail.blind_street_address",
+      "orderSummary.orders.orders.blind_detail.blind_suburb",
+      "orderSummary.orders.orders.blind_detail.orders_id",
+      "orderSummary.orders.orders.blind_shipping_charge",
+      "orderSummary.orders.orders.branch_name",
+      "orderSummary.orders.orders.corporate_id",
+      "orderSummary.orders.orders.cost_center_code",
+      "orderSummary.orders.orders.coupon_amount",
+      "orderSummary.orders.orders.coupon_code",
+      "orderSummary.orders.orders.coupon_type",
+      "orderSummary.orders.orders.courier_company_name",
+      "orderSummary.orders.orders.currency_code",
+      "orderSummary.orders.orders.customer.address_detail.address_book_id",
+      "orderSummary.orders.orders.customer.address_detail.address_type",
+      "orderSummary.orders.orders.customer.address_detail.city",
+      "orderSummary.orders.orders.customer.address_detail.company",
+      "orderSummary.orders.orders.customer.address_detail.country",
+      "orderSummary.orders.orders.customer.address_detail.extrafield",
+      "orderSummary.orders.orders.customer.address_detail.first_name",
+      "orderSummary.orders.orders.customer.address_detail.is_default_address",
+      "orderSummary.orders.orders.customer.address_detail.last_name",
+      "orderSummary.orders.orders.customer.address_detail.name",
+      "orderSummary.orders.orders.customer.address_detail.postcode",
+      "orderSummary.orders.orders.customer.address_detail.state",
+      "orderSummary.orders.orders.customer.address_detail.state_code",
+      "orderSummary.orders.orders.customer.address_detail.street_address",
+      "orderSummary.orders.orders.customer.address_detail.suburb",
+      "orderSummary.orders.orders.customer.address_detail.telephone",
+      "orderSummary.orders.orders.customer.admin_extra_fields",
+      "orderSummary.orders.orders.customer.customers_balance_amount",
+      "orderSummary.orders.orders.customer.customers_company",
+      "orderSummary.orders.orders.customer.customers_corporate_id",
+      "orderSummary.orders.orders.customer.customers_corporate_name",
+      "orderSummary.orders.orders.customer.customers_department_id",
+      "orderSummary.orders.orders.customer.customers_department_name",
+      "orderSummary.orders.orders.customer.customers_email_address",
+      "orderSummary.orders.orders.customer.customers_extrafield",
+      "orderSummary.orders.orders.customer.customers_first_name",
+      "orderSummary.orders.orders.customer.customers_last_name",
+      "orderSummary.orders.orders.customer.customers_name",
+      "orderSummary.orders.orders.customer.customers_pay_limit",
+      "orderSummary.orders.orders.customer.customers_payon_enable",
+      "orderSummary.orders.orders.customer.customers_register_date",
+      "orderSummary.orders.orders.customer.customers_secondary_emails",
+      "orderSummary.orders.orders.customer.customers_status",
+      "orderSummary.orders.orders.customer.customers_telephone",
+      "orderSummary.orders.orders.customer.customers_user_group_name",
+      "orderSummary.orders.orders.customer.customers_username",
+      "orderSummary.orders.orders.customer.external_ref",
+      "orderSummary.orders.orders.customer.location_id_code",
+      "orderSummary.orders.orders.customer.reward_points",
+      "orderSummary.orders.orders.customer.store_location_id",
+      "orderSummary.orders.orders.customer.user_type",
+      "orderSummary.orders.orders.customer.userid",
+      "orderSummary.orders.orders.delivery_detail.delivery_city",
+      "orderSummary.orders.orders.delivery_detail.delivery_company",
+      "orderSummary.orders.orders.delivery_detail.delivery_country",
+      "orderSummary.orders.orders.delivery_detail.delivery_country_code",
+      "orderSummary.orders.orders.delivery_detail.delivery_extrafield",
+      "orderSummary.orders.orders.delivery_detail.delivery_name",
+      "orderSummary.orders.orders.delivery_detail.delivery_postcode",
+      "orderSummary.orders.orders.delivery_detail.delivery_state",
+      "orderSummary.orders.orders.delivery_detail.delivery_state_code",
+      "orderSummary.orders.orders.delivery_detail.delivery_street_address",
+      "orderSummary.orders.orders.delivery_detail.delivery_suburb",
+      "orderSummary.orders.orders.delivery_detail.delivery_telephone",
+      "orderSummary.orders.orders.delivery_detail.orders_id",
+      "orderSummary.orders.orders.department_id",
+      "orderSummary.orders.orders.extrafield",
+      "orderSummary.orders.orders.invoice_date",
+      "orderSummary.orders.orders.invoice_number",
+      "orderSummary.orders.orders.local_orders_date_finished",
+      "orderSummary.orders.orders.location_id_code",
+      "orderSummary.orders.orders.order_amount",
+      "orderSummary.orders.orders.order_last_modified_date",
+      "orderSummary.orders.orders.order_name",
+      "orderSummary.orders.orders.order_note",
+      "orderSummary.orders.orders.order_number",
+      "orderSummary.orders.orders.order_status",
+      "orderSummary.orders.orders.order_vendor_amount",
+      "orderSummary.orders.orders.orders_date_finished",
+      "orderSummary.orders.orders.orders_due_date",
+      "orderSummary.orders.orders.orders_extrafield",
+      "orderSummary.orders.orders.orders_id",
+      "orderSummary.orders.orders.orders_status_id",
+      "orderSummary.orders.orders.parent_corporate_id",
+      "orderSummary.orders.orders.partial_payment_details",
+      "orderSummary.orders.orders.payment_date",
+      "orderSummary.orders.orders.payment_due_date",
+      "orderSummary.orders.orders.payment_method_name",
+      "orderSummary.orders.orders.payment_processing_fees",
+      "orderSummary.orders.orders.payment_status_title",
+      "orderSummary.orders.orders.po_number",
+      "orderSummary.orders.orders.printer_email",
+      "orderSummary.orders.orders.printer_name",
+      "orderSummary.orders.orders.product.features_details",
+      "orderSummary.orders.orders.product.imagefiles",
+      "orderSummary.orders.orders.product.inventory_storage_days",
+      "orderSummary.orders.orders.product.is_kit",
+      "orderSummary.orders.orders.product.item_extra_info_json",
+      "orderSummary.orders.orders.product.mass_personalization_files",
+      "orderSummary.orders.orders.product.orders_products_id",
+      "orderSummary.orders.orders.product.orders_products_id_pattern",
+      "orderSummary.orders.orders.product.orders_products_last_modified_date",
+      "orderSummary.orders.orders.product.original_line_id",
+      "orderSummary.orders.orders.product.original_order_id",
+      "orderSummary.orders.orders.product.photo_print_details",
+      "orderSummary.orders.orders.product.predefined_product_type",
+      "orderSummary.orders.orders.product.print_ready_files",
+      "orderSummary.orders.orders.product.product_id",
+      "orderSummary.orders.orders.product.product_info",
+      "orderSummary.orders.orders.product.product_printer_name",
+      "orderSummary.orders.orders.product.product_production_due_date",
+      "orderSummary.orders.orders.product.product_size_details",
+      "orderSummary.orders.orders.product.product_status",
+      "orderSummary.orders.orders.product.product_status_id",
+      "orderSummary.orders.orders.product.product_tax",
+      "orderSummary.orders.orders.product.production_description",
+      "orderSummary.orders.orders.product.products_name",
+      "orderSummary.orders.orders.product.products_price",
+      "orderSummary.orders.orders.product.products_quantity",
+      "orderSummary.orders.orders.product.products_sku",
+      "orderSummary.orders.orders.product.products_title",
+      "orderSummary.orders.orders.product.products_unit_price",
+      "orderSummary.orders.orders.product.products_vendor_price",
+      "orderSummary.orders.orders.product.products_weight",
+      "orderSummary.orders.orders.product.productsize",
+      "orderSummary.orders.orders.product.proof_files",
+      "orderSummary.orders.orders.product.quote_id",
+      "orderSummary.orders.orders.product.quote_id_pattern",
+      "orderSummary.orders.orders.product.reference_order_id",
+      "orderSummary.orders.orders.product.reprint",
+      "orderSummary.orders.orders.product.template_info",
+      "orderSummary.orders.orders.product.template_type",
+      "orderSummary.orders.orders.product.ziflow_link",
+      "orderSummary.orders.orders.production_due_date",
+      "orderSummary.orders.orders.refund_amount",
+      "orderSummary.orders.orders.reviewers",
+      "orderSummary.orders.orders.sales_agent_name",
+      "orderSummary.orders.orders.shipment_detail.shipment_company",
+      "orderSummary.orders.orders.shipment_detail.shipment_package",
+      "orderSummary.orders.orders.shipment_detail.shipment_shipping_type_id",
+      "orderSummary.orders.orders.shipment_detail.shipment_total_weight",
+      "orderSummary.orders.orders.shipment_detail.shipment_tracking_number",
+      "orderSummary.orders.orders.shipping_amount",
+      "orderSummary.orders.orders.shipping_mode",
+      "orderSummary.orders.orders.shipping_type_id",
+      "orderSummary.orders.orders.spent_reward_amount",
+      "orderSummary.orders.orders.store_location_id",
+      "orderSummary.orders.orders.tax_amount",
+      "orderSummary.orders.orders.total_amount",
+      "orderSummary.orders.orders.total_weight",
+      "orderSummary.orders.orders.transactionid",
+      "orderSummary.orders.orders.user_id",
+      "orderSummary.orders.totalOrders",
+      "orderSummary.price",
+      "orderSummary.refund_amount",
+      "orderSummary.shipping_amount",
+      "orderSummary.tax_amount",
+      "orderSummary.total_amount",
+      "totalOrderSummary"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "orders",
+    "kind": "query",
+    "domain": "onPrintShopOrders",
+    "args": {
+      "customer_email": "String",
+      "customer_id": "Int",
+      "from_date": "String",
+      "limit": "Int",
+      "offset": "Int",
+      "order_product_status": "Int",
+      "order_status": "String",
+      "order_type": "OrdersOrderTypeEnum",
+      "orders_id": "Int",
+      "orders_products_id": "Int",
+      "store_id": "String",
+      "to_date": "String"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "orders.admin_extra_fields",
+      "orders.airway_bill_number",
+      "orders.billing_detail.billing_city",
+      "orders.billing_detail.billing_company",
+      "orders.billing_detail.billing_country",
+      "orders.billing_detail.billing_country_code",
+      "orders.billing_detail.billing_extrafield",
+      "orders.billing_detail.billing_name",
+      "orders.billing_detail.billing_postcode",
+      "orders.billing_detail.billing_state",
+      "orders.billing_detail.billing_state_code",
+      "orders.billing_detail.billing_street_address",
+      "orders.billing_detail.billing_suburb",
+      "orders.billing_detail.billing_telephone",
+      "orders.billing_detail.orders_id",
+      "orders.blind_detail.blind_city",
+      "orders.blind_detail.blind_company",
+      "orders.blind_detail.blind_country",
+      "orders.blind_detail.blind_country_code",
+      "orders.blind_detail.blind_extrafield",
+      "orders.blind_detail.blind_name",
+      "orders.blind_detail.blind_postcode",
+      "orders.blind_detail.blind_state",
+      "orders.blind_detail.blind_state_code",
+      "orders.blind_detail.blind_street_address",
+      "orders.blind_detail.blind_suburb",
+      "orders.blind_detail.orders_id",
+      "orders.blind_shipping_charge",
+      "orders.branch_name",
+      "orders.corporate_id",
+      "orders.cost_center_code",
+      "orders.coupon_amount",
+      "orders.coupon_code",
+      "orders.coupon_type",
+      "orders.courier_company_name",
+      "orders.currency_code",
+      "orders.customer.address_detail.address_book_id",
+      "orders.customer.address_detail.address_type",
+      "orders.customer.address_detail.city",
+      "orders.customer.address_detail.company",
+      "orders.customer.address_detail.country",
+      "orders.customer.address_detail.extrafield",
+      "orders.customer.address_detail.first_name",
+      "orders.customer.address_detail.is_default_address",
+      "orders.customer.address_detail.last_name",
+      "orders.customer.address_detail.name",
+      "orders.customer.address_detail.postcode",
+      "orders.customer.address_detail.state",
+      "orders.customer.address_detail.state_code",
+      "orders.customer.address_detail.street_address",
+      "orders.customer.address_detail.suburb",
+      "orders.customer.address_detail.telephone",
+      "orders.customer.admin_extra_fields",
+      "orders.customer.customers_balance_amount",
+      "orders.customer.customers_company",
+      "orders.customer.customers_corporate_id",
+      "orders.customer.customers_corporate_name",
+      "orders.customer.customers_department_id",
+      "orders.customer.customers_department_name",
+      "orders.customer.customers_email_address",
+      "orders.customer.customers_extrafield",
+      "orders.customer.customers_first_name",
+      "orders.customer.customers_last_name",
+      "orders.customer.customers_name",
+      "orders.customer.customers_pay_limit",
+      "orders.customer.customers_payon_enable",
+      "orders.customer.customers_register_date",
+      "orders.customer.customers_secondary_emails",
+      "orders.customer.customers_status",
+      "orders.customer.customers_telephone",
+      "orders.customer.customers_user_group_name",
+      "orders.customer.customers_username",
+      "orders.customer.external_ref",
+      "orders.customer.location_id_code",
+      "orders.customer.reward_points",
+      "orders.customer.store_location_id",
+      "orders.customer.user_type",
+      "orders.customer.userid",
+      "orders.delivery_detail.delivery_city",
+      "orders.delivery_detail.delivery_company",
+      "orders.delivery_detail.delivery_country",
+      "orders.delivery_detail.delivery_country_code",
+      "orders.delivery_detail.delivery_extrafield",
+      "orders.delivery_detail.delivery_name",
+      "orders.delivery_detail.delivery_postcode",
+      "orders.delivery_detail.delivery_state",
+      "orders.delivery_detail.delivery_state_code",
+      "orders.delivery_detail.delivery_street_address",
+      "orders.delivery_detail.delivery_suburb",
+      "orders.delivery_detail.delivery_telephone",
+      "orders.delivery_detail.orders_id",
+      "orders.department_id",
+      "orders.extrafield",
+      "orders.invoice_date",
+      "orders.invoice_number",
+      "orders.local_orders_date_finished",
+      "orders.location_id_code",
+      "orders.order_amount",
+      "orders.order_last_modified_date",
+      "orders.order_name",
+      "orders.order_note",
+      "orders.order_number",
+      "orders.order_status",
+      "orders.order_vendor_amount",
+      "orders.orders_date_finished",
+      "orders.orders_due_date",
+      "orders.orders_extrafield",
+      "orders.orders_id",
+      "orders.orders_status_id",
+      "orders.parent_corporate_id",
+      "orders.partial_payment_details",
+      "orders.payment_date",
+      "orders.payment_due_date",
+      "orders.payment_method_name",
+      "orders.payment_processing_fees",
+      "orders.payment_status_title",
+      "orders.po_number",
+      "orders.printer_email",
+      "orders.printer_name",
+      "orders.product.features_details",
+      "orders.product.imagefiles",
+      "orders.product.inventory_storage_days",
+      "orders.product.is_kit",
+      "orders.product.item_extra_info_json",
+      "orders.product.mass_personalization_files",
+      "orders.product.orders_products_id",
+      "orders.product.orders_products_id_pattern",
+      "orders.product.orders_products_last_modified_date",
+      "orders.product.original_line_id",
+      "orders.product.original_order_id",
+      "orders.product.photo_print_details",
+      "orders.product.predefined_product_type",
+      "orders.product.print_ready_files",
+      "orders.product.product_id",
+      "orders.product.product_info",
+      "orders.product.product_printer_name",
+      "orders.product.product_production_due_date",
+      "orders.product.product_size_details",
+      "orders.product.product_status",
+      "orders.product.product_status_id",
+      "orders.product.product_tax",
+      "orders.product.production_description",
+      "orders.product.products_name",
+      "orders.product.products_price",
+      "orders.product.products_quantity",
+      "orders.product.products_sku",
+      "orders.product.products_title",
+      "orders.product.products_unit_price",
+      "orders.product.products_vendor_price",
+      "orders.product.products_weight",
+      "orders.product.productsize",
+      "orders.product.proof_files",
+      "orders.product.quote_id",
+      "orders.product.quote_id_pattern",
+      "orders.product.reference_order_id",
+      "orders.product.reprint",
+      "orders.product.template_info",
+      "orders.product.template_type",
+      "orders.product.ziflow_link",
+      "orders.production_due_date",
+      "orders.refund_amount",
+      "orders.reviewers",
+      "orders.sales_agent_name",
+      "orders.shipment_detail.shipment_company",
+      "orders.shipment_detail.shipment_package",
+      "orders.shipment_detail.shipment_shipping_type_id",
+      "orders.shipment_detail.shipment_total_weight",
+      "orders.shipment_detail.shipment_tracking_number",
+      "orders.shipping_amount",
+      "orders.shipping_mode",
+      "orders.shipping_type_id",
+      "orders.spent_reward_amount",
+      "orders.store_location_id",
+      "orders.tax_amount",
+      "orders.total_amount",
+      "orders.total_weight",
+      "orders.transactionid",
+      "orders.user_id",
+      "totalOrders"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "productAdditionalOptions",
+    "kind": "query",
+    "domain": "onPrintShopProducts",
+    "args": {
+      "limit": "Int",
+      "offset": "Int",
+      "products_id": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "productAdditionalOptions.applicable_for",
+      "productAdditionalOptions.apply_multiplication",
+      "productAdditionalOptions.attributes",
+      "productAdditionalOptions.description",
+      "productAdditionalOptions.hire_designer_option",
+      "productAdditionalOptions.master_option_id",
+      "productAdditionalOptions.option_key",
+      "productAdditionalOptions.options_type",
+      "productAdditionalOptions.price_calculate_type",
+      "productAdditionalOptions.prod_add_opt_group_id",
+      "productAdditionalOptions.prod_add_opt_id",
+      "productAdditionalOptions.products_id",
+      "productAdditionalOptions.required",
+      "productAdditionalOptions.size_id",
+      "productAdditionalOptions.sort_order",
+      "productAdditionalOptions.status",
+      "productAdditionalOptions.title",
+      "totalProductAdditionalOptions"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "productCategory",
+    "kind": "query",
+    "domain": "onPrintShopProducts",
+    "args": {
+      "category_id": "Int",
+      "limit": "Int",
+      "offset": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "productCategory.category_header_content",
+      "productCategory.category_id",
+      "productCategory.category_image",
+      "productCategory.category_internal_name",
+      "productCategory.category_name",
+      "productCategory.category_url",
+      "productCategory.external_ref",
+      "productCategory.long_description",
+      "productCategory.long_description_two",
+      "productCategory.parent_id",
+      "productCategory.schema_markup",
+      "productCategory.seo_page_description",
+      "productCategory.seo_page_title",
+      "productCategory.short_description",
+      "productCategory.site_language_id",
+      "productCategory.sort_order",
+      "productCategory.status",
+      "totalProductCategorySize"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "productMasterOptions",
+    "kind": "query",
+    "domain": "onPrintShopProducts",
+    "args": {
+      "limit": "Int",
+      "master_option_id": "Int",
+      "offset": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "productMasterOptions.additional_lookup_details",
+      "productMasterOptions.admin_extra_fields",
+      "productMasterOptions.allow_price_cal",
+      "productMasterOptions.attributes",
+      "productMasterOptions.desc_position",
+      "productMasterOptions.description",
+      "productMasterOptions.display_above_size",
+      "productMasterOptions.display_in_calculator",
+      "productMasterOptions.enable_assoc_qty",
+      "productMasterOptions.exclude_setup_cost_reorder",
+      "productMasterOptions.external_ref",
+      "productMasterOptions.formula",
+      "productMasterOptions.hide_from_calc",
+      "productMasterOptions.hire_designer_option",
+      "productMasterOptions.linear_formula",
+      "productMasterOptions.master_option_id",
+      "productMasterOptions.master_option_tag",
+      "productMasterOptions.option_key",
+      "productMasterOptions.option_position",
+      "productMasterOptions.options_type",
+      "productMasterOptions.presentation_group",
+      "productMasterOptions.price_range_lookup",
+      "productMasterOptions.pricing_method",
+      "productMasterOptions.prod_add_opt_export_group_id",
+      "productMasterOptions.production_description",
+      "productMasterOptions.required",
+      "productMasterOptions.sort_order",
+      "productMasterOptions.status",
+      "productMasterOptions.title",
+      "productMasterOptions.weight_setting",
+      "totalProductMasterOptions"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "productOptionRules",
+    "kind": "query",
+    "domain": "onPrintShopProducts",
+    "args": {
+      "limit": "Int",
+      "offset": "Int",
+      "rule_id": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "productOptionRules.comparison_value",
+      "productOptionRules.disabled_for_admin",
+      "productOptionRules.hide_option_attribute_ids",
+      "productOptionRules.hide_option_ids",
+      "productOptionRules.rule_id",
+      "productOptionRules.rule_name",
+      "productOptionRules.rule_type",
+      "productOptionRules.sort_order",
+      "productOptionRules.source_attribute_ids",
+      "productOptionRules.source_option_ids",
+      "productOptionRules.status",
+      "totalProductOptionRules"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "productOptionsPrice",
+    "kind": "query",
+    "domain": "onPrintShopProducts",
+    "args": {
+      "attr_id": "Int",
+      "limit": "Int",
+      "offset": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "productOptionsPrice.additional_lookup",
+      "productOptionsPrice.attr_id",
+      "productOptionsPrice.from_range",
+      "productOptionsPrice.price",
+      "productOptionsPrice.range_id",
+      "productOptionsPrice.site_admin_markup",
+      "productOptionsPrice.to_range",
+      "productOptionsPrice.vendor_price",
+      "totalProductOptionPrice"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "productPrice",
+    "kind": "query",
+    "domain": "onPrintShopProducts",
+    "args": {
+      "limit": "Int",
+      "offset": "Int",
+      "product_uuid": "String"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "productPrice.corporate_id",
+      "productPrice.price",
+      "productPrice.products_id",
+      "productPrice.qty_from",
+      "productPrice.qty_to",
+      "productPrice.size_id",
+      "productPrice.user_type_id",
+      "productPrice.vendor_price",
+      "totalProductPrice"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "productSize",
+    "kind": "query",
+    "domain": "onPrintShopProducts",
+    "args": {
+      "limit": "Int",
+      "offset": "Int",
+      "products_id": "Int",
+      "size_id": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "productSize.cover_height",
+      "productSize.cover_height_original",
+      "productSize.cover_width",
+      "productSize.cover_width_original",
+      "productSize.default_size",
+      "productSize.jobs_per_sheet",
+      "productSize.no_of_folding",
+      "productSize.products_id",
+      "productSize.setup_cost",
+      "productSize.site_language_id",
+      "productSize.size_height",
+      "productSize.size_height_original",
+      "productSize.size_id",
+      "productSize.size_image",
+      "productSize.size_title",
+      "productSize.size_unit",
+      "productSize.size_width",
+      "productSize.size_width_original",
+      "productSize.sort_order",
+      "productSize.visible",
+      "productSize.weight",
+      "totalProductSize"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "productStocks",
+    "kind": "query",
+    "domain": "onPrintShopInventory",
+    "args": {
+      "limit": "Int",
+      "offset": "Int",
+      "product_id": "Int",
+      "type": "StockTypeEnum!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "productStocks.credited_stock",
+      "productStocks.current_stock",
+      "productStocks.debited_stock",
+      "productStocks.location",
+      "productStocks.option_details",
+      "productStocks.product_id",
+      "productStocks.product_name",
+      "productStocks.size_id",
+      "productStocks.size_title",
+      "productStocks.stock_id",
+      "totalProductStocks"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "products",
+    "kind": "query",
+    "domain": "onPrintShopProducts",
+    "args": {
+      "limit": "Int",
+      "offset": "Int",
+      "products_id": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "products.external_ref",
+      "products.isstock",
+      "products.main_sku",
+      "products.product_id",
+      "products.product_name",
+      "totalProducts"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "productsAttributePrice",
+    "kind": "query",
+    "domain": "onPrintShopProducts",
+    "args": {
+      "attribute_id": "Int",
+      "attribute_price_id": "Int",
+      "limit": "Int",
+      "offset": "Int",
+      "size_id": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "productsAttributePrice.attribute_id",
+      "productsAttributePrice.attribute_price_id",
+      "productsAttributePrice.attributes_price",
+      "productsAttributePrice.extra_page_price",
+      "productsAttributePrice.quantity",
+      "productsAttributePrice.quantity_to",
+      "productsAttributePrice.size_id",
+      "totalProductsAttributePrice"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "productsDetails",
+    "kind": "query",
+    "domain": "onPrintShopProducts",
+    "args": {
+      "all_store": "Int",
+      "external_catalogue": "Int",
+      "limit": "Int",
+      "offset": "Int",
+      "products_id": "Int",
+      "status": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "products.admin_extra_fields",
+      "products.all_store",
+      "products.associate_attribute_id",
+      "products.associate_attribute_key",
+      "products.associate_calculation_type",
+      "products.associate_multiplier",
+      "products.associate_option_id",
+      "products.associate_option_key",
+      "products.associate_size_id",
+      "products.associate_status",
+      "products.associated_category_ids",
+      "products.associated_category_names",
+      "products.custom_cross_check_height_width",
+      "products.custom_size_info",
+      "products.custom_size_restrict_data",
+      "products.default_category_id",
+      "products.default_category_name",
+      "products.default_production_days",
+      "products.external_catalogue",
+      "products.external_ref",
+      "products.kit_products",
+      "products.kit_type_id",
+      "products.large_image",
+      "products.long_description",
+      "products.long_description_two",
+      "products.main_sku",
+      "products.measurement_unit_id",
+      "products.predefined_product_type",
+      "products.price_defining_method",
+      "products.product_additional_options.applicable_for",
+      "products.product_additional_options.apply_multiplication",
+      "products.product_additional_options.attributes",
+      "products.product_additional_options.description",
+      "products.product_additional_options.hire_designer_option",
+      "products.product_additional_options.master_option_id",
+      "products.product_additional_options.option_key",
+      "products.product_additional_options.options_type",
+      "products.product_additional_options.price_calculate_type",
+      "products.product_additional_options.prod_add_opt_group_id",
+      "products.product_additional_options.prod_add_opt_id",
+      "products.product_additional_options.products_id",
+      "products.product_additional_options.required",
+      "products.product_additional_options.size_id",
+      "products.product_additional_options.sort_order",
+      "products.product_additional_options.status",
+      "products.product_additional_options.title",
+      "products.product_cut_off_time",
+      "products.product_default_quantity_interval",
+      "products.product_hire_designer_cost",
+      "products.product_id",
+      "products.product_minimum_price",
+      "products.product_name",
+      "products.product_setup_cost",
+      "products.product_size.cover_height",
+      "products.product_size.cover_height_original",
+      "products.product_size.cover_width",
+      "products.product_size.cover_width_original",
+      "products.product_size.default_size",
+      "products.product_size.jobs_per_sheet",
+      "products.product_size.no_of_folding",
+      "products.product_size.products_id",
+      "products.product_size.setup_cost",
+      "products.product_size.site_language_id",
+      "products.product_size.size_height",
+      "products.product_size.size_height_original",
+      "products.product_size.size_id",
+      "products.product_size.size_image",
+      "products.product_size.size_title",
+      "products.product_size.size_unit",
+      "products.product_size.size_width",
+      "products.product_size.size_width_original",
+      "products.product_size.sort_order",
+      "products.product_size.visible",
+      "products.product_size.weight",
+      "products.product_start_price",
+      "products.product_type",
+      "products.product_url",
+      "products.production_description",
+      "products.productpages",
+      "products.products_draw_area_margins",
+      "products.products_draw_cutting_margins",
+      "products.products_internal_name",
+      "products.schema_markup",
+      "products.search_keywords",
+      "products.seo_page_description",
+      "products.seo_page_metatags",
+      "products.seo_page_title",
+      "products.short_description",
+      "products.small_image",
+      "products.sort_order",
+      "products.status",
+      "totalProducts"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "productsImageGallery",
+    "kind": "query",
+    "domain": "onPrintShopProducts",
+    "args": {
+      "corporate_id": "Int",
+      "limit": "Int",
+      "offset": "Int",
+      "products_id": "Int",
+      "products_image_gallery_id": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "productsImageGallery.attribute_id",
+      "productsImageGallery.attribute_ids",
+      "productsImageGallery.corporate_id",
+      "productsImageGallery.option_id",
+      "productsImageGallery.option_ids",
+      "productsImageGallery.products_id",
+      "productsImageGallery.products_image_gallery_id",
+      "productsImageGallery.products_large_image_name",
+      "productsImageGallery.products_thumb_image_name",
+      "productsImageGallery.sort_order",
+      "productsImageGallery.status",
+      "productsImageGallery.title",
+      "totalProductsImageGallery"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "quantityBasedAttributePrice",
+    "kind": "query",
+    "domain": "onPrintShopProducts",
+    "args": {
+      "attribute_id": "Int",
+      "limit": "Int",
+      "offset": "Int",
+      "price_id": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "quantityBasedAttributePrice.attribute_id",
+      "quantityBasedAttributePrice.attribute_price",
+      "quantityBasedAttributePrice.price_id",
+      "quantityBasedAttributePrice.qty",
+      "quantityBasedAttributePrice.qty_to",
+      "quantityBasedAttributePrice.size_from",
+      "quantityBasedAttributePrice.size_to",
+      "totalQuantityBasedAttributePrice"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "quoteproduct",
+    "kind": "query",
+    "domain": "onPrintShopOrders",
+    "args": {
+      "limit": "Int",
+      "offset": "Int",
+      "products_id": "Int",
+      "quote_id": "Int",
+      "quote_products_id": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "quoteproduct.is_custom_product",
+      "quoteproduct.orders_products_id",
+      "quoteproduct.production_description",
+      "quoteproduct.products_id",
+      "quoteproduct.products_prd_day",
+      "quoteproduct.products_title",
+      "quoteproduct.products_weight",
+      "quoteproduct.quote_id",
+      "quoteproduct.quote_product_notes",
+      "quoteproduct.quote_product_sku",
+      "quoteproduct.quote_products_id",
+      "quoteproduct.quote_products_info",
+      "quoteproduct.quote_products_price",
+      "quoteproduct.quote_products_quantity",
+      "quoteproduct.quote_products_vendor_price",
+      "totalQuoteProduct"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "shipToMultipleAddress",
+    "kind": "query",
+    "domain": "onPrintShopOrders",
+    "args": {
+      "limit": "Int",
+      "offset": "Int",
+      "order_id": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "shipToMultipleAddress.ship_to_multiple_address_blind_address",
+      "shipToMultipleAddress.ship_to_multiple_address_delivery_city",
+      "shipToMultipleAddress.ship_to_multiple_address_delivery_company",
+      "shipToMultipleAddress.ship_to_multiple_address_delivery_country",
+      "shipToMultipleAddress.ship_to_multiple_address_delivery_name",
+      "shipToMultipleAddress.ship_to_multiple_address_delivery_postcode",
+      "shipToMultipleAddress.ship_to_multiple_address_delivery_state",
+      "shipToMultipleAddress.ship_to_multiple_address_delivery_street_address",
+      "shipToMultipleAddress.ship_to_multiple_address_delivery_suburb",
+      "shipToMultipleAddress.ship_to_multiple_address_delivery_telephone",
+      "shipToMultipleAddress.ship_to_multiple_address_extra_field",
+      "shipToMultipleAddress.ship_to_multiple_address_product_details",
+      "shipToMultipleAddress.ship_to_multiple_address_production_due_date",
+      "shipToMultipleAddress.ship_to_multiple_address_shipment_due_date",
+      "shipToMultipleAddress.ship_to_multiple_address_shipping_mode",
+      "shipToMultipleAddress.ship_to_multiple_address_shipping_name",
+      "shipToMultipleAddress.ship_to_multiple_address_shipping_price",
+      "shipToMultipleAddress.ship_to_multiple_address_shipping_type_id",
+      "totalShipToMultipleAddresses"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "storeCreditSummary",
+    "kind": "query",
+    "domain": "onPrintShopStoreAdmin",
+    "args": {
+      "from_date": "String",
+      "limit": "Int",
+      "offset": "Int",
+      "storeid": "Int",
+      "to_date": "String",
+      "user_id": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "remainingCredit",
+      "storeCreditSummary.comments",
+      "storeCreditSummary.customer_name",
+      "storeCreditSummary.maintain_by",
+      "storeCreditSummary.order_id",
+      "storeCreditSummary.order_id_type",
+      "storeCreditSummary.reward_transaction_type",
+      "storeCreditSummary.store_name",
+      "storeCreditSummary.storeid",
+      "storeCreditSummary.tran_type",
+      "storeCreditSummary.transaction_date_time",
+      "storeCreditSummary.transaction_msg",
+      "storeCreditSummary.type",
+      "storeCreditSummary.user_id",
+      "totalStoreCreditSummary"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "storeaddress",
+    "kind": "query",
+    "domain": "onPrintShopStoreAdmin",
+    "args": {
+      "corporate_address_id": "Int",
+      "corporate_id": "Int",
+      "department_id": "Int",
+      "limit": "Int",
+      "offset": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "currentCount",
+      "storeaddress.address_flag",
+      "storeaddress.available_to",
+      "storeaddress.city",
+      "storeaddress.companyname",
+      "storeaddress.corporate_address",
+      "storeaddress.corporate_address_id",
+      "storeaddress.corporate_id",
+      "storeaddress.country",
+      "storeaddress.country_iso_code",
+      "storeaddress.department_id",
+      "storeaddress.extrafield",
+      "storeaddress.office_name",
+      "storeaddress.phone_number",
+      "storeaddress.postcode",
+      "storeaddress.receiver_name",
+      "storeaddress.state",
+      "storeaddress.status",
+      "storeaddress.suburb",
+      "totalStoreAddress"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "validateCustomerToken",
+    "kind": "query",
+    "domain": "onPrintShopCustomers",
+    "args": {
+      "token": "String"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "result",
+      "status"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "addMasterOptionStockConfig",
+    "kind": "mutation",
+    "domain": "onPrintShopInventory",
+    "args": {
+      "input": "AddMasterOptionStockConfigInput!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "index",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "deleteMasterOptionStockConfig",
+    "kind": "mutation",
+    "domain": "onPrintShopInventory",
+    "args": {
+      "config_id": "Int",
+      "option_ids": "String"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "index",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "modifyOrderProduct",
+    "kind": "mutation",
+    "domain": "onPrintShopOrders",
+    "args": {
+      "input": "ModifyOrderProductInput!",
+      "orderid": "Int!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "index",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "notifyUser",
+    "kind": "mutation",
+    "domain": "onPrintShopCustomers",
+    "args": {
+      "cust_id": "Int",
+      "input": "UserNotifyInput!",
+      "usertype": "UserNotifyTypeEnum!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setAdditionalOption",
+    "kind": "mutation",
+    "domain": "onPrintShopProductBuilder",
+    "args": {
+      "inputs": "[AdditionalOptionInput!]!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "index",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setAdditionalOptionAttributes",
+    "kind": "mutation",
+    "domain": "onPrintShopProductBuilder",
+    "args": {
+      "inputs": "[AdditionalOptionAttributesInput!]!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "index",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setAdminExtraField",
+    "kind": "mutation",
+    "domain": "onPrintShopStoreAdmin",
+    "args": {
+      "inputs": "[AdminExtraFieldInput!]!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "index",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setAdminExtraFieldValues",
+    "kind": "mutation",
+    "domain": "onPrintShopStoreAdmin",
+    "args": {
+      "inputs": "[AdminExtraFieldValueInput!]!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "index",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setAssignOptions",
+    "kind": "mutation",
+    "domain": "onPrintShopProductBuilder",
+    "args": {
+      "inputs": "[AssignOptionsInput!]!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "index",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setBatch",
+    "kind": "mutation",
+    "domain": "onPrintShopOrders",
+    "args": {
+      "batch_id": "Int",
+      "input": "SetBatchMasterInput!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "batch_link",
+      "batch_pdf_link",
+      "id",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setBatchJob",
+    "kind": "mutation",
+    "domain": "onPrintShopOrders",
+    "args": {
+      "input": "SetBatchJobMasterInput!",
+      "order_product_id": "Int",
+      "pagename": "String",
+      "pagename_rear": "String"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setCustomFormula",
+    "kind": "mutation",
+    "domain": "onPrintShopProductBuilder",
+    "args": {
+      "input": "CustomFormulaInput!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setCustomer",
+    "kind": "mutation",
+    "domain": "onPrintShopCustomers",
+    "args": {
+      "customer_id": "Int",
+      "input": "SetCustomerInput!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "external_ref",
+      "id",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setCustomerAddressDetail",
+    "kind": "mutation",
+    "domain": "onPrintShopCustomers",
+    "args": {
+      "input": "CustomerAddressInput!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setDepartment",
+    "kind": "mutation",
+    "domain": "onPrintShopStoreAdmin",
+    "args": {
+      "input": "DepartmentInput!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setFaq",
+    "kind": "mutation",
+    "domain": "onPrintShopStoreAdmin",
+    "args": {
+      "input": "FaqInput!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setFaqCategory",
+    "kind": "mutation",
+    "domain": "onPrintShopStoreAdmin",
+    "args": {
+      "input": "FaqCategoryInput!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setMasterOption",
+    "kind": "mutation",
+    "domain": "onPrintShopProductBuilder",
+    "args": {
+      "inputs": "[MasterOptionInput!]!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "external_ref",
+      "id",
+      "index",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setMasterOptionAttributePrice",
+    "kind": "mutation",
+    "domain": "onPrintShopProductBuilder",
+    "args": {
+      "inputs": "[MasterOptionAttributePriceInput!]!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "index",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setMasterOptionAttributes",
+    "kind": "mutation",
+    "domain": "onPrintShopProductBuilder",
+    "args": {
+      "inputs": "[MasterOptionAttributesInput!]!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "index",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setMasterOptionRange",
+    "kind": "mutation",
+    "domain": "onPrintShopProductBuilder",
+    "args": {
+      "input": "MasterOptionRangeInput!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setMasterOptionStockSettings",
+    "kind": "mutation",
+    "domain": "onPrintShopInventory",
+    "args": {
+      "inputs": "[SetMasterOptionStockSettingsInput!]!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "index",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setMasterOptionTag",
+    "kind": "mutation",
+    "domain": "onPrintShopProductBuilder",
+    "args": {
+      "input": "MasterOptionTagInput!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setOptionGroup",
+    "kind": "mutation",
+    "domain": "onPrintShopProductBuilder",
+    "args": {
+      "input": "OptionGroupInput!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setOrder",
+    "kind": "mutation",
+    "domain": "onPrintShopOrders",
+    "args": {
+      "admin_extra_fields": "JSON",
+      "input": "SetOrderInput!",
+      "order_id": "Int",
+      "order_product_status": "Int",
+      "order_title": "String!",
+      "selected_shipping_type": "Int",
+      "userid": "Int!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setOrderProduct",
+    "kind": "mutation",
+    "domain": "onPrintShopOrders",
+    "args": {
+      "height": "Float",
+      "input": "SetOrderProductInput!",
+      "order_product_id": "Int",
+      "width": "Float"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setOrderProductImage",
+    "kind": "mutation",
+    "domain": "onPrintShopOrders",
+    "args": {
+      "add_version_file_only": "Int",
+      "ask_for_approval": "Int",
+      "input": "SetOrderProductImageInput!",
+      "order_product_id": "Int",
+      "update_ziflow_link_only": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setOrderProductImageFromUrl",
+    "kind": "mutation",
+    "domain": "onPrintShopOrders",
+    "args": {
+      "add_version_file_only": "Int",
+      "ask_for_approval": "Int",
+      "input": "SetOrderProductImageFromUrlInput!",
+      "order_product_id": "Int",
+      "update_ziflow_link_only": "Int"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setProduct",
+    "kind": "mutation",
+    "domain": "onPrintShopProductBuilder",
+    "args": {
+      "inputs": "[ProductInput!]!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "external_ref",
+      "id",
+      "index",
+      "main_sku",
+      "message",
+      "pages_result.id",
+      "pages_result.index",
+      "pages_result.message",
+      "pages_result.result",
+      "result",
+      "sizes_result.id",
+      "sizes_result.index",
+      "sizes_result.message",
+      "sizes_result.result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setProductCategory",
+    "kind": "mutation",
+    "domain": "onPrintShopProductBuilder",
+    "args": {
+      "inputs": "[ProductCategoryInput!]!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "external_ref",
+      "id",
+      "index",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setProductDesign",
+    "kind": "mutation",
+    "domain": "onPrintShopOrders",
+    "args": {
+      "order_product_id": "Int",
+      "ziflow_link": "String",
+      "ziflow_preflight_link": "String"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setProductOptionRules",
+    "kind": "mutation",
+    "domain": "onPrintShopProductBuilder",
+    "args": {
+      "input": "ProductOptionRulesInput!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setProductPages",
+    "kind": "mutation",
+    "domain": "onPrintShopProductBuilder",
+    "args": {
+      "inputs": "[ProductPagesInput!]!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "index",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setProductPrice",
+    "kind": "mutation",
+    "domain": "onPrintShopProductBuilder",
+    "args": {
+      "inputs": "[ProductPriceInput!]!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "index",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setProductSize",
+    "kind": "mutation",
+    "domain": "onPrintShopProductBuilder",
+    "args": {
+      "inputs": "[ProductSizeInput!]!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "index",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setProductSku",
+    "kind": "mutation",
+    "domain": "onPrintShopProductBuilder",
+    "args": {
+      "inputs": "[ProductSkuInput!]!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "index",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setProductsAttributePrice",
+    "kind": "mutation",
+    "domain": "onPrintShopProductBuilder",
+    "args": {
+      "inputs": "[ProductsAttributePriceInput!]!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "index",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setProductsImageGallery",
+    "kind": "mutation",
+    "domain": "onPrintShopProductBuilder",
+    "args": {
+      "input": "ProductsImageGalleryBulkInput!",
+      "optimizeimg": "Int",
+      "products_id": "Int!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "index",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setQuantityBasedAttributePrice",
+    "kind": "mutation",
+    "domain": "onPrintShopProductBuilder",
+    "args": {
+      "inputs": "[QuantityBasedAttributePriceInput!]!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "index",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setQuote",
+    "kind": "mutation",
+    "domain": "onPrintShopOrders",
+    "args": {
+      "admin_extra_fields": "JSON",
+      "input": "SetQuoteInput",
+      "order_product_status": "Int",
+      "quote_id": "Int",
+      "quote_title": "String",
+      "selected_shipping_type": "String",
+      "userid": "Int!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setShipment",
+    "kind": "mutation",
+    "domain": "onPrintShopOrders",
+    "args": {
+      "order_id": "Int",
+      "shipment_id": "Int",
+      "shipmentinfo": "JSON",
+      "tracking_number": "String"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setStore",
+    "kind": "mutation",
+    "domain": "onPrintShopStoreAdmin",
+    "args": {
+      "input": "StoreInput!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setStoreAddress",
+    "kind": "mutation",
+    "domain": "onPrintShopStoreAdmin",
+    "args": {
+      "input": "StoreAddressInput!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setStoreLocation",
+    "kind": "mutation",
+    "domain": "onPrintShopStoreAdmin",
+    "args": {
+      "inputs": "[StoreLocationInput!]!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "index",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setStoreMarkup",
+    "kind": "mutation",
+    "domain": "onPrintShopStoreAdmin",
+    "args": {
+      "input": "StoreMarkupInput!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "setUserBasket",
+    "kind": "mutation",
+    "domain": "onPrintShopCustomers",
+    "args": {
+      "action": "String!",
+      "input": "SetUserBasketInput",
+      "item_index": "Int",
+      "user_id": "Int!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "updateMasterOptionStock",
+    "kind": "mutation",
+    "domain": "onPrintShopInventory",
+    "args": {
+      "inputs": "[UpdateMasterOptionStockInput!]!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "index",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "updateOrderStatus",
+    "kind": "mutation",
+    "domain": "onPrintShopOrders",
+    "args": {
+      "input": "UpdateOrderStatusInput!",
+      "orders_id": "Int",
+      "orders_products_id": "Int",
+      "type": "OrderStatusUpdateTypeEnum!"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "message",
+      "result"
+    ],
+    "scalar": false
+  },
+  {
+    "name": "updateProductStock",
+    "kind": "mutation",
+    "domain": "onPrintShopInventory",
+    "args": {
+      "input": "UpdateProductStockInput!",
+      "product_sku": "String",
+      "type": "UpdateStockTypeEnum"
+    },
+    "nestedArgs": {},
+    "returns": [
+      "id",
+      "message",
+      "result",
+      "stock_details",
+      "stock_quantity"
+    ],
+    "scalar": false
+  }
+]

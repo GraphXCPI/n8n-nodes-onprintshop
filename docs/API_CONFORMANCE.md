@@ -2,6 +2,8 @@
 
 ## Authority
 
+CORRECTED (2026-09-12): 277 existing action paths are not a complete endpoint inventory. The new `verify-complete-api.js` gate independently requires all 101 schema roots (52 queries and 49 mutations), 301 root arguments, every nested typed input, and 1,395 return paths in the native controls. It executes the owning domain nodes with mocked HTTP transport. See `COMPLETE_API_CONTROLS.md`. Staging still lacked `setBatchJob` during the latest read-only check; no live mutations were used to claim contract coverage.
+
 The reference Postman collection documents intended requests. The checked-in,
 description-free `contracts/ops-schema.graphql` records the authorized live
 GraphQL contract observed on 2026-09-11. The candidate's 277 generated action

@@ -8,6 +8,7 @@ import {
 
 import { OnPrintShop } from './OnPrintShop/OnPrintShop.node';
 import { executeOnPrintShopContractAction, extendOnPrintShopDomainDescription } from './OnPrintShopContractActions';
+import { addCompleteApi, executeCompleteApi } from './OnPrintShopCompleteApi';
 
 type OperationMap = Record<string, string[]>;
 
@@ -64,6 +65,8 @@ function buildResourceProperty(base: INodeProperties, config: OnPrintShopDomainC
 	}
 
 	property.displayName = 'Area';
+	delete property.hint;
+	delete property.description;
 	property.options = options;
 	property.default = config.defaultResource;
 	return property;
@@ -136,7 +139,7 @@ export function buildOnPrintShopDomainDescription(config: OnPrintShopDomainConfi
 		if (domainProperty) properties.push(domainProperty);
 	}
 
-	return extendOnPrintShopDomainDescription({
+	return addCompleteApi(extendOnPrintShopDomainDescription({
 		...clone(legacy),
 		displayName: config.displayName,
 		name: config.name,
@@ -146,7 +149,7 @@ export function buildOnPrintShopDomainDescription(config: OnPrintShopDomainConfi
 			name: config.defaultName,
 		},
 		properties,
-	}, config.name);
+	}, config.name), config.name);
 }
 
 export abstract class OnPrintShopDomainNode implements INodeType {
@@ -154,6 +157,8 @@ export abstract class OnPrintShopDomainNode implements INodeType {
 
 	// Delegates to OnPrintShop.execute(), which contains per-item continueOnFail handling.
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
+		const completeResult = await executeCompleteApi(this);
+		if (completeResult) return completeResult;
 		const contractResult = await executeOnPrintShopContractAction(this);
 		if (contractResult) return contractResult;
 		return OnPrintShop.prototype.execute.call(this);

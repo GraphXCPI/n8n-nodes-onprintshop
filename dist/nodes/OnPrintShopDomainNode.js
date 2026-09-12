@@ -4,6 +4,7 @@ exports.OnPrintShopDomainNode = void 0;
 exports.buildOnPrintShopDomainDescription = buildOnPrintShopDomainDescription;
 const OnPrintShop_node_1 = require("./OnPrintShop/OnPrintShop.node");
 const OnPrintShopContractActions_1 = require("./OnPrintShopContractActions");
+const OnPrintShopCompleteApi_1 = require("./OnPrintShopCompleteApi");
 const GLOBAL_PROPERTY_NAMES = new Set(['safeMode']);
 function clone(value) {
     return JSON.parse(JSON.stringify(value));
@@ -40,6 +41,8 @@ function buildResourceProperty(base, config) {
         return hiddenResourceProperty;
     }
     property.displayName = 'Area';
+    delete property.hint;
+    delete property.description;
     property.options = options;
     property.default = config.defaultResource;
     return property;
@@ -104,7 +107,7 @@ function buildOnPrintShopDomainDescription(config) {
         if (domainProperty)
             properties.push(domainProperty);
     }
-    return (0, OnPrintShopContractActions_1.extendOnPrintShopDomainDescription)({
+    return (0, OnPrintShopCompleteApi_1.addCompleteApi)((0, OnPrintShopContractActions_1.extendOnPrintShopDomainDescription)({
         ...clone(legacy),
         displayName: config.displayName,
         name: config.name,
@@ -114,11 +117,14 @@ function buildOnPrintShopDomainDescription(config) {
             name: config.defaultName,
         },
         properties,
-    }, config.name);
+    }, config.name), config.name);
 }
 class OnPrintShopDomainNode {
     // Delegates to OnPrintShop.execute(), which contains per-item continueOnFail handling.
     async execute() {
+        const completeResult = await (0, OnPrintShopCompleteApi_1.executeCompleteApi)(this);
+        if (completeResult)
+            return completeResult;
         const contractResult = await (0, OnPrintShopContractActions_1.executeOnPrintShopContractAction)(this);
         if (contractResult)
             return contractResult;

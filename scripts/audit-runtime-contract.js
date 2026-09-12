@@ -49,7 +49,8 @@ async function main() {
     for (const resource of resources) {
       const opProps = props.filter(p => p.name === 'operation' && visible(p, { resource }));
       for (const operation of [...new Set(opProps.flatMap(p => p.options.map(o => o.value)))]) {
-        if (resource === 'graphql') continue;
+        // Full typed API controls have a separate exhaustive Fields/JSON test matrix.
+        if (resource === 'graphql' || resource === 'apiContract') continue;
         const params = { resource, operation, safeMode: false };
         const effectiveParams = {...params,operation: operation === 'getMany' && ['customer','customerAddress','order','orderDetails','orderShipment'].includes(resource) ? 'getAll' : operation};
         for (const p of props.filter(p => !['resource','operation','safeMode'].includes(p.name) && visible(p, effectiveParams))) params[p.name] = sample(p);
