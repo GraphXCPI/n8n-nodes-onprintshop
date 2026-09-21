@@ -6357,7 +6357,7 @@ class OnPrintShop {
         const items = this.getInputData();
         const returnData = [];
         const credentials = await this.getCredentials('onPrintShopApi');
-        const baseUrl = credentials.baseUrl || 'https://api.onprintshop.com';
+        const apiUrl = (0, OnPrintShopTokenManager_1.getOnPrintShopApiUrl)(credentials);
         let accessToken = await (0, OnPrintShopTokenManager_1.getOnPrintShopAccessToken)(this, credentials);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const requestGraphql = async (body) => {
@@ -6369,7 +6369,7 @@ class OnPrintShop {
             const preparedVariables = isRaw ? variables : prepareVariablesForOpsSchema(preparedQuery, variables);
             const sendRequest = async () => await this.helpers.httpRequest({
                 method: 'POST',
-                url: `${baseUrl}/api/`,
+                url: apiUrl,
                 headers: {
                     'Authorization': `Bearer ${accessToken}`,
                     'Content-Type': 'application/json',

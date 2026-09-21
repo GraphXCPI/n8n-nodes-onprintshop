@@ -26,6 +26,7 @@ import {
 } from '../OnPrintShopHelp';
 import {
 	getOnPrintShopAccessToken,
+	getOnPrintShopApiUrl,
 	hasOnPrintShopAuthenticationError,
 	isOnPrintShopAuthenticationFailure,
 	safeOnPrintShopRequestError,
@@ -6457,7 +6458,7 @@ export class OnPrintShop implements INodeType {
 		const returnData: IDataObject[] = [];
 
 		const credentials = await this.getCredentials('onPrintShopApi');
-		const baseUrl = credentials.baseUrl as string || 'https://api.onprintshop.com';
+		const apiUrl = getOnPrintShopApiUrl(credentials);
 		let accessToken = await getOnPrintShopAccessToken(this, credentials);
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -6470,7 +6471,7 @@ export class OnPrintShop implements INodeType {
 			const preparedVariables = isRaw ? variables : prepareVariablesForOpsSchema(preparedQuery, variables);
 			const sendRequest = async (): Promise<IDataObject> => await this.helpers.httpRequest({
 				method: 'POST',
-				url: `${baseUrl}/api/`,
+				url: apiUrl,
 				headers: {
 					'Authorization': `Bearer ${accessToken}`,
 					'Content-Type': 'application/json',

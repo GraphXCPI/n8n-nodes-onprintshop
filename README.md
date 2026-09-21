@@ -17,7 +17,7 @@ n8n-nodes-onprintshop
 To install a specific version:
 
 ```text
-n8n-nodes-onprintshop@1.3.3
+n8n-nodes-onprintshop@1.3.4
 ```
 
 For Docker or queue-mode deployments, install the package into the shared n8n community-node folder and restart every process that loads nodes. See [CUSTOMER_INSTALL.md](CUSTOMER_INSTALL.md) for details.

@@ -306,6 +306,20 @@ async function testDerivedEndpoint() {
 		}));
 		assert.deepEqual(await client('query { __typename }'), { ok: true });
 		assert.equal(apiRequests, 1);
+		const { OnPrintShop } = require('../dist/nodes/OnPrintShop/OnPrintShop.node');
+		const legacyContext = context(data, async request => {
+			assert.equal(request.url, `https://shop.example.invalid${prefix}/api/`);
+			return { data: { ok: true } };
+		});
+		legacyContext.getInputData = () => [{ json: {} }];
+		legacyContext.getNodeParameter = (name, index, fallback) => ({
+			resource: 'graphql', operation: 'execute', graphqlQuery: 'query { __typename }',
+			graphqlVariables: '{}', safeMode: false,
+		}[name] ?? fallback);
+		legacyContext.continueOnFail = () => false;
+		legacyContext.helpers.returnJsonArray = values => values.map(json => ({ json }));
+		const legacyOutput = await new OnPrintShop().execute.call(legacyContext);
+		assert.deepEqual(legacyOutput[0][0].json, { data: { ok: true } });
 	}
 	}
 	assert.equal(getOnPrintShopTokenUrl(credentials({ tokenUrl: undefined })), 'https://api.example.invalid/api/oauth/token');
