@@ -39,15 +39,14 @@ export class OnPrintShopApi implements ICredentialType {
 			type: 'string',
 			default: 'https://api.onprintshop.com',
 			required: true,
-			description: 'The base URL for your OnPrintShop instance',
+			description: 'Your OnPrintShop instance URL, without /api. GraphQL uses /api/ and authentication uses /api/oauth/token on this same instance.',
 		},
 		{
 			displayName: 'Token URL',
 			name: 'tokenUrl',
-			type: 'string',
-			default: 'https://api.onprintshop.com/oauth/token',
-			required: true,
-			description: 'The OAuth2 token endpoint URL',
+			type: 'hidden',
+			default: '',
+			description: 'Legacy value retained for saved credentials; the token endpoint is always derived from Base URL',
 		},
 		{
 			displayName: 'Fallback Token Cache TTL',
@@ -65,7 +64,7 @@ export class OnPrintShopApi implements ICredentialType {
 	test: ICredentialTestRequest = {
 		request: {
 			method: 'POST',
-			url: '={{$credentials.tokenUrl}}',
+			url: '={{$credentials.baseUrl.trim().replace(/\\/+$/, "") + "/api/oauth/token"}}',
 			headers: {
 				'Content-Type': 'application/json',
 			},

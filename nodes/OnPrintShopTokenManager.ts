@@ -19,11 +19,15 @@ const pendingTokenRequests = new Map<string, Promise<CachedToken>>();
 const DEFAULT_FALLBACK_TTL_SECONDS = 3300;
 const MINIMUM_CACHE_WINDOW_MS = 1000;
 
+export function getOnPrintShopTokenUrl(credentials: ICredentialDataDecryptedObject): string {
+	const baseUrl = String(credentials.baseUrl || '').trim().replace(/\/+$/, '');
+	if (!baseUrl) throw new Error('OnPrintShop Base URL is required');
+	return `${baseUrl}/api/oauth/token`;
+}
+
 function credentialFingerprint(credentials: ICredentialDataDecryptedObject): string {
 	return createHash('sha256')
-		.update(String(credentials.tokenUrl || ''))
-		.update('\0')
-		.update(String(credentials.baseUrl || ''))
+		.update(getOnPrintShopTokenUrl(credentials))
 		.update('\0')
 		.update(String(credentials.clientId || ''))
 		.update('\0')
@@ -113,7 +117,7 @@ async function mintToken(
 	context: IExecuteFunctions,
 	credentials: ICredentialDataDecryptedObject,
 ): Promise<CachedToken> {
-	const tokenUrl = String(credentials.tokenUrl || 'https://api.onprintshop.com/oauth/token');
+	const tokenUrl = getOnPrintShopTokenUrl(credentials);
 	try {
 		// OnPrintShop uses a client-credentials exchange rather than n8n-managed OAuth.
 		const tokenResponse = await context.helpers.httpRequest({

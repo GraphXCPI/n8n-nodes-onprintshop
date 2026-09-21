@@ -17,7 +17,7 @@ n8n-nodes-onprintshop
 To install a specific version:
 
 ```text
-n8n-nodes-onprintshop@1.3.1
+n8n-nodes-onprintshop@1.3.2
 ```
 
 For Docker or queue-mode deployments, install the package into the shared n8n community-node folder and restart every process that loads nodes. See [CUSTOMER_INSTALL.md](CUSTOMER_INSTALL.md) for details.
@@ -46,9 +46,8 @@ Create an **OnPrintShop API** credential in n8n.
 | Client ID | OAuth client ID from OnPrintShop |
 | Client Secret | OAuth client secret from OnPrintShop |
 | Base URL | OnPrintShop tenant/API base URL |
-| Token URL | OAuth token URL |
 
-The credential includes a built-in n8n credential test that requests an OAuth token using `client_credentials`.
+Enter Base URL without `/api`. Authentication and the built-in credential test derive `{baseUrl}/api/oauth/token` automatically, removing trailing slashes. Legacy saved Token URL values are hidden and ignored. The token exchange uses `client_credentials`; existing token reuse and expiry handling are preserved.
 
 ## Documentation
 

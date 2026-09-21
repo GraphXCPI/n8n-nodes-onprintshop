@@ -1,4 +1,5 @@
 import { IDataObject, IExecuteFunctions, ICredentialDataDecryptedObject, JsonObject } from 'n8n-workflow';
+export declare function getOnPrintShopTokenUrl(credentials: ICredentialDataDecryptedObject): string;
 export declare function safeOnPrintShopRequestError(error: unknown, sensitiveValues?: unknown[]): JsonObject;
 export declare function getOnPrintShopAccessToken(context: IExecuteFunctions, credentials: ICredentialDataDecryptedObject, forceRefresh?: boolean, rejectedAccessToken?: string): Promise<string>;
 export declare function invalidateOnPrintShopAccessToken(credentials: ICredentialDataDecryptedObject): void;

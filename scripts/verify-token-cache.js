@@ -5,6 +5,7 @@ const assert = require('node:assert/strict');
 const {
 	clearOnPrintShopTokenCacheForTests,
 	getOnPrintShopAccessToken,
+	getOnPrintShopTokenUrl,
 } = require('../dist/nodes/OnPrintShopTokenManager');
 const {
 	createOnPrintShopGraphqlClient,
@@ -43,7 +44,7 @@ async function testSequentialReuse() {
 	let tokenRequests = 0;
 	const credentialData = credentials();
 	const testContext = context(credentialData, async (request) => {
-		if (request.url === credentialData.tokenUrl) {
+		if (request.url === getOnPrintShopTokenUrl(credentialData)) {
 			tokenRequests += 1;
 			return { access_token: 'sequential-token', expires_in: 3600 };
 		}
@@ -125,7 +126,7 @@ async function testHttpAuthenticationRetry() {
 	const authorizationHeaders = [];
 	const credentialData = credentials();
 	const testContext = context(credentialData, async (request) => {
-		if (request.url === credentialData.tokenUrl) {
+		if (request.url === getOnPrintShopTokenUrl(credentialData)) {
 			tokenRequests += 1;
 			return { access_token: `retry-token-${tokenRequests}`, expires_in: 3600 };
 		}
@@ -152,7 +153,7 @@ async function testGraphqlAuthenticationRetry() {
 	let apiRequests = 0;
 	const credentialData = credentials();
 	const testContext = context(credentialData, async (request) => {
-		if (request.url === credentialData.tokenUrl) {
+		if (request.url === getOnPrintShopTokenUrl(credentialData)) {
 			tokenRequests += 1;
 			return { access_token: `graphql-token-${tokenRequests}`, expires_in: 3600 };
 		}
@@ -179,7 +180,7 @@ async function testConcurrentAuthenticationRetry() {
 	});
 	const credentialData = credentials();
 	const testContext = context(credentialData, async (request) => {
-		if (request.url === credentialData.tokenUrl) {
+		if (request.url === getOnPrintShopTokenUrl(credentialData)) {
 			tokenRequests += 1;
 			return { access_token: `concurrent-retry-token-${tokenRequests}`, expires_in: 3600 };
 		}
@@ -212,7 +213,7 @@ async function testGraphqlErrorsRedactBearerToken() {
 	let tokenRequests = 0;
 	const credentialData = credentials();
 	const testContext = context(credentialData, async (request) => {
-		if (request.url === credentialData.tokenUrl) {
+		if (request.url === getOnPrintShopTokenUrl(credentialData)) {
 			tokenRequests += 1;
 			return { access_token: accessToken, expires_in: 3600 };
 		}
@@ -257,6 +258,9 @@ async function testTokenErrorsRedactCredentials() {
 }
 
 async function main() {
+	await testDerivedEndpoint();
+	await testEndpointCacheIdentity();
+	await testMissingBaseUrl();
 	await testSequentialReuse();
 	await testConcurrentMintDeduplication();
 	await testExpiryRefresh();
@@ -266,7 +270,52 @@ async function main() {
 	await testConcurrentAuthenticationRetry();
 	await testGraphqlErrorsRedactBearerToken();
 	await testTokenErrorsRedactCredentials();
-	console.log('OnPrintShop token cache verification passed (9 scenarios).');
+	console.log('OnPrintShop token cache verification passed (12 scenarios).');
+}
+
+async function testDerivedEndpoint() {
+	const { OnPrintShopApi } = require('../dist/credentials/OnPrintShopApi.credentials');
+	const credentialType = new OnPrintShopApi();
+	const legacyField = credentialType.properties.find(p => p.name === 'tokenUrl');
+	assert.equal(legacyField.type, 'hidden');
+	assert.notEqual(legacyField.required, true);
+	const expression = credentialType.test.request.url;
+	const resolveTestUrl = new Function('$credentials', `return (${expression.slice(3, -2)});`);
+	for (const baseUrl of ['https://shop.example.invalid', 'https://shop.example.invalid/', ' https://shop.example.invalid/// ']) {
+		clearOnPrintShopTokenCacheForTests();
+		const data = credentials({ baseUrl, tokenUrl: 'https://obsolete.example.invalid/token' });
+		const expected = 'https://shop.example.invalid/api/oauth/token';
+		assert.equal(resolveTestUrl(data), expected, 'credential test must derive the same endpoint');
+		assert.equal(getOnPrintShopTokenUrl(data), expected);
+		await getOnPrintShopAccessToken(context(data, async request => {
+			assert.equal(request.url, expected, 'runtime must ignore saved token URL');
+			assert.equal(request.method, 'POST');
+			assert.equal(request.body.grant_type, 'client_credentials');
+			return { access_token: 'derived-token', expires_in: 3600 };
+		}), data);
+	}
+	assert.equal(getOnPrintShopTokenUrl(credentials({ tokenUrl: undefined })), 'https://api.example.invalid/api/oauth/token');
+}
+
+async function testEndpointCacheIdentity() {
+	clearOnPrintShopTokenCacheForTests();
+	let requests = 0;
+	const mint = async () => ({ access_token: `endpoint-token-${++requests}`, expires_in: 3600 });
+	const first = credentials();
+	const normalized = credentials({ baseUrl: first.baseUrl + '/', tokenUrl: 'https://ignored.example.invalid/token' });
+	const other = credentials({ baseUrl: 'https://other.example.invalid' });
+	assert.equal(await getOnPrintShopAccessToken(context(first, mint), first), 'endpoint-token-1');
+	assert.equal(await getOnPrintShopAccessToken(context(normalized, mint), normalized), 'endpoint-token-1');
+	assert.equal(await getOnPrintShopAccessToken(context(other, mint), other), 'endpoint-token-2');
+	assert.equal(requests, 2, 'effective endpoint determines token cache isolation, not the legacy URL');
+}
+
+async function testMissingBaseUrl() {
+	clearOnPrintShopTokenCacheForTests();
+	const data = credentials({ baseUrl: ' ' });
+	let requests = 0;
+	await assert.rejects(getOnPrintShopAccessToken(context(data, async () => { requests++; }), data), /Base URL is required/);
+	assert.equal(requests, 0, 'missing Base URL must not send credentials to a fallback host');
 }
 
 main().catch((error) => {

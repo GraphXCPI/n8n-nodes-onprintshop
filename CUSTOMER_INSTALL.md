@@ -76,7 +76,8 @@ Required fields:
 | Client ID | OAuth client ID from OnPrintShop |
 | Client Secret | OAuth client secret from OnPrintShop |
 | Base URL | OnPrintShop tenant/API base URL |
-| Token URL | OAuth token URL |
+
+Enter Base URL without `/api`. Both authentication and the credential test automatically use `{baseUrl}/api/oauth/token`, removing trailing slashes first. No separate Token URL is needed; old saved Token URL values are ignored.
 
 After saving, click **Test**. The credential test requests an OAuth token using `client_credentials`. A passing test confirms that n8n can reach the token endpoint and that the client credentials are accepted.
 
@@ -114,7 +115,7 @@ Inventory, shipment, proof, status, pricing, and catalog write actions should be
 | --- | --- |
 | Node does not appear | Restart n8n and confirm the package is installed under the n8n user folder. |
 | Icon is broken | Confirm the installed package contains `dist/nodes/OnPrintShop/onprintshop-light.svg` and restart n8n. |
-| Credential test fails | Check Client ID, Client Secret, Token URL, and outbound network access from n8n. |
+| Credential test fails | Check Client ID, Client Secret, Base URL, and outbound network access from n8n. |
 | API calls fail after credential test passes | Check Base URL and tenant-level API permissions. |
 | Community-node install is blocked | Use the manual or Docker install path and confirm your n8n policy allows community nodes. |
 
