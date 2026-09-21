@@ -47,7 +47,7 @@ Required credential fields:
 | Base URL | OnPrintShop tenant/API base URL used for GraphQL requests |
 | Fallback Token Cache TTL | Optional validity period used only when OnPrintShop returns no token expiry; default 3300 seconds |
 
-Authentication always uses `{baseUrl}/api/oauth/token`. Enter the instance Base URL without `/api`; trailing slashes are removed automatically. The legacy Token URL field is hidden and ignored, including on saved credentials.
+Base URL accepts the instance URL or its API URL ending in `/api`. Trailing slashes are normalized; authentication uses `/api/oauth/token` exactly once. Existing credentials need no edits. The legacy Token URL field is hidden and ignored.
 
 After saving the credential, click **Test** in n8n. The credential test requests an OAuth token using `client_credentials` at the same derived endpoint used by workflows. A passing test confirms that n8n can reach the token endpoint and that the client credentials are accepted.
 

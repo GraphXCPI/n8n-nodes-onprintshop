@@ -19,10 +19,14 @@ const pendingTokenRequests = new Map<string, Promise<CachedToken>>();
 const DEFAULT_FALLBACK_TTL_SECONDS = 3300;
 const MINIMUM_CACHE_WINDOW_MS = 1000;
 
-export function getOnPrintShopTokenUrl(credentials: ICredentialDataDecryptedObject): string {
+export function getOnPrintShopApiUrl(credentials: ICredentialDataDecryptedObject): string {
 	const baseUrl = String(credentials.baseUrl || '').trim().replace(/\/+$/, '');
 	if (!baseUrl) throw new Error('OnPrintShop Base URL is required');
-	return `${baseUrl}/api/oauth/token`;
+	return `${baseUrl.replace(/\/api$/, '')}/api/`;
+}
+
+export function getOnPrintShopTokenUrl(credentials: ICredentialDataDecryptedObject): string {
+	return `${getOnPrintShopApiUrl(credentials)}oauth/token`;
 }
 
 function credentialFingerprint(credentials: ICredentialDataDecryptedObject): string {

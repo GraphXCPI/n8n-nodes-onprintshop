@@ -280,11 +280,15 @@ async function testDerivedEndpoint() {
 	assert.equal(legacyField.type, 'hidden');
 	assert.notEqual(legacyField.required, true);
 	const expression = credentialType.test.request.url;
-	const resolveTestUrl = new Function('$credentials', `return (${expression.slice(3, -2)});`);
-	for (const baseUrl of ['https://shop.example.invalid', 'https://shop.example.invalid/', ' https://shop.example.invalid/// ']) {
+	const { Expression } = require('n8n-workflow');
+	const evaluator = new Expression({});
+	const resolveTestUrl = data => evaluator.resolveSimpleParameterValue(expression, { $credentials: data });
+	for (const suffix of ['', '/', '///', '/api', '/api/', '/api///']) {
+	for (const prefix of ['', '/tenant']) {
+		const baseUrl = ` https://shop.example.invalid${prefix}${suffix} `;
 		clearOnPrintShopTokenCacheForTests();
 		const data = credentials({ baseUrl, tokenUrl: 'https://obsolete.example.invalid/token' });
-		const expected = 'https://shop.example.invalid/api/oauth/token';
+		const expected = `https://shop.example.invalid${prefix}/api/oauth/token`;
 		assert.equal(resolveTestUrl(data), expected, 'credential test must derive the same endpoint');
 		assert.equal(getOnPrintShopTokenUrl(data), expected);
 		await getOnPrintShopAccessToken(context(data, async request => {
@@ -293,6 +297,16 @@ async function testDerivedEndpoint() {
 			assert.equal(request.body.grant_type, 'client_credentials');
 			return { access_token: 'derived-token', expires_in: 3600 };
 		}), data);
+		let apiRequests = 0;
+		const client = await createOnPrintShopGraphqlClient(context(data, async request => {
+			assert.equal(request.url, `https://shop.example.invalid${prefix}/api/`);
+			assert.equal(request.headers.Authorization, 'Bearer derived-token');
+			apiRequests++;
+			return { data: { ok: true } };
+		}));
+		assert.deepEqual(await client('query { __typename }'), { ok: true });
+		assert.equal(apiRequests, 1);
+	}
 	}
 	assert.equal(getOnPrintShopTokenUrl(credentials({ tokenUrl: undefined })), 'https://api.example.invalid/api/oauth/token');
 }
@@ -302,7 +316,7 @@ async function testEndpointCacheIdentity() {
 	let requests = 0;
 	const mint = async () => ({ access_token: `endpoint-token-${++requests}`, expires_in: 3600 });
 	const first = credentials();
-	const normalized = credentials({ baseUrl: first.baseUrl + '/', tokenUrl: 'https://ignored.example.invalid/token' });
+	const normalized = credentials({ baseUrl: first.baseUrl + '/api/', tokenUrl: 'https://ignored.example.invalid/token' });
 	const other = credentials({ baseUrl: 'https://other.example.invalid' });
 	assert.equal(await getOnPrintShopAccessToken(context(first, mint), first), 'endpoint-token-1');
 	assert.equal(await getOnPrintShopAccessToken(context(normalized, mint), normalized), 'endpoint-token-1');

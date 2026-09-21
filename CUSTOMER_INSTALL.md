@@ -77,7 +77,7 @@ Required fields:
 | Client Secret | OAuth client secret from OnPrintShop |
 | Base URL | OnPrintShop tenant/API base URL |
 
-Enter Base URL without `/api`. Both authentication and the credential test automatically use `{baseUrl}/api/oauth/token`, removing trailing slashes first. No separate Token URL is needed; old saved Token URL values are ignored.
+Enter the instance URL or its API URL ending in `/api`. Trailing slashes are normalized; authentication and the credential test use `/api/oauth/token` exactly once. No separate Token URL is needed; old saved Token URL values are ignored.
 
 After saving, click **Test**. The credential test requests an OAuth token using `client_credentials`. A passing test confirms that n8n can reach the token endpoint and that the client credentials are accepted.
 

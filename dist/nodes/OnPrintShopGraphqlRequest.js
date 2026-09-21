@@ -9,14 +9,14 @@ const OnPrintShopTokenManager_1 = require("./OnPrintShopTokenManager");
 const OnPrintShopInputNormalization_1 = require("./OnPrintShopInputNormalization");
 async function createOnPrintShopGraphqlClient(context) {
     const credentials = await context.getCredentials('onPrintShopApi');
-    const baseUrl = String(credentials.baseUrl || 'https://api.onprintshop.com').replace(/\/$/, '');
+    const apiUrl = (0, OnPrintShopTokenManager_1.getOnPrintShopApiUrl)(credentials);
     let accessToken = await (0, OnPrintShopTokenManager_1.getOnPrintShopAccessToken)(context, credentials);
     return async (query, variables = {}, itemIndex = 0, options = {}) => {
         variables = (0, OnPrintShopInputNormalization_1.normalizeOnPrintShopInputs)(query, variables);
         const sendRequest = async () => {
             return await context.helpers.httpRequest({
                 method: 'POST',
-                url: `${baseUrl}/api/`,
+                url: apiUrl,
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                     'Content-Type': 'application/json',

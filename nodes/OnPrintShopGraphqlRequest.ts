@@ -8,6 +8,7 @@ import {
 
 import {
 	getOnPrintShopAccessToken,
+	getOnPrintShopApiUrl,
 	hasOnPrintShopAuthenticationError,
 	isOnPrintShopAuthenticationFailure,
 	safeOnPrintShopRequestError,
@@ -21,7 +22,7 @@ export async function createOnPrintShopGraphqlClient(context: IExecuteFunctions)
 	options?: { partialDataRoot?: string },
 ) => Promise<IDataObject>> {
 	const credentials = await context.getCredentials('onPrintShopApi');
-	const baseUrl = String(credentials.baseUrl || 'https://api.onprintshop.com').replace(/\/$/, '');
+	const apiUrl = getOnPrintShopApiUrl(credentials);
 	let accessToken = await getOnPrintShopAccessToken(context, credentials);
 
 	return async (query: string, variables: IDataObject = {}, itemIndex = 0, options: { partialDataRoot?: string } = {}): Promise<IDataObject> => {
@@ -29,7 +30,7 @@ export async function createOnPrintShopGraphqlClient(context: IExecuteFunctions)
 		const sendRequest = async (): Promise<IDataObject> => {
 			return await context.helpers.httpRequest({
 				method: 'POST',
-				url: `${baseUrl}/api/`,
+				url: apiUrl,
 				headers: {
 					Authorization: `Bearer ${accessToken}`,
 					'Content-Type': 'application/json',

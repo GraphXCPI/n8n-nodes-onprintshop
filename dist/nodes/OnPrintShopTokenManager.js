@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getOnPrintShopApiUrl = getOnPrintShopApiUrl;
 exports.getOnPrintShopTokenUrl = getOnPrintShopTokenUrl;
 exports.safeOnPrintShopRequestError = safeOnPrintShopRequestError;
 exports.getOnPrintShopAccessToken = getOnPrintShopAccessToken;
@@ -13,11 +14,14 @@ const tokenCache = new Map();
 const pendingTokenRequests = new Map();
 const DEFAULT_FALLBACK_TTL_SECONDS = 3300;
 const MINIMUM_CACHE_WINDOW_MS = 1000;
-function getOnPrintShopTokenUrl(credentials) {
+function getOnPrintShopApiUrl(credentials) {
     const baseUrl = String(credentials.baseUrl || '').trim().replace(/\/+$/, '');
     if (!baseUrl)
         throw new Error('OnPrintShop Base URL is required');
-    return `${baseUrl}/api/oauth/token`;
+    return `${baseUrl.replace(/\/api$/, '')}/api/`;
+}
+function getOnPrintShopTokenUrl(credentials) {
+    return `${getOnPrintShopApiUrl(credentials)}oauth/token`;
 }
 function credentialFingerprint(credentials) {
     return (0, crypto_1.createHash)('sha256')

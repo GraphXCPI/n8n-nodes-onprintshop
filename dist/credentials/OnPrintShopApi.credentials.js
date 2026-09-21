@@ -36,7 +36,7 @@ class OnPrintShopApi {
                 type: 'string',
                 default: 'https://api.onprintshop.com',
                 required: true,
-                description: 'Your OnPrintShop instance URL, without /api. GraphQL uses /api/ and authentication uses /api/oauth/token on this same instance.',
+                description: 'Your OnPrintShop instance URL, with or without a trailing /api. GraphQL and authentication use this same instance.',
             },
             {
                 displayName: 'Token URL',
@@ -60,7 +60,7 @@ class OnPrintShopApi {
         this.test = {
             request: {
                 method: 'POST',
-                url: '={{$credentials.baseUrl.trim().replace(/\\/+$/, "") + "/api/oauth/token"}}',
+                url: '={{$credentials.baseUrl.trim().replace(/\\/+$/, "").replace(/\\/api$/, "") + "/api/oauth/token"}}',
                 headers: {
                     'Content-Type': 'application/json',
                 },
